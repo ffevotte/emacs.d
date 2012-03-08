@@ -1,0 +1,98 @@
+;; Disable C-c [ and C-c ] in org-mode
+;; Org-mode bindings
+(global-set-key "\C-cl" 'org-store-link)
+(global-set-key "\C-cc" 'org-capture)
+(global-set-key "\C-ca" 'org-agenda)
+(global-set-key "\C-cb" 'org-iswitchb)
+(global-set-key (kbd "<f12>") 'org-agenda)
+(global-set-key (kbd "<f11>") 'ff/org-clock-in)
+(defun ff/org-clock-in ()
+  (interactive)
+  (org-clock-in '(4)))
+(add-hook 'org-mode-hook 'ff/org-mode-hook)
+(defun ff/org-mode-hook ()
+  ;; Undefine C-c [ and C-c ] since this breaks my
+  ;; org-agenda files when directories are include It
+  ;; expands the files in the directories individually
+  (org-defkey org-mode-map "\C-c["    'undefined)
+  (org-defkey org-mode-map "\C-c]"    'undefined))
+
+
+
+;; Customization
+(setq org-tags-column        -100)
+(setq org-agenda-tags-column -100)
+(setq org-src-fontify-natively t)
+;;   clock
+(setq org-clock-history-length 20)
+(org-clock-persistence-insinuate)
+(setq org-clock-in-resume t)
+(setq org-clock-into-drawer t)
+(setq org-clock-out-remove-zero-time-clocks t)
+(setq org-clock-modeline-total 'current)
+(setq org-clock-persist 'history)
+(setq org-clock-auto-clock-resolution 'when-no-clock-is-running)
+(setq org-clock-report-include-clocking-task t)
+
+(setq org-clocktable-defaults
+     (quote (:maxlevel 2 :scope file :block nil :tstart nil :tend nil :step nil :stepskip0 nil
+                       :fileskip0 nil :tags nil :emphasize nil :link nil :narrow 50! :indent t
+                       :formula nil :timestamp nil :level nil :tcolumns nil :formatter nil)))
+;;   agenda
+(setq org-agenda-start-with-log-mode t)
+(setq org-agenda-time-grid (quote (nil "----------------" (800 1000 1200 1400 1600 1800 2000))))
+(setq org-agenda-include-diary t)
+(add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
+(add-hook 'diary-mark-entries-hook 'diary-mark-included-diary-files)
+(setq calendar-holidays nil)
+;;   todo
+(setq org-todo-keywords '((sequence "TODO" "NEXT" "STARTED" "WAIT" "|" "DONE")))
+(setq org-todo-keyword-faces '(("TODO"    . org-todo)
+                               ("NEXT"    . org-todo)
+                               ("STARTED" . org-todo)
+                               ("WAIT"    . org-warning)
+                               ("DONE"    . org-done)))
+;;   capture
+(setq org-refile-targets (quote ((org-agenda-files :maxlevel . 1) (nil :maxlevel . 2))))
+(setq org-capture-templates `(("n" "Note" entry (file, org-default-notes-file)
+                               "* %? :note:\n  %U\n  %i" :empty-lines 1 :clock-in t :clock-resume t)
+                              ("r" "Réunion" entry (file, org-default-notes-file)
+                               "\
+* TODO [/] Réunion %? :a_com:\n\
+  DEADLINE: %t\n\
+  - [ ] Trouver Date\n\
+  - [ ] Réserver salle\n\
+  - [ ] Réserver matériel\n\
+  - [ ] CR" :empty-lines 1 :clock-in t :clock-resume t)
+                              ("t" "Todo" entry (file, org-default-notes-file)
+                               "* TODO %?\n  %U\n  %i" :empty-lines 1 :clock-in t :clock-resume t)))
+
+;; HTML export
+(setq org-export-html-validation-link "")
+
+
+;; LaTeX export
+(require 'org-latex)
+(unless (boundp 'org-export-latex-classes)
+  (setq org-export-latex-classes nil))
+(add-to-list 'org-export-latex-classes
+      '("org-cr"
+         "\\documentclass[a4paper,11pt]{article}
+          \\input{includeCommon/commonHeaders}
+          \\usepackage{crm}
+          \\input{cr}
+         "
+         ("\\section{%s}" . "\\section*{%s}")
+         ("\\subsection{%s}" . "\\subsection*{%s}")
+         ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+         ("\\paragraph{%s}" . "\\paragraph*{%s}")
+         ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+
+;; Org-clock-in shortcuts
+(when (require 'org-shortcuts nil t)
+  (add-hook 'org-clock-before-select-task-hook 'org-clock-insert-shortcuts))
+
+;; Local Variables:
+;;   mode: emacs-lisp
+;; End:
