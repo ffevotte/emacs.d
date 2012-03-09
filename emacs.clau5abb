@@ -1,76 +1,44 @@
- ;; custom version of org-clock.el to add org-clock-before-select-task-hook
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Local emacs configuration file for clau5abb ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;; Inconsolata font
+(setq default-frame-alist 
+      '((font-backend . "xft")
+        (font . "Inconsolata-11")))
+
+
+;; custom version of org-clock.el to add org-clock-before-select-task-hook
 (ff/load-file-if-exists (expand-file-name "~/.emacs.d/org-clock.el"))
 
 
-;; Org-mode
-(setq org-agenda-files (quote ("/netdata/H55056/org" "/netdata/H55056/org/notes")))
+;; Org-mode setup
+(setq ff/use-org t)
+(setq org-agenda-files '("/netdata/H55056/org" "/netdata/H55056/org/notes"))
 (setq org-default-notes-file "/netdata/H55056/org/refile.org")
 (setq org-default-todo-file "/netdata/H55056/org/todo.org")
 (setq diary-file "/netdata/H55056/org/diary")
 (setq org-tag-alist 
       (quote
-       ((:startgroup . nil) ("p_sf" . nil) ("p_sc" . nil) ("p_hp" . nil) ("p_non" . nil) (:endgroup . nil)
-        ("a_ana" . ?a) ("a_maq" . ?m) ("a_dev" . ?d) ("a_etu" . ?e) ("a_red" . ?r) ("a_com" . ?c) ("a_for" . ?f) ("a_adm" . nil)
-        ("c_cocagne" . ?C) ("c_2d1d" . ?S)
-        ("l_cxx" . nil) ("l_py" . nil) ("l_oct" . nil)
-        ("t_hpc" . nil)
-        ("short" . nil) ("export" . nil) ("noexport" . nil) ("note" . nil))))
-(defvar bh/organization-task-id "7da774e7-d69c-463b-88d2-e3ccc03f80fd")
+       ((:startgroup)("p_sf")("p_sc")("p_hp")("p_non")(:endgroup)
+        ("a_ana".?a)("a_maq".?m)("a_dev".?d)("a_etu".?e)("a_red".?r)("a_com".?c)("a_for".?f)("a_adm")
+        ("c_cocagne".?C)("c_2d1d".?S)
+        ("l_cxx")("l_py")("l_oct")
+        ("t_hpc")
+        ("short")("export")("noexport")("note"))))
+(setq bh/organization-task-id "7da774e7-d69c-463b-88d2-e3ccc03f80fd")
 
-;; Add and remove special comments in c-mode
-(defun debug-comment ()
-  "Insert debug comments"
-  (interactive)
-  (let (pos1 pos2 nlines cnt)
-    (if (and transient-mark-mode mark-active)
-        (setq pos1 (region-beginning) pos2 (region-end))
-      (progn
-        (setq pos1 (line-beginning-position)
-              pos2 (line-end-position))))
-    
-    (goto-char pos1)
-    (setq nlines (count-lines pos1 pos2))
-    (setq cnt 0)
-    (while (< cnt nlines)
-      (beginning-of-line)
-      (c-indent-command)
-      (unless (looking-at "//DBG ")
-        (insert "//DBG "))
-      (c-indent-command)
-      (forward-line 1)
-      (setq cnt (1+ cnt))
-      )
-    )
-  )
 
-(defun debug-uncomment ()
-  "Remove debug comments"
-  (interactive)
-  (let (pos1 pos2 nlines cnt)
-    (if (and transient-mark-mode mark-active)
-        (setq pos1 (region-beginning) pos2 (region-end))
-      (progn
-        (setq pos1 (line-beginning-position)
-              pos2 (line-end-position))))
-    
-    (goto-char pos1)
-    (setq nlines (count-lines pos1 pos2))
-    (setq cnt 0)
-    (while (< cnt nlines)
-      (beginning-of-line)
-      (c-indent-command)
-      (when (looking-at "//DBG ")
-        (delete-char 6))
-      (c-indent-command)
-      (forward-line 1)
-      (setq cnt (1+ cnt))
-      )
-    )
-  )
-
-(add-to-list 'load-path "~/.emacs.d")
+;; Local installation of auto-complete
 (add-to-list 'load-path "~/.local/share/emacs/site-lisp/auto-complete")
 (setq ff/auto-complete-ac-dict "~/.local/share/emacs/site-lisp/auto-complete/ac-dict")
+
+
+;; Local installation of yasnippet
+(setq ff/yasnippet-is-installed t)
+(setq ff/yasnippet-directory "~/.emacs.d/elpa/yasnippet-0.6.1/snippets")
+
 
 ;; Local Variables:
 ;;   mode: emacs-lisp

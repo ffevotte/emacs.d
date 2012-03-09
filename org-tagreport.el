@@ -174,8 +174,3 @@ commands are available:
       (setq org-tagreport-details nil)
     (setq org-tagreport-details t))
   (org-tagreport-update))
-
-
-;; Local Variables:
-;;   mode: lisp
-;; End:

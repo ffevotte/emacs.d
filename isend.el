@@ -50,7 +50,3 @@ sent."
    (goto-char (line-end-position))
    (when (search-forward-regexp "." nil t)
      (goto-char (line-beginning-position)))))
-
-;; Local Variables:
-;;   mode: lisp
-;; End:

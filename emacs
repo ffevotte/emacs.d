@@ -1,4 +1,12 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Emacs configuration file ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
 ;; Useful variables and functions
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(add-to-list 'load-path "~/.emacs.d")
 (setq homeDir (getenv "HOME"))
 (setq fullhostname (system-name))
 (setq hostname
@@ -24,7 +32,7 @@ Example:
           functions))
 
 
-;; Extensions
+;; Extensions management
 (defun ff/require-or-install (p)
   "Require a package."
   (require p nil t))
@@ -41,7 +49,8 @@ Example:
             (package-install p)
           ('error (message (format "%s" ex))))))))
 
-;; this seems to be needed to avoid errors
+
+;; This seems to be needed to avoid errors
 (when (not (boundp 'warning-suppress-types))
   (setq warning-suppress-types nil))
 
@@ -50,10 +59,11 @@ Example:
 (ff/load-file-if-exists (concat homeDir "/.etc/emacs." hostname))
 
 
-;; Global options
-(setq default-frame-alist 
-      '((font-backend . "xft")      ;; Inconsolata font
-        (font . "Inconsolata-11")))
+
+
+;; Global customization
+;;;;;;;;;;;;;;;;;;;;;;;
+
 (menu-bar-mode   -1)                ;; Bare GUI
 (tool-bar-mode   -1)
 (scroll-bar-mode -1)
@@ -84,6 +94,7 @@ Example:
 (add-hook 'after-save-hook          ;; Automatically make shebang-ed scripts executable
           'executable-make-buffer-file-executable-if-script-p)
 (setq diff-switches "-u")           ;; Unified diffs
+(file-cache-add-directory "~/.etc") ;; Add '.etc' to file cache (C-x C-f C-<tab>)
 (custom-set-variables               ;; Bookmarks file
  '(bookmark-default-file "~/.emacs.d/bookmarks"))
 (setq custom-file "~/.emacs.d/custom.el") ;; Separate custom file
@@ -111,9 +122,9 @@ Example:
 
 
 ;; Make buffer names unique
-(when (require 'uniquify nil t)
-  (setq uniquify-buffer-name-style 'post-forward
-        uniquify-separator ":"))
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'post-forward
+      uniquify-separator ":")
 
 
 ;; No semantic.cache cluttering
@@ -138,76 +149,7 @@ Example:
 
 
 ;; IBuffer
-(when (require 'ibuffer nil t)
-  (defun ff/ibuffer-filter-by-filename (path)
-    "Add ibuffer filter by filename using current buffer file name as default"
-    (interactive (list
-                  (let* ((buf  (ibuffer-current-buffer t))
-                         (name (buffer-file-name buf)))
-                    (read-from-minibuffer "Filter by path: " name))))
-    (ibuffer-filter-by-filename path))
-
-  (defun ff/ibuffer-hide-all-filters ()
-    "Hide all ibuffer filter groups"
-    (interactive)
-    (save-excursion
-      (if (not (eq major-mode 'ibuffer-mode))
-          nil
-        (progn
-          (goto-char 0)
-          (setq prev-point 0)
-          (while (< prev-point (point))
-            (setq prev-point (point))
-            (ibuffer-forward-filter-group)
-            (ff/ibuffer-hide-filter-group (point)))))))  
-  (defun ff/ibuffer-show-all-filters ()
-    "Show all ibuffer filter groups"
-    (interactive)
-    (save-excursion
-      (if (not (eq major-mode 'ibuffer-mode))
-          nil
-        (progn
-          (goto-char 0)
-          (setq prev-point 0)
-          (while (< prev-point (point))
-            (setq prev-point (point))
-            (ibuffer-forward-filter-group)
-            (ff/ibuffer-show-filter-group (point)))))))
-  (defun ff/ibuffer-hide-filter-group (posn)
-    "Hide current filter group"
-    (let ((name (get-text-property posn 'ibuffer-filter-group-name)))
-      (unless (stringp name)
-        (error "No filtering group name present"))
-      (if (member name ibuffer-hidden-filter-groups)
-          nil
-        (push name ibuffer-hidden-filter-groups))
-      (ibuffer-update nil t)))
-  (defun ff/ibuffer-show-filter-group (posn)
-    "Show current filter-group"
-    (let ((name (get-text-property posn 'ibuffer-filter-group-name)))
-      (unless (stringp name)
-        (error "No filtering group name present"))
-      (if (member name ibuffer-hidden-filter-groups)
-          (setq ibuffer-hidden-filter-groups
-                (delete name ibuffer-hidden-filter-groups)))
-      (ibuffer-update nil t)))
-
-  (add-hook 'ibuffer-mode-hook 'ff/ibuffer-mode-hook)
-  (defun ff/ibuffer-mode-hook ()
-    (ibuffer-switch-to-saved-filter-groups "default")
-    (local-set-key (kbd "M-<up>")   'ff/ibuffer-hide-all-filters)
-    (local-set-key (kbd "M-<down>") 'ff/ibuffer-show-all-filters)
-    (local-set-key (kbd "/ f")      'ff/ibuffer-filter-by-filename))
-
-  ;; Switching to ibuffer puts the cursor on the most recent buffer
-  (defadvice ibuffer (around ibuffer-point-to-most-recent) ()
-    "Open ibuffer with cursor pointed to most recent buffer name"
-    (let ((recent-buffer-name (buffer-name)))
-      ad-do-it
-      (ff/ibuffer-hide-all-filters)
-      (ibuffer-jump-to-buffer recent-buffer-name)))
-  (ad-activate 'ibuffer)
-  (global-set-key (kbd "C-x C-b") 'ibuffer))
+(ff/load-file-if-exists (concat homeDir "/.etc/emacs-ibuffer.el"))
 
 
 ;; ANSI terminal
@@ -226,6 +168,10 @@ Example:
   (define-key term-raw-map (kbd "C-<left>")  'term-send-Cleft))
 
 
+;; ISend-mode
+(ff/load-file-if-exists (concat homeDir "/.etc/isend.el"))
+
+
 ;; Ido-mode
 (setq ido-enable-flex-matching t
       ido-auto-merge-work-directories-length -1
@@ -235,8 +181,6 @@ Example:
       ido-default-buffer-method 'selected-window)
 (ido-mode 1)
 (put 'ido-exit-minibuffer 'disabled nil)
-(when (ff/require-or-install 'ido-ubiquitous)
-  (ido-ubiquitous t))
 (global-set-key (kbd "C-x C-r") 'ido-recentf-open) ;; Find recent files using C-x C-r
 (recentf-mode 1)
 (setq recentf-max-saved-items 1000)
@@ -248,14 +192,26 @@ Example:
     (message "Aborting")))
 
 
+;; Auto-revert-mode for version-controlled files
+(defadvice vc-find-file-hook (after auto-revert-mode-for-vc activate)
+  "vc-find-file-hook advice for activating auto-revert-mode"
+  (when vc-mode (auto-revert-mode 1)))
+
+
+
+
+;; Non standard extensions
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Ido-ubiquitous
+(when (ff/require-or-install 'ido-ubiquitous)
+  (ido-ubiquitous t))
+
+
 ;; Anything
 (when (ff/require-or-install 'anything) 
   (ff/require-or-install 'anything-match-plugin)
   (global-set-key (kbd "C-x C-a") 'anything))
-
-
-;; File-cache
-(file-cache-add-directory "~/.etc")
 
 
 ;; Smex
@@ -269,34 +225,68 @@ Example:
 
 
 ;; Auto-complete
-(require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories ff/auto-complete-ac-dict)
-(ac-config-default)
+(when (ff/require-or-install 'auto-complete-config)
+  (add-to-list 'ac-dictionary-directories ff/auto-complete-ac-dict)
+  (ac-config-default))
 
 
 ;; Yasnippet
-(when (ff/require-or-install 'yasnippet)
+(defvar ff/yasnippet-is-installed nil
+  "set this to non-nil if the yasnippet extension is installed")
+(defun ff/yasnippet-setup ()
+  (message "setup yasnippet")
   (yas/initialize)
-  (yas/load-directory "~/.emacs.d/elpa/yasnippet-0.6.1/snippets"))
+  (yas/load-directory ff/yasnippet-directory))
+(eval-after-load 'yasnippet '(ff/yasnippet-setup))
+(defun ff/activate-yasnippet ()
+  "Don'do anything when yasnippet is not installed"
+  (message "Yasnippet does not seem to be installed"))
+(when ff/yasnippet-is-installed
+  (defun ff/activate-yasnippet ()
+    "Activate yasnippet minor mode."
+    (yas/minor-mode 1)))
+
+
+;; Autopair
+(defun ff/activate-autopair ()
+  "Don't do anything when autopair is not installed")
+(when (ff/require-or-install 'autopair)
+  (defun ff/activate-autopair ()
+    "Activate autopair minor mode"
+    (autopair-mode 1)))
 
 
 ;; Org-mode
-(when (ff/require-or-install 'org)
-  (ff/load-file-if-exists (concat homeDir "/.etc/emacs.org"))
-  (ff/load-file-if-exists (concat homeDir "/.etc/emacs.org-bh")))
+(defvar ff/use-org nil
+  "Set this to non-nil to use org-mode")
+(when ff/use-org
+  (when (ff/require-or-install 'org)
+    (ff/load-file-if-exists (concat homeDir "/.etc/emacs-org.el")))
+  (when (require 'org-shortcuts nil t) ; Org-clock-in shortcuts
+    (add-hook 'org-clock-before-select-task-hook 'org-clock-insert-shortcuts)))
 
 
-;; Auto-revert-mode for version-controlled files
-(defadvice vc-find-file-hook (after auto-revert-mode-for-vc activate)
-  "vc-find-file-hook advice for activating auto-revert-mode"
-  (when vc-mode (auto-revert-mode 1)))
 
+
+;; Mode-specific customization
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Text-mode
-(add-hook 'text-mode-hook 'ff/text-mode-hook)
-(defun ff/text-mode-hook ()
-  (turn-on-auto-fill)            ;; Automatically wrap around
-  (turn-on-flyspell))             ;; Enter flyspell-mode
+(add-hook 'text-mode-hook 'turn-on-auto-fill)
+(add-hook 'text-mode-hook 'turn-on-flyspell)
+
+
+;; Easy compilation
+(defun ff/compile ()
+  "Rerun last compilation command."
+  (interactive)
+  (set-buffer "*compilation*")
+  (compile compile-command))
+(defun ff/setup-compile ()
+  "Map <F5> to `ff/compile'."
+  (local-set-key (kbd "<f5>") 'ff/compile))
+(ff/add-hooks '(c-mode-common-hook LaTeX-mode-hook makefile-mode-hook)
+              '(ff/setup-compile))
 
 
 ;; Common features for programming modes
@@ -315,27 +305,13 @@ Example:
 (defun ff/activate-newline-indent ()
   "Remap <RET> to `newline-and-indent'."
   (local-set-key (kbd "RET") 'newline-and-indent))
-(defun ff/activate-autopair ())
-(when (ff/require-or-install 'autopair)
-  (defun ff/activate-autopair ()
-    (autopair-mode 1)))
 
 (ff/add-hooks (list 'c-mode-common-hook 'lisp-mode-hook 'emacs-lisp-mode-hook 'python-mode-hook
-                    'sh-mode-hook 'shell-mode-hook 'octave-mode-hook)
+                    'sh-mode-hook 'shell-mode-hook 'octave-mode-hook 'LaTeX-mode-hook)
               (list 'ff/activate-todo-keywords 'ff/activate-hideshow 'ff/activate-newline-indent
                     'ff/activate-autopair))
-
-
-(defun ff/compile ()
-  "Rerun last compilation command."
-  (interactive)
-  (set-buffer "*compilation*")
-  (compile compile-command))
-(defun ff/activate-compile ()
-  "Map <F5> to `ff/compile'."
-  (local-set-key (kbd "<f5>") 'ff/compile))
-(ff/add-hooks '(c-mode-common-hook LaTeX-mode-hook makefile-mode-hook)
-              '(ff/activate-compile))
+(ff/add-hooks '(c-mode-common-hook LaTeX-mode-hook)
+              '(ff/activate-yasnippet))
 
 
 ;; C-mode
@@ -359,7 +335,3 @@ Example:
 
 ;; Gnuplot-mode
 (setq gnuplot-display-process nil) ;; dont display the gnuplot window
-
-
-;; ISend-mode
-(ff/load-file-if-exists (concat homeDir "/.etc/isend.el"))
