@@ -1,5 +1,3 @@
-;; Color theme
-(load-theme 'naquadah)
 
 ;; Local Variables:
 ;;   mode: emacs-lisp

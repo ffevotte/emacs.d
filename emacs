@@ -6,7 +6,7 @@
 ;; Useful variables and functions
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(add-to-list 'load-path "~/.emacs.d")
+(add-to-list 'load-path "~/.emacs.d" 'append)
 (setq homeDir (getenv "HOME"))
 (setq fullhostname (system-name))
 (setq hostname
@@ -35,19 +35,22 @@ Example:
 ;; Extensions management
 (defun ff/require-or-install (p)
   "Require a package."
-  (require p nil t))
-(when (load (expand-file-name "~/.emacs.d/elpa/package.el"))
+  (require p nil 'noerror))
+(when (load (expand-file-name "~/.emacs.d/elpa/package.el") 'noerror)
+  (add-to-list 'package-archives '("elpa" . "http://tromey.com/elpa/"))
   (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
   (package-initialize)
   (defun ff/require-or-install (p)
     "Require a package or install it."
-    (if (require p nil t)
+    (if (require p nil 'noerror)
         (message "Loaded package %s" p)
       (progn
         (message "Trying to install package %s" p)
         (condition-case ex
             (package-install p)
-          ('error (message (format "%s" ex))))))))
+          ('error (progn
+                    (message (format "%s" ex))
+                    nil)))))))
 
 
 ;; This seems to be needed to avoid errors
@@ -142,8 +145,8 @@ Example:
 (defun ff/set-color-theme ()
   (when (window-system)
     (let ((color-theme-is-global nil))
-      (ff/require-or-install 'color-theme-tango)
-      (color-theme-tango))))
+      (when (ff/require-or-install 'color-theme-tango)
+	(color-theme-tango)))))
 (add-hook 'after-make-frame-functions 'ff/set-color-theme-hook)
 (ff/set-color-theme)
 
@@ -242,8 +245,11 @@ the prefix argument: a prefix ARG activates the region."
 
 
 ;; Auto-complete
+(defvar ff/auto-complete-ac-dict nil
+  "Path to the auto-complete dictionnary")
 (when (ff/require-or-install 'auto-complete-config)
-  (add-to-list 'ac-dictionary-directories ff/auto-complete-ac-dict)
+  (when ff/auto-complete-ac-dict
+    (add-to-list 'ac-dictionary-directories ff/auto-complete-ac-dict))
   (ac-config-default))
 
 
@@ -360,3 +366,7 @@ the prefix argument: a prefix ARG activates the region."
 
 ;; Gnuplot-mode
 (setq gnuplot-display-process nil) ;; dont display the gnuplot window
+
+
+;; Octave-mode
+(add-to-list 'auto-mode-alist '("\\.m\\'" . octave-mode))
