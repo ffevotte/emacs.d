@@ -3,8 +3,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;
 
 
-;; Key bindings
-;;;;;;;;;;;;;;;
+;; Global customization
+;;;;;;;;;;;;;;;;;;;;;;;
+
+(add-hook 'ibuffer-mode-hook 'ff/activate-highlight-line)
 
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 
@@ -14,6 +16,14 @@
   (local-set-key (kbd "M-<up>")   'ff/ibuffer-hide-all-filters)
   (local-set-key (kbd "M-<down>") 'ff/ibuffer-show-all-filters)
   (local-set-key (kbd "/ f")      'ff/ibuffer-filter-by-filename))
+
+(defun ff/ibuffer-setup ()
+  (add-to-list 'ibuffer-formats
+               '(mark modified read-only " "
+                      (name 20 20 :left :elide) " "
+                      (mode 10 10 :left :elide) " "
+                      filename-and-process)))
+(eval-after-load 'ibuffer '(ff/ibuffer-setup))
 
 
 ;; helper functions

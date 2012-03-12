@@ -165,6 +165,10 @@ the prefix argument: a prefix ARG activates the region."
 (ff/load-file-if-exists (concat homeDir "/.etc/emacs-ibuffer.el"))
 
 
+;; Dired
+(add-hook 'dired-mode-hook 'ff/activate-highlight-line)
+
+
 ;; ANSI terminal
 (setq ansi-term-color-vector ;; ANSI Term colors
       [unspecified "#000000" "#b21818" "#18b218" "#BE5F00"
@@ -284,6 +288,30 @@ the prefix argument: a prefix ARG activates the region."
 ;; Mode-specific customization
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; Common helper function to be used for hooks
+(defun ff/activate-todo-keywords ()
+  "Highlight keywords like FIXME or TODO"
+  (font-lock-add-keywords
+   nil '(("\\<\\(FIXME\\|TODO\\|FIX\\|HACK\\|REFACTOR\\|NOCOMMIT\\)"
+          1 font-lock-warning-face t))))
+
+(defun ff/activate-hideshow ()
+  "Activate Hide-Show mode"
+  (local-set-key (kbd "M-<right>") (lambda () (interactive)(hs-show-block)(hs-hide-level 0)))
+  (local-set-key (kbd "M-<left>")  'hs-hide-block)
+  (local-set-key (kbd "M-<up>")    'hs-hide-all)
+  (local-set-key (kbd "M-<down>")  'hs-show-block)
+  (hs-minor-mode 1))
+
+(defun ff/activate-newline-indent ()
+  "Remap <RET> to `newline-and-indent'."
+  (local-set-key (kbd "RET") 'newline-and-indent))
+
+(defun ff/activate-highlight-line ()
+  "Activate hl-line-mode"
+  (hl-line-mode 1))
+
+
 ;; Text-mode
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 (add-hook 'text-mode-hook 'turn-on-flyspell)
@@ -303,22 +331,6 @@ the prefix argument: a prefix ARG activates the region."
 
 
 ;; Common features for programming modes
-(defun ff/activate-todo-keywords ()
-  "Highlight keywords like FIXME or TODO"
-  (font-lock-add-keywords
-   nil '(("\\<\\(FIXME\\|TODO\\|FIX\\|HACK\\|REFACTOR\\|NOCOMMIT\\)"
-          1 font-lock-warning-face t))))
-(defun ff/activate-hideshow ()
-  "Activate Hide-Show mode"
-  (local-set-key (kbd "M-<right>") (lambda () (interactive)(hs-show-block)(hs-hide-level 0)))
-  (local-set-key (kbd "M-<left>")  'hs-hide-block)
-  (local-set-key (kbd "M-<up>")    'hs-hide-all)
-  (local-set-key (kbd "M-<down>")  'hs-show-block)
-  (hs-minor-mode 1))
-(defun ff/activate-newline-indent ()
-  "Remap <RET> to `newline-and-indent'."
-  (local-set-key (kbd "RET") 'newline-and-indent))
-
 (ff/add-hooks (list 'c-mode-common-hook 'lisp-mode-hook 'emacs-lisp-mode-hook 'python-mode-hook
                     'sh-mode-hook 'octave-mode-hook 'LaTeX-mode-hook)
               (list 'ff/activate-todo-keywords 'ff/activate-hideshow 'ff/activate-newline-indent
