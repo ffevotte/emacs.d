@@ -148,6 +148,19 @@ Example:
 (ff/set-color-theme)
 
 
+;; Change behaviour of exchange-point-and-mark
+(defun ff/exchange-point-and-mark (&optional arg)
+  "Exchange point and mark.
+
+Inverse standard behaviour of `exchange-point-and-mark' regarding
+the prefix argument: a prefix ARG activates the region."
+  (interactive "P")
+  (if arg
+      (exchange-point-and-mark nil)
+    (exchange-point-and-mark t)))
+(global-set-key (kbd "C-x C-x") 'ff/exchange-point-and-mark)
+
+
 ;; IBuffer
 (ff/load-file-if-exists (concat homeDir "/.etc/emacs-ibuffer.el"))
 
@@ -307,7 +320,7 @@ Example:
   (local-set-key (kbd "RET") 'newline-and-indent))
 
 (ff/add-hooks (list 'c-mode-common-hook 'lisp-mode-hook 'emacs-lisp-mode-hook 'python-mode-hook
-                    'sh-mode-hook 'shell-mode-hook 'octave-mode-hook 'LaTeX-mode-hook)
+                    'sh-mode-hook 'octave-mode-hook 'LaTeX-mode-hook)
               (list 'ff/activate-todo-keywords 'ff/activate-hideshow 'ff/activate-newline-indent
                     'ff/activate-autopair))
 (ff/add-hooks '(c-mode-common-hook LaTeX-mode-hook)
