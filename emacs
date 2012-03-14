@@ -169,6 +169,7 @@ the prefix argument: a prefix ARG activates the region."
 
 
 ;; Dired
+(require 'dired-x)
 (add-hook 'dired-mode-hook 'ff/activate-highlight-line)
 
 
