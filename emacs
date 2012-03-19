@@ -102,8 +102,12 @@ Example:
  '(bookmark-default-file "~/.emacs.d/bookmarks"))
 (setq custom-file "~/.emacs.d/custom.el") ;; Separate custom file
 (load custom-file 'noerror)
-(put 'set-goal-column 'disabled nil);; Enable set-goal-command (C-x C-n)
 (defalias 'yes-or-no-p 'y-or-n-p)   ;; Don't bother typing 'yes'
+
+
+;; Enable some "forbidden" commands
+(put 'set-goal-column 'disabled nil)     ;; set-goal-column (C-x C-n)
+(put 'ido-exit-minibuffer 'disabled nil)
 
 
 ;; Custom key bindings
@@ -170,7 +174,7 @@ the prefix argument: a prefix ARG activates the region."
 
 ;; Dired
 (require 'dired-x)
-(add-hook 'dired-mode-hook 'ff/activate-highlight-line)
+(add-hook 'dired-mode-hook 'ff/turn-on-highlight-line)
 
 
 ;; ANSI terminal
@@ -189,10 +193,6 @@ the prefix argument: a prefix ARG activates the region."
   (define-key term-raw-map (kbd "C-<left>")  'term-send-Cleft))
 
 
-;; ISend-mode
-(ff/load-file-if-exists (concat homeDir "/.etc/isend.el"))
-
-
 ;; Ido-mode
 (setq ido-enable-flex-matching t
       ido-auto-merge-work-directories-length -1
@@ -201,7 +201,6 @@ the prefix argument: a prefix ARG activates the region."
       ido-everywhere t
       ido-default-buffer-method 'selected-window)
 (ido-mode 1)
-(put 'ido-exit-minibuffer 'disabled nil)
 (global-set-key (kbd "C-x C-r") 'ido-recentf-open) ;; Find recent files using C-x C-r
 (recentf-mode 1)
 (setq recentf-max-saved-items 1000)
@@ -219,6 +218,29 @@ the prefix argument: a prefix ARG activates the region."
   (when vc-mode (auto-revert-mode 1)))
 
 
+;; Hide-show mode
+(defun ff/hs-show-block-nonrecursive ()
+  "Show current block non-recursively (i.e. sub-blocks remain hidden)"
+  (interactive)
+  (hs-show-block)
+  (hs-hide-level 0))
+(eval-after-load "hideshow"
+  '(progn
+     (define-key hs-minor-mode-map (kbd "M-<right>") 'ff/hs-show-block-nonrecursive)
+     (define-key hs-minor-mode-map (kbd "M-<left>")  'hs-hide-block)
+     (define-key hs-minor-mode-map (kbd "M-<up>")    'hs-hide-all)
+     (define-key hs-minor-mode-map (kbd "M-<down>")  'hs-show-block)))
+(defun ff/turn-on-hideshow ()
+  "Turn on Hide-Show mode"
+  (hs-minor-mode 1))
+
+
+;; Highlight-line mode
+(defun ff/turn-on-highlight-line ()
+  "Turn on and setup hl-line-mode"
+  (hl-line-mode 1))
+
+
 
 
 ;; Non standard extensions
@@ -230,7 +252,7 @@ the prefix argument: a prefix ARG activates the region."
 
 
 ;; Anything
-(when (ff/require-or-install 'anything) 
+(when (ff/require-or-install 'anything)
   (ff/require-or-install 'anything-match-plugin)
   (global-set-key (kbd "C-x C-a") 'anything))
 
@@ -255,28 +277,28 @@ the prefix argument: a prefix ARG activates the region."
 
 
 ;; Yasnippet
+(eval-after-load "yasnippet"
+  '(progn
+     (message "setup yasnippet")
+     (yas/initialize)
+     (yas/load-directory ff/yasnippet-directory)))
 (defvar ff/yasnippet-is-installed nil
   "set this to non-nil if the yasnippet extension is installed")
-(defun ff/yasnippet-setup ()
-  (message "setup yasnippet")
-  (yas/initialize)
-  (yas/load-directory ff/yasnippet-directory))
-(eval-after-load 'yasnippet '(ff/yasnippet-setup))
-(defun ff/activate-yasnippet ()
-  "Don'do anything when yasnippet is not installed"
+(defun ff/turn-on-yasnippet ()
+  "Don't do anything when yasnippet is not installed"
   (message "Yasnippet does not seem to be installed"))
 (when ff/yasnippet-is-installed
-  (defun ff/activate-yasnippet ()
-    "Activate yasnippet minor mode."
+  (defun ff/turn-on-yasnippet ()
+    "Turn on yasnippet minor mode."
     (yas/minor-mode 1)))
 
 
 ;; Autopair
-(defun ff/activate-autopair ()
+(defun ff/turn-on-autopair ()
   "Don't do anything when autopair is not installed")
 (when (ff/require-or-install 'autopair)
-  (defun ff/activate-autopair ()
-    "Activate autopair minor mode"
+  (defun ff/turn-on-autopair ()
+    "Turn on autopair minor mode"
     (autopair-mode 1)))
 
 
@@ -290,33 +312,29 @@ the prefix argument: a prefix ARG activates the region."
     (add-hook 'org-clock-before-select-task-hook 'org-clock-insert-shortcuts)))
 
 
+;; ISend-mode
+(ff/load-file-if-exists (concat homeDir "/.etc/isend.el"))
+
+
 
 
 ;; Mode-specific customization
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Common helper function to be used for hooks
-(defun ff/activate-todo-keywords ()
+(defun ff/setup-todo-keywords ()
   "Highlight keywords like FIXME or TODO"
   (font-lock-add-keywords
    nil '(("\\<\\(FIXME\\|TODO\\|FIX\\|HACK\\|REFACTOR\\|NOCOMMIT\\)"
           1 font-lock-warning-face t))))
 
-(defun ff/activate-hideshow ()
-  "Activate Hide-Show mode"
-  (local-set-key (kbd "M-<right>") (lambda () (interactive)(hs-show-block)(hs-hide-level 0)))
-  (local-set-key (kbd "M-<left>")  'hs-hide-block)
-  (local-set-key (kbd "M-<up>")    'hs-hide-all)
-  (local-set-key (kbd "M-<down>")  'hs-show-block)
-  (hs-minor-mode 1))
-
-(defun ff/activate-newline-indent ()
+(defun ff/remap-newline-indent ()
   "Remap <RET> to `newline-and-indent'."
   (local-set-key (kbd "RET") 'newline-and-indent))
 
-(defun ff/activate-highlight-line ()
-  "Activate hl-line-mode"
-  (hl-line-mode 1))
+(defun ff/setup-compile ()
+  "Map <F5> to `recompile'."
+  (local-set-key (kbd "<f5>") 'recompile))
 
 
 ;; Text-mode
@@ -324,32 +342,25 @@ the prefix argument: a prefix ARG activates the region."
 (add-hook 'text-mode-hook 'turn-on-flyspell)
 
 
-;; Easy compilation
-(defun ff/compile ()
-  "Rerun last compilation command."
-  (interactive)
-  (set-buffer "*compilation*")
-  (compile compile-command))
-(defun ff/setup-compile ()
-  "Map <F5> to `ff/compile'."
-  (local-set-key (kbd "<f5>") 'ff/compile))
-(ff/add-hooks '(c-mode-common-hook LaTeX-mode-hook makefile-mode-hook)
+;; Easy compilation for C/C++ and LaTeX projects
+(ff/add-hooks '(c-mode-common-hook LaTeX-mode-hook makefile-mode-hook compilation-mode-hook)
               '(ff/setup-compile))
 
 
 ;; Common features for programming modes
 (ff/add-hooks (list 'c-mode-common-hook 'lisp-mode-hook 'emacs-lisp-mode-hook 'python-mode-hook
                     'sh-mode-hook 'octave-mode-hook 'LaTeX-mode-hook)
-              (list 'ff/activate-todo-keywords 'ff/activate-hideshow 'ff/activate-newline-indent
-                    'ff/activate-autopair))
+              (list 'ff/setup-todo-keywords 'ff/turn-on-hideshow 'ff/remap-newline-indent
+                    'ff/turn-on-autopair))
 (ff/add-hooks '(c-mode-common-hook LaTeX-mode-hook)
-              '(ff/activate-yasnippet))
+              '(ff/turn-on-yasnippet))
 
 
-;; C-mode
-(add-hook 'c-mode-common-hook 'ff/c-mode-common-hook)
-(defun ff/c-mode-common-hook ()
-  (local-set-key (kbd "C-c o") 'ff-find-other-file)) ;; Fast switching between header and source files
+;; C-like modes
+(eval-after-load "cc-mode"
+  '(progn
+     (define-key c-mode-map   (kbd "C-c o") 'ff-find-other-file)
+     (define-key c++-mode-map (kbd "C-c o") 'ff-find-other-file)))
 
 
 ;; LaTeX-mode

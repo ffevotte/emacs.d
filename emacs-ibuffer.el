@@ -6,7 +6,7 @@
 ;; Global customization
 ;;;;;;;;;;;;;;;;;;;;;;;
 
-(add-hook 'ibuffer-mode-hook 'ff/activate-highlight-line)
+(add-hook 'ibuffer-mode-hook 'ff/turn-on-highlight-line)
 
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 
