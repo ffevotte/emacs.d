@@ -17,6 +17,11 @@
   (interactive)
   (org-clock-in '(4)))
 
+;; Remove S-<arrows> bindings, which conflict with windmove
+(mapcar (lambda (key)
+          (define-key org-mode-map key nil))
+        '([S-right] [S-left] [S-up] [S-down]))
+
 
 
 
