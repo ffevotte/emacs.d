@@ -106,7 +106,8 @@ Example:
 
 
 ;; Enable some "forbidden" commands
-(put 'set-goal-column 'disabled nil)     ;; set-goal-column (C-x C-n)
+(put 'set-goal-column     'disabled nil) ;; set-goal-column (C-x C-n)
+(put 'erase-buffer        'disabled nil)
 (put 'ido-exit-minibuffer 'disabled nil)
 
 
@@ -239,6 +240,10 @@ the prefix argument: a prefix ARG activates the region."
 (defun ff/turn-on-highlight-line ()
   "Turn on and setup hl-line-mode"
   (hl-line-mode 1))
+
+
+;; Compilation-mode
+(setq compilation-scroll-output 'first-error) ;; scroll compilation buffer until first error
 
 
 
