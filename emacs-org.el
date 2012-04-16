@@ -84,6 +84,16 @@
                                         "  %i")
                                :empty-lines 1 :clock-in t :clock-resume t)))
 
+(defun ff/note-header ()
+  "Insert generic org header lines for notes files"
+  (interactive)
+  (save-excursion 
+    (goto-char (point-min))
+    (when (not (looking-at "#"))
+      (insert "#+FILETAGS: note")(newline)
+      (insert "#+OPTIONS: H:2 num:t toc:nil")(newline)
+      (newline))))
+
 
 ;; HTML export
 (setq org-export-html-validation-link "")
