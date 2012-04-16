@@ -93,3 +93,25 @@
     (ff/ibuffer-hide-all-filters)
     (ibuffer-jump-to-buffer recent-buffer-name)))
 (ad-activate 'ibuffer)
+
+
+;; Clean automatically created buffers
+(defun ff/ibuffer-clean ()
+  "Clean automatically created buffers"
+  (interactive)
+  (ibuffer-unmark-all ?*)
+  (ibuffer-mark-by-mode 'help-mode)
+  (ibuffer-mark-by-mode 'magit-mode)
+  (ibuffer-mark-by-mode 'occur-mode)
+  (ibuffer-mark-by-mode 'grep-mode)
+  (ibuffer-mark-by-mode 'dired-mode)
+  (ibuffer-mark-by-mode 'completion-list-mode)
+  (ibuffer-mark-by-mode 'compilation-mode)
+  (ibuffer-mark-by-mode 'Man-mode)
+  (ibuffer-mark-by-mode 'browse-kill-ring-mode)
+  (ibuffer-mark-by-name-regexp "*anything*")
+  (ibuffer-mark-by-name-regexp "*ESS*")
+  (ibuffer-mark-by-name-regexp "*Shell Command Output*")
+  (ibuffer-mark-by-name-regexp "*Compile-Log*")
+  (ibuffer-mark-by-name-regexp "*vc-diff*")
+  (ibuffer-do-delete))
