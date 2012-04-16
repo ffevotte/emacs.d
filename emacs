@@ -89,6 +89,7 @@ Example:
 (global-font-lock-mode 1)           ;; Syntax highlighting
 (setq font-lock-maximum-decoration t)
 (setq-default indent-tabs-mode nil) ;; Indent with spaces
+(setq-default fill-column 100)      ;; Larger fill column
 (setq whitespace-line-column 80     ;; Better whitespace-mode defaults
       whitespace-style '(face trailing lines-tail tabs))
 (set-default 'imenu-auto-rescan t)  ;; Imenu shoud always rescan the buffers
@@ -106,7 +107,8 @@ Example:
 
 
 ;; Enable some "forbidden" commands
-(put 'set-goal-column     'disabled nil) ;; set-goal-column (C-x C-n)
+(put 'set-goal-column     'disabled nil) ;; (C-x C-n)
+(put 'narrow-to-region    'disabled nil) ;; (C-x n n)
 (put 'erase-buffer        'disabled nil)
 (put 'ido-exit-minibuffer 'disabled nil)
 
@@ -246,6 +248,12 @@ the prefix argument: a prefix ARG activates the region."
 (setq compilation-scroll-output 'first-error) ;; scroll compilation buffer until first error
 
 
+;; Flyspell
+(defun ff/turn-on-flyspell-prog ()
+  "Turn on flyspell-prog-mode"
+  (flyspell-prog-mode 1))
+
+
 
 
 ;; Non standard extensions
@@ -344,7 +352,6 @@ the prefix argument: a prefix ARG activates the region."
 
 ;; Text-mode
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
-(add-hook 'text-mode-hook 'turn-on-flyspell)
 
 
 ;; Easy compilation for C/C++ and LaTeX projects
@@ -357,6 +364,9 @@ the prefix argument: a prefix ARG activates the region."
                     'sh-mode-hook 'octave-mode-hook 'LaTeX-mode-hook)
               (list 'ff/setup-todo-keywords 'ff/turn-on-hideshow 'ff/remap-newline-indent
                     'ff/turn-on-autopair))
+(ff/add-hooks (list 'c-mode-common-hook 'lisp-mode-hook 'emacs-lisp-mode-hook 'python-mode-hook
+                    'sh-mode-hook 'octave-mode-hook)
+              (list 'ff/turn-on-flyspell-prog))
 (ff/add-hooks '(c-mode-common-hook LaTeX-mode-hook)
               '(ff/turn-on-yasnippet))
 
@@ -372,7 +382,6 @@ the prefix argument: a prefix ARG activates the region."
 (setq reftex-label-alist '(AMSTeX)) ;; Use \eqref for equation references
 (add-hook 'LaTeX-mode-hook 'ff/latex-mode-hook)
 (defun ff/latex-mode-hook ()
-  (setq-default fill-column 100) ;; Larger fill column
   (turn-on-reftex)               ;; Enter reftex-mode
   (local-set-key (kbd "œ")       ;; Replace special characters
                  (lambda () 
