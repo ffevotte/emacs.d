@@ -28,25 +28,17 @@ Example:
 
 
 ;; Extensions management
-(defun ff/require-or-install (p)
-  "Require a package."
-  (require p nil 'noerror))
-(when (load (expand-file-name "~/.emacs.d/elpa/package.el") 'noerror)
+(defun ff/require-or-warn (p)
+  "require a package or warn the user and return nil"
+  (not (unless (require p nil 'noerror)
+         (message (format "Could not load package %s" p))
+         t)))
+(if (not (load (expand-file-name "~/.emacs.d/elpa/package.el") 'noerror))
+    (message "Could not load `package.el`")
   (add-to-list 'package-archives '("elpa" . "http://tromey.com/elpa/"))
   (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
   (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
-  (package-initialize)
-  (defun ff/require-or-install (p)
-    "Require a package or install it."
-    (if (require p nil 'noerror)
-        (message "Loaded package %s" p)
-      (progn
-        (message "Trying to install package %s" p)
-        (condition-case ex
-            (package-install p)
-          ('error (progn
-                    (message (format "%s" ex))
-                    nil)))))))
+  (package-initialize))
 
 
 ;; This seems to be needed to avoid errors
@@ -102,13 +94,13 @@ Example:
 (put 'ido-exit-minibuffer 'disabled nil)
 
 
-;; Custom key bindings
-(global-set-key (kbd "C-x C-i") 'imenu)   ;; jump to function definition
-(global-set-key (kbd "C-h a") 'apropos)   ;; search everything, not just commands
-(global-set-key (kbd "M-j")   'next-line) ;; VI-like movement with M-{h,j,k,l}
-(global-set-key (kbd "M-k")   'previous-line)
-(global-set-key (kbd "M-h")   'backward-char)
-(global-set-key (kbd "M-l")   'forward-char)
+;; Custom global key bindings
+(global-set-key (kbd "C-x C-i") 'imenu)         ;; jump to function definition
+(global-set-key (kbd "C-h a")   'apropos)       ;; search everything, not just commands
+(global-set-key (kbd "M-j")     'next-line)     ;; VI-like movement with M-{h,j,k,l}
+(global-set-key (kbd "M-k")     'previous-line)
+(global-set-key (kbd "M-h")     'backward-char)
+(global-set-key (kbd "M-l")     'forward-char)
 
 
 ;; No semantic.cache cluttering
@@ -152,9 +144,9 @@ the prefix argument: a prefix ARG activates the region."
 (defvar ff/use-org nil
   "Set this to non-nil to use org-mode")
 (when ff/use-org
-  (when (ff/require-or-install 'org)
+  (when (ff/require-or-warn 'org)
     (load "emacs-org" 'noerror))
-  (when (require 'org-shortcuts nil t) ; Org-clock-in shortcuts
+  (when (ff/require-or-warn 'org-shortcuts) ; Org-clock-in shortcuts
     (add-hook 'org-clock-before-select-task-hook 'org-clock-insert-shortcuts)))
 
 
@@ -174,26 +166,26 @@ the prefix argument: a prefix ARG activates the region."
 (defun ff/set-color-theme ()
   (when (window-system)
     (let ((color-theme-is-global nil))
-      (when (ff/require-or-install 'color-theme-tango)
+      (when (ff/require-or-warn 'color-theme-tango)
 	(color-theme-tango)))))
 (add-hook 'after-make-frame-functions 'ff/set-color-theme-hook)
 (ff/set-color-theme)
 
 
 ;; Ido-ubiquitous
-(when (ff/require-or-install 'ido-ubiquitous)
+(when (ff/require-or-warn 'ido-ubiquitous)
   (ido-ubiquitous t))
 
 
 ;; Helm (successor to anything)
-(when (ff/require-or-install 'helm-config)
+(when (ff/require-or-warn 'helm-config)
   (global-set-key (kbd "C-x C-h") 'helm-mini)
   (global-set-key (kbd "C-x C-r") 'helm-recentf)
   (global-set-key (kbd "C-c M-x") 'helm-M-x))
 
 
 ;; Smex
-(when (ff/require-or-install 'smex)
+(when (ff/require-or-warn 'smex)
   (smex-initialize)
   ;; Enhanced M-x
   (global-set-key (kbd "M-x") 'smex)
@@ -205,7 +197,7 @@ the prefix argument: a prefix ARG activates the region."
 ;; Auto-complete
 (defvar ff/auto-complete-ac-dict nil
   "Path to the auto-complete dictionnary")
-(when (ff/require-or-install 'auto-complete-config)
+(when (ff/require-or-warn 'auto-complete-config)
   (when ff/auto-complete-ac-dict
     (add-to-list 'ac-dictionary-directories ff/auto-complete-ac-dict))
   (ac-config-default))
@@ -231,7 +223,7 @@ the prefix argument: a prefix ARG activates the region."
 ;; Autopair
 (defun ff/turn-on-autopair ()
   "Don't do anything when autopair is not installed")
-(when (ff/require-or-install 'autopair)
+(when (ff/require-or-warn 'autopair)
   (defun ff/turn-on-autopair ()
     "Turn on autopair minor mode"
     (autopair-mode 1)))
