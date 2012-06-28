@@ -34,6 +34,7 @@ Example:
 (when (load (expand-file-name "~/.emacs.d/elpa/package.el") 'noerror)
   (add-to-list 'package-archives '("elpa" . "http://tromey.com/elpa/"))
   (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
   (package-initialize)
   (defun ff/require-or-install (p)
     "Require a package or install it."
@@ -165,6 +166,7 @@ the prefix argument: a prefix ARG activates the region."
 ;; CEDET
 (load "emacs-cedet" 'noerror)
 
+
 ;; Color-theme
 (defun ff/set-color-theme-hook (frame)
   (select-frame frame)
@@ -183,10 +185,11 @@ the prefix argument: a prefix ARG activates the region."
   (ido-ubiquitous t))
 
 
-;; Anything
-(when (ff/require-or-install 'anything)
-  (ff/require-or-install 'anything-match-plugin)
-  (global-set-key (kbd "C-x C-a") 'anything))
+;; Helm (successor to anything)
+(when (ff/require-or-install 'helm-config)
+  (global-set-key (kbd "C-x C-h") 'helm-mini)
+  (global-set-key (kbd "C-x C-r") 'helm-recentf)
+  (global-set-key (kbd "C-c M-x") 'helm-M-x))
 
 
 ;; Smex
