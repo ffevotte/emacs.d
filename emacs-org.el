@@ -41,6 +41,9 @@
 (setq org-tags-column        -100)
 (setq org-agenda-tags-column -100)
 (setq org-src-fontify-natively t)
+(add-hook 'org-mode-hook 'ff/org-mode-hook)
+(defun ff/org-mode-hook ()
+  (setq fill-column 100))
 
 ;;   clock
 (setq org-clock-history-length 20)
