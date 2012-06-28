@@ -7,7 +7,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (add-to-list 'load-path "~/.emacs.d" 'append)
-(add-to-list 'load-path "~/.etc"     'append)
 (setq homeDir (getenv "HOME"))
 (setq fullhostname (system-name))
 (setq hostname
