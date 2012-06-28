@@ -10,7 +10,7 @@
 
 
 ;; custom version of org-clock.el to add org-clock-before-select-task-hook
-(ff/load-file-if-exists (expand-file-name "~/.emacs.d/org-clock.el"))
+(load (expand-file-name "~/.emacs.d/org-clock.el") 'noerror)
 
 
 ;; Org-mode setup
@@ -38,6 +38,10 @@
 ;; Local installation of yasnippet
 (setq ff/yasnippet-is-installed t)
 (setq ff/yasnippet-directory "~/.emacs.d/elpa/yasnippet-0.6.1/snippets")
+
+
+;; Local installation of cedet
+(add-to-list 'load-path "~/.emacs.d/cedet-1.1/common")
 
 
 ;; Local Variables:

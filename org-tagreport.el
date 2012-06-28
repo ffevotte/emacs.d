@@ -43,7 +43,7 @@ commands are available:
   (define-key org-tagreport-mode-map (kbd "?") 'describe-mode)
 
   ;; Define local variables
-  (set (make-local-variable 'org-tagreport-start)   (org-today))
+  (set (make-local-variable 'org-tagreport-start)   10352)
   (set (make-local-variable 'org-tagreport-view)    'week)
   (set (make-local-variable 'org-tagreport-details) nil)
   (org-tagreport-update-start))

@@ -2,13 +2,10 @@
 ;; IBuffer settings ;;
 ;;;;;;;;;;;;;;;;;;;;;;
 
-
 ;; Global customization
 ;;;;;;;;;;;;;;;;;;;;;;;
 
-(add-hook 'ibuffer-mode-hook 'ff/turn-on-highlight-line)
-
-(global-set-key (kbd "C-x C-b") 'ibuffer)
+(defalias 'list-buffers 'ibuffer)
 
 (add-hook 'ibuffer-mode-hook 'ff/ibuffer-mode-hook)
 (defun ff/ibuffer-mode-hook ()
@@ -23,19 +20,22 @@
                       (name 20 20 :left :elide) " "
                       (mode 10 10 :left :elide) " "
                       filename-and-process)))
-(eval-after-load 'ibuffer '(ff/ibuffer-setup))
+(eval-after-load "ibuffer" '(ff/ibuffer-setup))
 
 
 ;; helper functions
 ;;;;;;;;;;;;;;;;;;;
 
-(defun ff/ibuffer-filter-by-filename (path)
+(defun ff/ibuffer-filter-by-filename (&optional path)
   "Add ibuffer filter by filename using current buffer file name as default"
   (interactive (list
-                (let* ((buf  (ibuffer-current-buffer t))
-                       (name (buffer-file-name buf)))
-                  (read-from-minibuffer "Filter by path: " name))))
-  (ibuffer-filter-by-filename path))
+                (let ((buf (ibuffer-current-buffer)))
+                  (if buf
+                      (read-from-minibuffer "Filter by path: " (buffer-file-name buf))
+                    nil))))
+  (if path
+      (ibuffer-filter-by-filename path)
+    (call-interactively 'ibuffer-filter-by-filename)))
 
 (defun ff/ibuffer-hide-all-filters ()
   "Hide all ibuffer filter groups"

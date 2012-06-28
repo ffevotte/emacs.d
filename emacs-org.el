@@ -17,10 +17,19 @@
   (interactive)
   (org-clock-in '(4)))
 
-;; Remove S-<arrows> bindings, which conflict with windmove
-(mapcar (lambda (key)
-          (define-key org-mode-map key nil))
-        '([S-right] [S-left] [S-up] [S-down]))
+;; Reclaim S-<arrows> keys used by windmove
+(define-key org-mode-map (kbd "S-<left>")  nil) ;; Left/Right are directly reclaimed
+(define-key org-mode-map (kbd "S-<right>") nil)
+(add-hook 'org-shiftup-final-hook   'windmove-up)   ;; Up/Down are kept for places where
+(add-hook 'org-shiftdown-final-hook 'windmove-down) ;; they are useful (dates and such)
+
+(eval-after-load "org-agenda"
+  '(progn  ;; All keys are reclaimed from the agenda
+     (message "org-agenda setup")
+     (define-key org-agenda-mode-map (kbd "S-<left>")  nil)
+     (define-key org-agenda-mode-map (kbd "S-<right>") nil)
+     (define-key org-agenda-mode-map (kbd "S-<up>")    nil)
+     (define-key org-agenda-mode-map (kbd "S-<down>")  nil)))
 
 
 
