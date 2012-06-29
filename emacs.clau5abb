@@ -30,16 +30,6 @@
 (setq bh/organization-task-id "7da774e7-d69c-463b-88d2-e3ccc03f80fd")
 
 
-;; Local installation of auto-complete
-(add-to-list 'load-path "~/.local/share/emacs/site-lisp/auto-complete")
-(setq ff/auto-complete-ac-dict "~/.local/share/emacs/site-lisp/auto-complete/ac-dict")
-
-
-;; Local installation of yasnippet
-(setq ff/yasnippet-is-installed t)
-(setq ff/yasnippet-directory "~/.emacs.d/elpa/yasnippet-0.6.1/snippets")
-
-
 ;; Local installation of cedet
 (add-to-list 'load-path "~/.emacs.d/cedet-1.1/common")
 

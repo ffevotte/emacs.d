@@ -174,7 +174,7 @@ the prefix argument: a prefix ARG activates the region."
 
 ;; Ido-ubiquitous
 (when (ff/require-or-warn 'ido-ubiquitous)
-  (ido-ubiquitous t))
+  (ido-ubiquitous-mode t))
 
 
 ;; Helm (successor to anything)
@@ -204,20 +204,25 @@ the prefix argument: a prefix ARG activates the region."
 
 
 ;; Yasnippet
-(eval-after-load "yasnippet"
-  '(progn
-     (message "setup yasnippet")
-     (yas/initialize)
-     (yas/load-directory ff/yasnippet-directory)))
-(defvar ff/yasnippet-is-installed nil
-  "set this to non-nil if the yasnippet extension is installed")
 (defun ff/turn-on-yasnippet ()
-  "Don't do anything when yasnippet is not installed"
-  (message "Yasnippet does not seem to be installed"))
-(when ff/yasnippet-is-installed
+  "Yasnippet is not installed")
+(when (ff/require-or-warn 'yasnippet-bundle)
   (defun ff/turn-on-yasnippet ()
-    "Turn on yasnippet minor mode."
+    "Locally turn on yasnippet minor mode"
     (yas/minor-mode 1)))
+(when (ff/require-or-warn 'yasnippet)
+  (defun ff/yas-compile-bundle ()
+    "Compile a bundle of yasnippets"
+    (interactive)
+    (let* ((yasnippet-file (locate-file "yasnippet.el" load-path))
+           (root-dir       (file-name-directory yasnippet-file))
+           (snippets-dir   (concat root-dir "snippets"))
+           (dropdown-file  (locate-file "dropdown-list.el" load-path)))
+      (yas/compile-bundle yasnippet-file
+                          "yasnippet-bundle.el"
+                          (list "snippets" snippets-dir)
+                          nil
+                          dropdown-file))))
 
 
 ;; Autopair
