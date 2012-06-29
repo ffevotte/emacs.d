@@ -1,3 +1,4 @@
+;;;###autoload
 (defun ff/stack-overflow ()
   (interactive)
   (let ((buffer (current-buffer)))

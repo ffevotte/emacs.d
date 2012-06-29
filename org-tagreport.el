@@ -1,6 +1,3 @@
-
-
-
 (setq org-tagreport-tags  '(("p_sf"."SF")
                             ("p_sc"."SC") 
                             ("p_hp-p_sf-p_sc-p_non"."hors projet")
@@ -9,7 +6,6 @@
 
 (defvar org-tagreport-tags nil
   "alist of tags to use for the tag report, associated with titles.")
-
 
 (define-derived-mode org-tagreport-mode org-mode "Org tagreport"
   "This mode allows viewing tag-sorted clocking information from
@@ -66,6 +62,7 @@ commands are available:
           (setq total (+ total (nth 1 table-data))))))
     total))
 
+;;;###autoload
 (defun org-tagreport ()
   (interactive)
   (switch-to-buffer (get-buffer-create "*Org tagreport*"))

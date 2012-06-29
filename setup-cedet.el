@@ -5,7 +5,8 @@
   (when (>= (string-to-number cedet-version) 1.1)
     (semantic-load-enable-code-helpers)
     (add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode)
-    (setq-default semantic-idle-scheduler-idle-time 0.5)
+    (custom-set-variables
+     '(semantic-idle-scheduler-idle-time 0.5))
     (require 'semantic-ia)
     
     (defun ff/semantic-auto-completion ()

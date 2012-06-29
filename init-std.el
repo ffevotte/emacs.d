@@ -1,3 +1,5 @@
+(add-to-list 'load-path "~/.emacs.d" 'append)
+
 ;; Global customization
 (setq set-mark-command-repeat-pop t);; Easily cycle through the Mark Ring
 (setq visible-bell t)               ;; Visible bell
@@ -8,15 +10,18 @@
 
 
 ;; Custom key bindings
-(global-set-key (kbd "M-g")   'goto-line)        ;; better keybinding for goto-line
-(global-set-key (kbd "C-c q") 'join-line)        ;; join this line and the previous one
-(global-set-key (kbd "M-y")   'browse-kill-ring) ;; navigate in the kill ring
-(global-set-key (kbd "<f5>")  'recompile)        ;; rerun last compilation command
+(global-set-key (kbd "M-g")     'goto-line)        ;; better keybinding for goto-line
+(global-set-key (kbd "C-c q")   'join-line)        ;; join this line and the previous one
+(global-set-key (kbd "M-y")     'browse-kill-ring) ;; navigate in the kill ring
+(global-set-key (kbd "<f5>")    'recompile)        ;; rerun last compilation command
+(global-set-key (kbd "C-x C-r") 'ido-recentf-open) ;; find recent files using C-x C-r
+
 
 ;; Make buffer names unique
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward
       uniquify-separator ":")
+
 
 ;; Isearch
 (define-key isearch-mode-map (kbd "C-o")  ;; occur-mode for Isearch
@@ -34,7 +39,7 @@
 
 
 ;; IBuffer
-(load "emacs-ibuffer")
+(load "setup-ibuffer")
 (add-hook 'ibuffer-mode-hook 'ff/turn-on-highlight-line)
 
 
@@ -51,7 +56,6 @@
       ido-default-buffer-method 'selected-window)
 (ido-mode 1)
 (ido-everywhere)
-(global-set-key (kbd "C-x C-r") 'ido-recentf-open) ;; Find recent files using C-x C-r
 (recentf-mode 1)
 (setq recentf-max-saved-items 1000)
 (defun ido-recentf-open ()
@@ -91,8 +95,8 @@
 
 
 
-;; Mode-specific customization
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Mode-specific customizations
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Hide-show for programming modes
 (add-hook 'c-mode-common-hook    'ff/turn-on-hideshow)
@@ -106,6 +110,7 @@
 ;; C-like modes
 (eval-after-load "cc-mode"
   '(progn
+     ;; switch between header and implementation files
      (define-key c-mode-map   (kbd "C-c o") 'ff-find-other-file)
      (define-key c++-mode-map (kbd "C-c o") 'ff-find-other-file)))
 
@@ -116,7 +121,7 @@
 
 
 ;; Gnuplot-mode
-(setq gnuplot-display-process nil) ;; dont display the gnuplot window
+(setq gnuplot-display-process nil) ;; don't display the gnuplot window
 
 
 ;; Octave-mode

@@ -1,3 +1,4 @@
+;;;###autoload
 (define-minor-mode isend-mode
   "Toggle ISend (Interactive Send) mode\\<isend-mode-map>.
 With no argument, this command toggles the mode.

@@ -25,7 +25,6 @@
 
 (eval-after-load "org-agenda"
   '(progn  ;; All keys are reclaimed from the agenda
-     (message "org-agenda setup")
      (define-key org-agenda-mode-map (kbd "S-<left>")  nil)
      (define-key org-agenda-mode-map (kbd "S-<right>") nil)
      (define-key org-agenda-mode-map (kbd "S-<up>")    nil)
@@ -38,64 +37,66 @@
 ;;;;;;;;;;;;;;;;
 
 ;;   global behaviour
-(setq org-tags-column        -100)
-(setq org-agenda-tags-column -100)
+(custom-set-variables
+ '(org-tags-column        -100)
+ '(org-agenda-tags-column -100))
 (setq org-src-fontify-natively t)
-(add-hook 'org-mode-hook 'ff/org-mode-hook)
-(defun ff/org-mode-hook ()
-  (setq fill-column 100))
 
 ;;   clock
-(setq org-clock-history-length 20)
+(custom-set-variables
+ '(org-clock-history-length 20)
+ '(org-clock-in-resume t)
+ '(org-clock-into-drawer t)
+ '(org-clock-out-remove-zero-time-clocks t)
+ '(org-clock-modeline-total 'current)
+ '(org-clock-persist 'history)
+ '(org-clock-auto-clock-resolution 'when-no-clock-is-running)
+ '(org-clock-report-include-clocking-task t))
 (org-clock-persistence-insinuate)
-(setq org-clock-in-resume t)
-(setq org-clock-into-drawer t)
-(setq org-clock-out-remove-zero-time-clocks t)
-(setq org-clock-modeline-total 'current)
-(setq org-clock-persist 'history)
-(setq org-clock-auto-clock-resolution 'when-no-clock-is-running)
-(setq org-clock-report-include-clocking-task t)
 (setq org-clocktable-defaults
      (quote (:maxlevel 2 :scope file :block nil :tstart nil :tend nil :step nil :stepskip0 nil
                        :fileskip0 nil :tags nil :emphasize nil :link nil :narrow 50! :indent t
                        :formula nil :timestamp nil :level nil :tcolumns nil :formatter nil)))
 
 ;;   agenda
-(setq org-agenda-start-with-log-mode t)
-(setq org-agenda-time-grid (quote (nil "----------------" (800 1000 1200 1400 1600 1800 2000))))
-(setq org-agenda-include-diary t)
+(custom-set-variables
+ '(org-agenda-start-with-log-mode t)
+ '(org-agenda-time-grid (quote (nil "----------------" (800 1000 1200 1400 1600 1800 2000))))
+ '(org-agenda-include-diary t))
 (add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
 (add-hook 'diary-mark-entries-hook 'diary-mark-included-diary-files)
 (setq calendar-holidays nil)
 
 ;;   todo
-(setq org-todo-keywords '((sequence "TODO" "NEXT" "STARTED" "WAIT" "|" "DONE")))
-(setq org-todo-keyword-faces '(("TODO"    . org-todo)
-                               ("NEXT"    . org-todo)
-                               ("STARTED" . org-todo)
-                               ("WAIT"    . org-warning)
-                               ("DONE"    . org-done)))
-;;   capture
-(setq org-refile-targets (quote ((org-agenda-files :maxlevel . 1) (nil :maxlevel . 2))))
-(setq org-capture-templates `(("n" "Note" entry (file, org-default-notes-file)
-                               ,(concat "* %? :note:\n"
-                                        "  %U\n"
-                                        "  %i")
-                               :empty-lines 1 :clock-in t :clock-resume t)
-                              ("r" "Réunion" entry (file, org-default-notes-file)
-                               ,(concat "* TODO [/] Réunion %? :a_com:\n"
-                                        "  DEADLINE: %t\n"
-                                        "  - [ ] Trouver Date\n"
-                                        "  - [ ] Réserver salle\n"
-                                        "  - [ ] Réserver matériel\n"
-                                        "  - [ ] CR")
-                               :empty-lines 1 :clock-in t :clock-resume t)
-                              ("t" "Todo" entry (file, org-default-notes-file)
-                               ,(concat "* TODO %?\n"
-                                        "  %U\n"
-                                        "  %i")
-                               :empty-lines 1 :clock-in t :clock-resume t)))
+(custom-set-variables
+ '(org-todo-keywords '((sequence "TODO" "NEXT" "STARTED" "WAIT" "|" "DONE")))
+ '(org-todo-keyword-faces '(("TODO"    . org-todo)
+                            ("NEXT"    . org-todo)
+                            ("STARTED" . org-todo)
+                            ("WAIT"    . org-warning)
+                            ("DONE"    . org-done))))
 
+;;   capture
+(custom-set-variables
+ '(org-refile-targets (quote ((org-agenda-files :maxlevel . 1) (nil :maxlevel . 2))))
+ '(org-capture-templates `(("n" "Note" entry (file, org-default-notes-file)
+                            ,(concat "* %? :note:\n"
+                                     "  %U\n"
+                                     "  %i")
+                            :empty-lines 1 :clock-in t :clock-resume t)
+                           ("r" "Réunion" entry (file, org-default-notes-file)
+                            ,(concat "* TODO [/] Réunion %? :a_com:\n"
+                                     "  DEADLINE: %t\n"
+                                     "  - [ ] Trouver Date\n"
+                                     "  - [ ] Réserver salle\n"
+                                     "  - [ ] Réserver matériel\n"
+                                     "  - [ ] CR")
+                            :empty-lines 1 :clock-in t :clock-resume t)
+                           ("t" "Todo" entry (file, org-default-notes-file)
+                            ,(concat "* TODO %?\n"
+                                     "  %U\n"
+                                     "  %i")
+                            :empty-lines 1 :clock-in t :clock-resume t))))
 (defun ff/note-header ()
   "Insert generic org header lines for notes files"
   (interactive)
