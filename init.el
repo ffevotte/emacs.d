@@ -47,7 +47,7 @@ Example:
 
 
 ;; Load local rc file
-(load (concat "emacs." hostname) 'noerror)
+(load (concat "host-" hostname) 'noerror)
 
 
 ;; Base configuration
