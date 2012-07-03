@@ -1,0 +1,6 @@
+#contributor : François Févotte
+#name : #pragma GCC visibility push(hidden)
+# --
+#pragma GCC visibility push(hidden)
+  $0
+#pragma GCC visibility pop
