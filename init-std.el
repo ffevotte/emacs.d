@@ -1,8 +1,10 @@
 (add-to-list 'load-path "~/.emacs.d" 'append)
 
 ;; Global customization
-(setq set-mark-command-repeat-pop t);; Easily cycle through the Mark Ring
-(setq visible-bell t)               ;; Visible bell
+(custom-set-variables
+ '(x-select-enable-clipboard t)     ;; Killing & yanking uses the clipboard
+ '(set-mark-command-repeat-pop t)   ;; Easily cycle through the Mark Ring
+ '(visible-bell t))                 ;; Visible bell
 (show-paren-mode 1)                 ;; Parenthesis matching
 (column-number-mode 1)              ;; Show line and column numbers
 (line-number-mode 1)
@@ -19,8 +21,9 @@
 
 ;; Make buffer names unique
 (require 'uniquify)
-(setq uniquify-buffer-name-style 'post-forward
-      uniquify-separator ":")
+(custom-set-variables
+ '(uniquify-buffer-name-style 'post-forward)
+ '(uniquify-separator         ":"))
 
 
 ;; Isearch
@@ -48,16 +51,23 @@
 (add-hook 'dired-mode-hook 'ff/turn-on-highlight-line)
 
 
+;; Recentf
+(require 'recentf)
+(custom-set-variables
+ '(recentf-max-saved-items 1000)
+ '(recentf-auto-cleanup    60))
+(recentf-mode 1)
+
+
 ;; Ido mode
-(setq ido-enable-flex-matching t
-      ido-auto-merge-work-directories-length -1
-      ido-create-new-buffer 'always
-      ido-use-filename-at-point 'guess
-      ido-default-buffer-method 'selected-window)
+(custom-set-variables
+ '(ido-enable-flex-matching               t)
+ '(ido-auto-merge-work-directories-length -1)
+ '(ido-create-new-buffer                  'always)
+ '(ido-use-filename-at-point              'guess)
+ '(ido-default-buffer-method              'selected-window))
 (ido-mode 1)
 (ido-everywhere)
-(recentf-mode 1)
-(setq recentf-max-saved-items 1000)
 (defun ido-recentf-open ()
   "Use `ido-completing-read' to \\[find-file] a recent file"
   (interactive)
@@ -90,7 +100,8 @@
 
 
 ;; Compilation mode
-(setq compilation-scroll-output 'first-error) ;; scroll compilation buffer until first error
+(custom-set-variables
+ '(compilation-scroll-output 'first-error)) ;; scroll compilation buffer until first error
 
 
 
@@ -116,12 +127,14 @@
 
 
 ;; LaTeX
-(setq reftex-label-alist '(AMSTeX))          ;; Use \eqref for equation references
+(custom-set-variables
+ '(reftex-label-alist '(AMSTeX)))            ;; Use \eqref for equation references
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex)  ;; Turn on refTeX
 
 
 ;; Gnuplot-mode
-(setq gnuplot-display-process nil) ;; don't display the gnuplot window
+(custom-set-variables
+ '(gnuplot-display-process nil)) ;; don't display the gnuplot window
 
 
 ;; Octave-mode
