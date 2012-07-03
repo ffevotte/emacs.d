@@ -205,9 +205,10 @@ the prefix argument: a prefix ARG activates the region."
            (dropdown-file  (locate-file "dropdown-list.el" load-path)))
       (yas/compile-bundle yasnippet-file
                           "yasnippet-bundle.el"
-                          (list "snippets" snippets-dir)
+                          (list "~/.emacs.d/snippets" snippets-dir)
                           nil
-                          dropdown-file))))
+                          dropdown-file)))
+  (load "yasnippet-bundle"))
 
 
 ;; Autopair
