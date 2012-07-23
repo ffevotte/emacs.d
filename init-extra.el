@@ -135,6 +135,13 @@ the prefix argument: a prefix ARG activates the region."
     (add-hook 'org-clock-before-select-task-hook 'org-clock-insert-shortcuts)))
 
 
+;; Abbrevs
+(quietly-read-abbrev-file)
+(defun ff/turn-on-abbrev ()
+  "Turn on abbrev-mode"
+  (abbrev-mode 1))
+
+
 
 
 ;; Non standard extensions
@@ -254,6 +261,13 @@ the prefix argument: a prefix ARG activates the region."
 
 ;; Text-mode
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
+
+
+;; LaTeX-mode
+(defun ff/TeX-turn-on-abbrev ()
+  (abbrev-mode 1)
+  (setq local-abbrev-table TeX-mode-abbrev-table))
+(add-hook 'TeX-mode-hook 'ff/TeX-turn-on-abbrev)
 
 
 ;; C-like modes

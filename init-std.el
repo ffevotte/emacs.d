@@ -100,13 +100,6 @@
  '(compilation-scroll-output 'first-error)) ;; scroll compilation buffer until first error
 
 
-;; Abbrevs
-(quietly-read-abbrev-file)
-(defun ff/turn-on-abbrev ()
-  "Turn on abbrev-mode"
-  (abbrev-mode 1))
-
-
 
 
 ;; Mode-specific customizations
@@ -133,10 +126,6 @@
 (custom-set-variables
  '(reftex-label-alist '(AMSTeX)))            ;; Use \eqref for equation references
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex)  ;; Turn on refTeX
-(defun ff/TeX-turn-on-abbrev ()
-  (abbrev-mode 1)
-  (setq local-abbrev-table TeX-mode-abbrev-table))
-(add-hook 'TeX-mode-hook 'ff/TeX-turn-on-abbrev)
 
 
 ;; Gnuplot-mode
