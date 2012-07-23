@@ -227,6 +227,18 @@ the prefix argument: a prefix ARG activates the region."
     (autopair-mode 1)))
 
 
+;; Bookmark+
+(when (ff/require-or-warn 'bookmark+)
+  (ff/require-or-warn 'bookmark+-lit)
+  (custom-set-variables
+   '(bmkp-auto-light-when-jump      'all-in-buffer)
+   '(bmkp-auto-light-when-set       'all-in-buffer)
+   '(bmkp-light-style-autonamed     'lfringe)
+   '(bmkp-light-style-non-autonamed 'rfringe))
+  (global-set-key (kbd "C-x <kp-add>")      'bmkp-next-bookmark-this-file/buffer-repeat)
+  (global-set-key (kbd "C-x <kp-subtract>") 'bmkp-previous-bookmark-this-file/buffer-repeat))
+
+
 ;; Home-made packages
 (defun ff/update-autoloads ()
   (interactive)
