@@ -41,21 +41,21 @@ Example:
 (menu-bar-mode   -1)
 (tool-bar-mode   -1)
 (scroll-bar-mode -1)
-(custom-set-variables
- '(inhibit-splash-screen t)
- '(indicate-empty-lines  t)
- '(indicate-buffer-boundaries 'left)
- '(show-paren-style 'mixed)
- '(bookmark-default-file "~/.emacs.d/bookmarks") ;; Bookmarks file
- '(shift-select-mode nil)                        ;; No shift selection
- '(mouse-yank-at-point t)                        ;; Yank at point (like in a tty)
- '(indent-tabs-mode nil)                         ;; Indent with spaces
- '(fill-column 100)                              ;; Larger fill column
- '(whitespace-line-column fill-column)           ;; Better whitespace-mode defaults
- '(whitespace-style '(face trailing lines-tail tabs))
- '(imenu-auto-rescan t)                          ;; Imenu shoud always rescan the buffers
- '(diff-switches "-u")                           ;; Unified diffs
- '(custom-file "~/.emacs.d/custom.el")           ;; Separate custom file
+(setq
+ inhibit-splash-screen t
+ indicate-empty-lines  t
+ indicate-buffer-boundaries 'left
+ show-paren-style 'mixed
+ bookmark-default-file "~/.emacs.d/bookmarks" ;; Bookmarks file
+ shift-select-mode nil                        ;; No shift selection
+ mouse-yank-at-point t                        ;; Yank at point (like in a tty)
+ indent-tabs-mode nil                         ;; Indent with spaces
+ fill-column 100                              ;; Larger fill column
+ whitespace-line-column fill-column           ;; Better whitespace-mode defaults
+ whitespace-style '(face trailing lines-tail tabs)
+ imenu-auto-rescan t                          ;; Imenu shoud always rescan the buffers
+ diff-switches "-u"                           ;; Unified diffs
+ custom-file "~/.emacs.d/custom.el"           ;; Separate custom file
 )
 
 (load custom-file 'noerror)
@@ -92,8 +92,7 @@ Example:
 (let ((mySemanticRep (concat "/tmp/semantic.cache-" (getenv "USER"))))
   (if (not (file-accessible-directory-p mySemanticRep))
       (make-directory mySemanticRep))
-  (custom-set-variables
-   '(semanticdb-default-save-directory mySemanticRep 'now)))
+  (setq semanticdb-default-save-directory mySemanticRep))
 
 
 ;; Change behaviour of exchange-point-and-mark
@@ -230,11 +229,11 @@ the prefix argument: a prefix ARG activates the region."
 ;; Bookmark+
 (when (ff/require-or-warn 'bookmark+)
   (ff/require-or-warn 'bookmark+-lit)
-  (custom-set-variables
-   '(bmkp-auto-light-when-jump      'all-in-buffer)
-   '(bmkp-auto-light-when-set       'all-in-buffer)
-   '(bmkp-light-style-autonamed     'lfringe)
-   '(bmkp-light-style-non-autonamed 'rfringe))
+  (setq
+   bmkp-auto-light-when-jump      'all-in-buffer
+   bmkp-auto-light-when-set       'all-in-buffer
+   bmkp-light-style-autonamed     'lfringe
+   bmkp-light-style-non-autonamed 'rfringe)
   (global-set-key (kbd "C-x <kp-add>")      'bmkp-next-bookmark-this-file/buffer-repeat)
   (global-set-key (kbd "C-x <kp-subtract>") 'bmkp-previous-bookmark-this-file/buffer-repeat))
 

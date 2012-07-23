@@ -1,14 +1,14 @@
 (add-to-list 'load-path "~/.emacs.d" 'append)
 
 ;; Global customization
-(custom-set-variables
- '(x-select-enable-clipboard t)     ;; Killing & yanking uses the clipboard
- '(set-mark-command-repeat-pop t)   ;; Easily cycle through the Mark Ring
- '(visible-bell t))                 ;; Visible bell
-(show-paren-mode 1)                 ;; Parenthesis matching
-(column-number-mode 1)              ;; Show line and column numbers
+(setq
+ x-select-enable-clipboard t     ;; Killing & yanking uses the clipboard
+ set-mark-command-repeat-pop t   ;; Easily cycle through the Mark Ring
+ visible-bell t)                 ;; Visible bell
+(show-paren-mode 1)              ;; Parenthesis matching
+(column-number-mode 1)           ;; Show line and column numbers
 (line-number-mode 1)
-(winner-mode 1)                     ;; Navigate through window layouts with C-c <arrows>
+(winner-mode 1)                  ;; Navigate through window layouts with C-c <arrows>
 
 
 ;; Custom key bindings
@@ -22,9 +22,9 @@
 
 ;; Make buffer names unique
 (require 'uniquify)
-(custom-set-variables
- '(uniquify-buffer-name-style 'post-forward)
- '(uniquify-separator         ":"))
+(setq
+ uniquify-buffer-name-style 'post-forward
+ uniquify-separator         ":")
 
 
 ;; Isearch
@@ -57,12 +57,12 @@
 
 
 ;; Ido mode
-(custom-set-variables
- '(ido-enable-flex-matching               t)
- '(ido-auto-merge-work-directories-length -1)
- '(ido-create-new-buffer                  'always)
- '(ido-use-filename-at-point              'guess)
- '(ido-default-buffer-method              'selected-window))
+(setq
+ ido-enable-flex-matching               t
+ ido-auto-merge-work-directories-length -1
+ ido-create-new-buffer                  'always
+ ido-use-filename-at-point              'guess
+ ido-default-buffer-method              'selected-window)
 (ido-mode 1)
 (ido-everywhere)
 (defun ido-recentf-open ()
@@ -97,8 +97,7 @@
 
 
 ;; Compilation mode
-(custom-set-variables
- '(compilation-scroll-output 'first-error)) ;; scroll compilation buffer until first error
+(setq compilation-scroll-output 'first-error) ;; scroll compilation buffer until first error
 
 
 ;; Set mark before scrolling
@@ -133,14 +132,12 @@
 
 
 ;; LaTeX
-(custom-set-variables
- '(reftex-label-alist '(AMSTeX)))            ;; Use \eqref for equation references
+(setq reftex-label-alist '(AMSTeX))          ;; Use \eqref for equation references
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex)  ;; Turn on refTeX
 
 
 ;; Gnuplot-mode
-(custom-set-variables
- '(gnuplot-display-process nil)) ;; don't display the gnuplot window
+(setq gnuplot-display-process nil)  ;; don't display the gnuplot window
 
 
 ;; Octave-mode
