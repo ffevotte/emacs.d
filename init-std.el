@@ -100,6 +100,15 @@
  '(compilation-scroll-output 'first-error)) ;; scroll compilation buffer until first error
 
 
+;; Set mark before scrolling
+(defadvice scroll-up (before set-mark activate)
+  "Set the mark before scrolling"
+  (push-mark))
+(defadvice scroll-down (before set-mark activate)
+  "Set the mark before scrolling"
+  (push-mark))
+
+
 
 
 ;; Mode-specific customizations
