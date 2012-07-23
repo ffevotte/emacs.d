@@ -17,6 +17,7 @@
 (global-set-key (kbd "M-y")     'browse-kill-ring) ;; navigate in the kill ring
 (global-set-key (kbd "<f5>")    'recompile)        ;; rerun last compilation command
 (global-set-key (kbd "C-x C-r") 'ido-recentf-open) ;; find recent files using C-x C-r
+(global-set-key (kbd "C-z")     nil)  ;; don't suspend emacs on C-z (but C-x C-z still works)
 
 
 ;; Make buffer names unique
