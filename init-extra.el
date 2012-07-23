@@ -159,7 +159,7 @@ the prefix argument: a prefix ARG activates the region."
 
 ;; Ido-ubiquitous
 (when (ff/require-or-warn 'ido-ubiquitous)
-  (ido-ubiquitous-mode t))
+  (ido-ubiquitous-mode 1))
 
 
 ;; Helm (successor to anything)
