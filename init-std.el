@@ -52,11 +52,7 @@
 
 
 ;; Recentf
-(require 'recentf)
-(custom-set-variables
- '(recentf-max-saved-items 1000)
- '(recentf-auto-cleanup    60))
-(recentf-mode 1)
+(load "setup-recentf")
 
 
 ;; Ido mode
