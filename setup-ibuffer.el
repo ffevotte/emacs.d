@@ -17,9 +17,9 @@
 (defun ff/ibuffer-setup ()
   (add-to-list 'ibuffer-formats
                '(mark modified read-only " "
-                      (name 20 20 :left :elide) " "
-                      (mode 10 10 :left :elide) " "
-                      filename-and-process)))
+                      (name 30 30 :left :elide) " "
+                      (mode  7  7 :left :elide) " "
+                      (filename-and-process 10 -1 :left))))
 (eval-after-load "ibuffer" '(ff/ibuffer-setup))
 
 
