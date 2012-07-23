@@ -234,7 +234,8 @@ the prefix argument: a prefix ARG activates the region."
   (let ((generated-autoload-file "~/.emacs.d/ff-autoloads.el"))
     (mapcar
      (lambda (x) (update-file-autoloads x 'save-after))
-     (list "isend.el"             ;; ISend-mode (associate buffer to a terminal)
+     (list "slurm.el"             ;; Slurm-mode
+           "isend.el"             ;; ISend-mode (associate buffer to a terminal)
            "org-tagreport.el"     ;; Reports by tag for org-mode
            "ff-misc.el")))        ;; stack-overflow
   (message "Updating autoloads for home-made packages...done"))
