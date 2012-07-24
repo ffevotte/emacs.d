@@ -61,7 +61,6 @@ Example:
 (load custom-file 'noerror)
 (setq-default frame-title-format    ;; Window title
               (list "%b Emacs"))
-(windmove-default-keybindings)      ;; use S-<arrows> to switch between windows
 (add-hook 'after-save-hook          ;; Automatically make shebang-ed scripts executable
           'executable-make-buffer-file-executable-if-script-p)
 (defalias 'yes-or-no-p 'y-or-n-p)   ;; Don't bother typing 'yes'
@@ -122,6 +121,11 @@ the prefix argument: a prefix ARG activates the region."
 (defun ff/term-mode-map-Cdirections ()
   (define-key term-raw-map (kbd "C-<right>") 'term-send-Cright)
   (define-key term-raw-map (kbd "C-<left>")  'term-send-Cleft))
+
+
+;; Windmove (use S-<arrows> to switch between windows)
+(windmove-default-keybindings)
+(setq windmove-wrap-around t)
 
 
 ;; Org-mode
@@ -270,6 +274,10 @@ the prefix argument: a prefix ARG activates the region."
   "Remap <RET> to `newline-and-indent'."
   (local-set-key (kbd "RET") 'newline-and-indent))
 
+(defun ff/show-trailing-whitespaces ()
+  "Show trailing whitespaces"
+  (setq show-trailing-whitespace 1))
+
 
 ;; Text-mode
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
@@ -289,6 +297,7 @@ the prefix argument: a prefix ARG activates the region."
 ;; Common features for programming modes
 (ff/add-hooks (list 'c-mode-common-hook 'lisp-mode-hook 'emacs-lisp-mode-hook 'python-mode-hook
                     'sh-mode-hook 'octave-mode-hook 'LaTeX-mode-hook)
-              (list 'ff/setup-todo-keywords 'ff/remap-newline-indent 'ff/turn-on-autopair))
+              (list 'ff/setup-todo-keywords 'ff/remap-newline-indent 'ff/turn-on-autopair
+		    'ff/show-trailing-whitespaces))
 (ff/add-hooks '(c-mode-common-hook LaTeX-mode-hook)
               '(ff/turn-on-yasnippet))

@@ -7,6 +7,9 @@
 
 (defalias 'list-buffers 'ibuffer)
 
+(setq ibuffer-show-empty-filter-groups nil
+      ibuffer-marked-char ?✓)
+
 (add-hook 'ibuffer-mode-hook 'ff/ibuffer-mode-hook)
 (defun ff/ibuffer-mode-hook ()
   (ibuffer-switch-to-saved-filter-groups "default")
