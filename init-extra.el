@@ -78,6 +78,7 @@ Example:
  whitespace-style '(face trailing lines-tail tabs)
  imenu-auto-rescan t                          ;; Imenu shoud always rescan the buffers
  diff-switches "-u"                           ;; Unified diffs
+ a2ps-switches '("-l" "100")                  ;; Custom command-line args for a2ps
  custom-file "~/.emacs.d/custom.el"           ;; Separate custom file
  )
 
@@ -298,6 +299,7 @@ the prefix argument: a prefix ARG activates the region."
   (message "Updating autoloads for home-made packages...")
   (let ((generated-autoload-file "~/.emacs.d/ff-autoloads.el"))
     (dolist (x (list "~/.emacs.d/slurm.el"         ;; Slurm-mode
+                     "~/.emacs.d/ff-a2ps.el"       ;; Better UTF-8 capabilities for a2ps
                      "~/.emacs.d/isend.el"         ;; ISend-mode (associate buffer to a terminal)
                      "~/.emacs.d/org-tagreport.el" ;; Reports by tag for org-mode
                      "~/.emacs.d/ff-misc.el"))     ;; Stack-overflow
