@@ -20,15 +20,18 @@
   "Add a marker in front of the recentf list to remember what has to be merged"
   (recentf-push ff/recentf-marker))
 
-(defadvice recentf-save-list (before ff/merge activate)
+(defadvice recentf-save-list (around ff/merge activate)
   "Merge the local recentf-list with that of `recentf-save-file'.
 
 Files more recent than `ff/recentf-marker' in the local list will
 be pushed in front of the global list before saving it."
-  (let ((new-recentf-list (copy-list recentf-list)))
-    (recentf-load-list)
-    (ff/recentf-merge new-recentf-list))
-  (recentf-push ff/recentf-marker))
+  (if (string= (car recentf-list) ff/recentf-marker)
+      (recentf-load-list)
+    (let ((new-recentf-list (copy-list recentf-list)))
+      (recentf-load-list)
+      (ff/recentf-merge new-recentf-list))
+    ad-do-it
+    (recentf-push ff/recentf-marker)))
 
 (defadvice recentf-cleanup (after ff/merge activate)
   "Arrange for the recentf list to be merged and synchronized periodically after cleanups.
