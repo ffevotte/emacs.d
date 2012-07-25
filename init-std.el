@@ -45,6 +45,12 @@
   (hl-line-mode 1))
 
 
+;; Truncate long lines
+(defun ff/truncate-lines ()
+  "Truncate long lines"
+  (setq truncate-lines t))
+
+
 ;; IBuffer
 (load "setup-ibuffer")
 (add-hook 'ibuffer-mode-hook 'ff/turn-on-highlight-line)
@@ -53,6 +59,7 @@
 ;; Dired
 (require 'dired-x)
 (add-hook 'dired-mode-hook 'ff/turn-on-highlight-line)
+(add-hook 'dired-mode-hook 'ff/truncate-lines)
 
 
 ;; Recentf
