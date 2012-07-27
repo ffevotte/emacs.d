@@ -4,7 +4,7 @@
 
 
 ;; Inconsolata font
-(setq default-frame-alist 
+(setq default-frame-alist
       '((font-backend . "xft")
         (font . "Inconsolata-11")))
 
@@ -19,7 +19,7 @@
 (setq org-default-notes-file "/netdata/H55056/org/refile.org")
 (setq org-default-todo-file "/netdata/H55056/org/todo.org")
 (setq diary-file "/netdata/H55056/org/diary")
-(setq org-tag-alist 
+(setq org-tag-alist
       (quote
        ((:startgroup)("p_sf")("p_sc")("p_hp")("p_non")(:endgroup)
         ("a_ana".?a)("a_maq".?m)("a_dev".?d)("a_etu".?e)("a_red".?r)("a_com".?c)("a_for".?f)("a_adm")
@@ -30,9 +30,9 @@
 (setq bh/organization-task-id "7da774e7-d69c-463b-88d2-e3ccc03f80fd")
 
 
-;; Local installation of cedet
+;; Local installation path
 (add-to-list 'load-path "~/.emacs.d/cedet-1.1/common")
-
+(add-to-list 'load-path "~/.emacs.d/expand-region.el")
 
 ;; Local Variables:
 ;;   mode: emacs-lisp

@@ -243,6 +243,13 @@ the prefix argument: a prefix ARG activates the region."
   (global-set-key (kbd "C-x <kp-subtract>") 'bmkp-previous-bookmark-this-file/buffer-repeat))
 
 
+;; Expand-region
+(when (ff/require-or-warn 'expand-region)
+  (global-set-key (kbd "C-=") 'er/expand-region)
+  (global-set-key (kbd "C-<") 'er/expand-region)
+  (global-set-key (kbd "C->") 'er/contract-region))
+
+
 ;; Home-made packages
 (defun ff/update-autoloads ()
   (interactive)
