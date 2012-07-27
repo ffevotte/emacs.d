@@ -41,26 +41,27 @@ Example:
 (menu-bar-mode   -1)
 (tool-bar-mode   -1)
 (scroll-bar-mode -1)
+(setq-default
+ indicate-buffer-boundaries 'left
+ indicate-empty-lines  t
+ indent-tabs-mode nil                         ;; Indent with spaces
+ fill-column 100                              ;; Larger fill column
+ )
 (setq
  inhibit-splash-screen t
- indicate-empty-lines  t
- indicate-buffer-boundaries 'left
- show-paren-style 'mixed
+ frame-title-format (list "%b Emacs")         ;; Window title
+ show-paren-style 'mixed                      ;; Show the whole expression if it is too large
  bookmark-default-file "~/.emacs.d/bookmarks" ;; Bookmarks file
  shift-select-mode nil                        ;; No shift selection
  mouse-yank-at-point t                        ;; Yank at point (like in a tty)
- indent-tabs-mode nil                         ;; Indent with spaces
- fill-column 100                              ;; Larger fill column
  whitespace-line-column fill-column           ;; Better whitespace-mode defaults
  whitespace-style '(face trailing lines-tail tabs)
  imenu-auto-rescan t                          ;; Imenu shoud always rescan the buffers
  diff-switches "-u"                           ;; Unified diffs
  custom-file "~/.emacs.d/custom.el"           ;; Separate custom file
-)
+ )
 
 (load custom-file 'noerror)
-(setq-default frame-title-format    ;; Window title
-              (list "%b Emacs"))
 (add-hook 'after-save-hook          ;; Automatically make shebang-ed scripts executable
           'executable-make-buffer-file-executable-if-script-p)
 (defalias 'yes-or-no-p 'y-or-n-p)   ;; Don't bother typing 'yes'
