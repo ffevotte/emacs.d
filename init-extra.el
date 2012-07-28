@@ -170,19 +170,19 @@ the prefix argument: a prefix ARG activates the region."
 
 
 ;; Ido-ubiquitous
-(when (ff/require-or-warn 'ido-ubiquitous)
+(when (fboundp 'ido-ubiquitous-mode)
   (ido-ubiquitous-mode 1))
 
 
 ;; Helm (successor to anything)
-(when (ff/require-or-warn 'helm-config)
+(when (fboundp 'helm-mini)
   (global-set-key (kbd "C-x C-h") 'helm-mini)
   (global-set-key (kbd "C-x C-r") 'helm-recentf)
   (global-set-key (kbd "C-c M-x") 'helm-M-x))
 
 
 ;; Smex
-(when (ff/require-or-warn 'smex)
+(when (fboundp 'smex-initialize)
   (smex-initialize)
   ;; Enhanced M-x
   (global-set-key (kbd "M-x") 'smex)
@@ -192,22 +192,18 @@ the prefix argument: a prefix ARG activates the region."
 
 
 ;; Auto-complete
-(defvar ff/auto-complete-ac-dict nil
-  "Path to the auto-complete dictionnary")
 (when (ff/require-or-warn 'auto-complete-config)
-  (when ff/auto-complete-ac-dict
-    (add-to-list 'ac-dictionary-directories ff/auto-complete-ac-dict))
   (ac-config-default))
 
 
 ;; Yasnippet
 (defun ff/turn-on-yasnippet ()
   "Yasnippet is not installed")
-(when (ff/require-or-warn 'yasnippet-bundle)
+(when (fboundp 'yas/minor-mode)
   (defun ff/turn-on-yasnippet ()
     "Locally turn on yasnippet minor mode"
-    (yas/minor-mode 1)))
-(when (ff/require-or-warn 'yasnippet)
+    (yas/minor-mode 1))
+
   (defun ff/yas-compile-bundle ()
     "Compile a bundle of yasnippets"
     (interactive)
@@ -219,8 +215,7 @@ the prefix argument: a prefix ARG activates the region."
                           "yasnippet-bundle.el"
                           (list "~/.emacs.d/snippets" snippets-dir)
                           nil
-                          dropdown-file)))
-  (load "yasnippet-bundle"))
+                          dropdown-file))))
 
 
 ;; Autopair
@@ -258,7 +253,8 @@ the prefix argument: a prefix ARG activates the region."
   (let ((generated-autoload-file "~/.emacs.d/ff-autoloads.el"))
     (mapcar
      (lambda (x) (update-file-autoloads x 'save-after))
-     (list "slurm.el"             ;; Slurm-mode
+     (list "yasnippet-bundle.el"  ;; Yasnippet
+           ;"slurm.el"             ;; Slurm-mode
            "isend.el"             ;; ISend-mode (associate buffer to a terminal)
            "org-tagreport.el"     ;; Reports by tag for org-mode
            "ff-misc.el")))        ;; stack-overflow
