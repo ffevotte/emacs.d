@@ -133,10 +133,11 @@ the prefix argument: a prefix ARG activates the region."
 (defvar ff/use-org nil
   "Set this to non-nil to use org-mode")
 (when ff/use-org
-  (when (ff/require-or-warn 'org)
-    (load "setup-org"))
-  (when (ff/require-or-warn 'org-shortcuts) ; Org-clock-in shortcuts
-    (add-hook 'org-clock-before-select-task-hook 'org-clock-insert-shortcuts)))
+  (eval-after-load "org-mode"
+    '(progn
+       (load "setup-org")
+       (when (ff/require-or-warn 'org-shortcuts) ; Org-clock-in shortcuts
+	 (add-hook 'org-clock-before-select-task-hook 'org-clock-insert-shortcuts)))))
 
 
 ;; Abbrevs

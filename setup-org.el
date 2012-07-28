@@ -2,9 +2,9 @@
 ;; Org-mode settings ;;
 ;;;;;;;;;;;;;;;;;;;;;;;
 
-
 ;; Key bindings
 ;;;;;;;;;;;;;;;
+
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-cc" 'org-capture)
 (global-set-key "\C-ca" 'org-agenda)
@@ -30,6 +30,41 @@
      (define-key org-agenda-mode-map (kbd "S-<up>")    nil)
      (define-key org-agenda-mode-map (kbd "S-<down>")  nil)))
 
+
+
+;; Extension
+;;;;;;;;;;;;
+
+(defun ff/org-hide-markup ()
+  (let* ((beg (match-beginning 2))
+	 (end (match-end 2))
+	 (content (buffer-substring (1+ beg) (- end 1))))
+    (if (> (- end beg) 3)
+	(let ((first (substring content 0 1))
+	      (last (substring content -1)))
+	  (compose-region beg (+ beg 2) first)
+	  (compose-region (- end 2) end last))
+      (compose-region beg end content)))
+  nil)
+
+(defun ff/org-toggle-markup ()
+  "Toggle hiding org-markup."
+  (interactive)
+  (when (eq major-mode 'org-mode)
+    (unless (boundp 'ff/org-hide-markup)
+      (set (make-local-variable 'ff/org-hide-markup) nil))
+    (if ff/org-hide-markup
+	(progn (org-mode)
+	       (setq ff/org-hide-markup nil)
+	       (message "Displaying org markup"))
+      (make-local-variable 'font-lock-keywords)
+      (setq font-lock-keywords
+	    (append font-lock-keywords
+		    `((,org-emph-re
+		       (0 (ff/org-hide-markup))))))
+      (font-lock-fontify-buffer)
+      (setq ff/org-hide-markup t)
+      (message "Hiding org markup"))))
 
 
 
@@ -101,7 +136,7 @@
 (defun ff/note-header ()
   "Insert generic org header lines for notes files"
   (interactive)
-  (save-excursion 
+  (save-excursion
     (goto-char (point-min))
     (when (not (looking-at "#"))
       (insert "#+FILETAGS: note")(newline)
@@ -277,7 +312,7 @@
           (if subtree-is-current
               next-headline ; Has a date in this month or last month, skip it
             nil))  ; available to archive
-      (or next-headline (point-max)))))  
+      (or next-headline (point-max)))))
 
 
 (setq bh/keep-clock-running nil)
