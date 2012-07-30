@@ -2,13 +2,16 @@
 
 ;; Global customization
 (setq
- x-select-enable-clipboard t     ;; Killing & yanking uses the clipboard
- set-mark-command-repeat-pop t   ;; Easily cycle through the Mark Ring
- visible-bell t)                 ;; Visible bell
-(show-paren-mode 1)              ;; Parenthesis matching
-(column-number-mode 1)           ;; Show line and column numbers
-(line-number-mode 1)
-(winner-mode 1)                  ;; Navigate through window layouts with C-c <arrows>
+ initial-scratch-message ""           ;; Empty scratch buffer
+ initial-major-mode 'fundamental-mode ;;   ... in fundamental-mode
+ inhibit-splash-screen t              ;; No fancy splash screen
+ x-select-enable-clipboard t          ;; Killing & yanking uses the clipboard
+ set-mark-command-repeat-pop t        ;; Easily cycle through the Mark Ring
+ visible-bell t)                      ;; Visible bell
+(show-paren-mode 1)                   ;; Parenthesis matching
+(column-number-mode 1)                ;; Show line and column numbers
+(line-number-mode 1)                  ;; 
+(winner-mode 1)                       ;; Navigate through window layouts with C-c <arrows>
 
 
 ;; Custom key bindings

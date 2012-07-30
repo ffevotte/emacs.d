@@ -7,6 +7,8 @@
 ;;   (this is useful when multiple Emacs instances are running simultaneously)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(require 'cl) ;; provides `copy-list'
+
 (defvar ff/recentf-marker
   (concat temporary-file-directory "recentf-marker")
   "File used as a marker for recentf list merges.")

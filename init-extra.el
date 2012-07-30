@@ -7,18 +7,16 @@
 Example:
   (ff/add-hooks (list 'myhook1 'myhook2)
                 (list 'myfunction1 'myfunction2)) "
-  (mapcar (lambda (function)
-            (mapcar (lambda (hook)
-                      (add-hook hook function))
-                    hooks))
-          functions))
+  (dolist (function functions)
+    (dolist (hook hooks)
+      (add-hook hook function))))
 
 
 ;; Extensions management
 (defun ff/require-or-warn (p)
   "require a package or warn the user and return nil"
   (not (unless (require p nil 'noerror)
-         (message (format "Could not load package %s" p))
+         (message (format "WARNING: could not load package %s" p))
          t)))
 (if (not (load (expand-file-name "~/.emacs.d/elpa/package.el") 'noerror))
     (message "WARNING: could not load `package.el`")
@@ -43,12 +41,11 @@ Example:
 (scroll-bar-mode -1)
 (setq-default
  indicate-buffer-boundaries 'left
- indicate-empty-lines  t
+ indicate-empty-lines t
  indent-tabs-mode nil                         ;; Indent with spaces
  fill-column 100                              ;; Larger fill column
  )
 (setq
- inhibit-splash-screen t
  frame-title-format (list "%b Emacs")         ;; Window title
  show-paren-style 'mixed                      ;; Show the whole expression if it is too large
  bookmark-default-file "~/.emacs.d/bookmarks" ;; Bookmarks file
@@ -97,6 +94,7 @@ Example:
 
 
 ;; Change behaviour of exchange-point-and-mark
+(global-set-key (kbd "C-x C-x") 'ff/exchange-point-and-mark)
 (defun ff/exchange-point-and-mark (&optional arg)
   "Exchange point and mark.
 
@@ -106,7 +104,6 @@ the prefix argument: a prefix ARG activates the region."
   (if arg
       (exchange-point-and-mark nil)
     (exchange-point-and-mark t)))
-(global-set-key (kbd "C-x C-x") 'ff/exchange-point-and-mark)
 
 
 ;; ANSI terminal
@@ -257,12 +254,11 @@ the prefix argument: a prefix ARG activates the region."
   (interactive)
   (message "Updating autoloads for home-made packages...")
   (let ((generated-autoload-file "~/.emacs.d/ff-autoloads.el"))
-    (mapcar
-     (lambda (x) (update-file-autoloads x 'save-after))
-     (list "slurm.el"             ;; Slurm-mode
-           "isend.el"             ;; ISend-mode (associate buffer to a terminal)
-           "org-tagreport.el"     ;; Reports by tag for org-mode
-           "ff-misc.el")))        ;; stack-overflow
+    (dolist (x (list "slurm.el"         ;; Slurm-mode
+                     "isend.el"         ;; ISend-mode (associate buffer to a terminal)
+                     "org-tagreport.el" ;; Reports by tag for org-mode
+                     "ff-misc.el"))     ;; Stack-overflow
+      (update-file-autoloads x 'save-after)))
   (message "Updating autoloads for home-made packages...done"))
 (unless (require 'ff-autoloads nil 'noerror)
   (ff/update-autoloads)

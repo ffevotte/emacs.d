@@ -35,6 +35,12 @@
 ;; Extension
 ;;;;;;;;;;;;
 
+(defvar ff/org-hide-markup nil
+  "Boolean telling whether org-markup is hidden.")
+
+(when (ff/require-or-warn 'org-shortcuts) ; Org-clock-in shortcuts
+	 (add-hook 'org-clock-before-select-task-hook 'org-clock-insert-shortcuts))
+
 (defun ff/org-hide-markup ()
   (let* ((beg (match-beginning 2))
 	 (end (match-end 2))
@@ -301,7 +307,7 @@
     ;; Consider only tasks with done todo headings as archivable candidates
     (if (member (org-get-todo-state) org-done-keywords)
         (let* ((subtree-end (save-excursion (org-end-of-subtree t)))
-               (daynr (string-to-int (format-time-string "%d" (current-time))))
+               (daynr (string-to-number (format-time-string "%d" (current-time))))
                (a-month-ago (* 60 60 24 (+ daynr 1)))
                (last-month (format-time-string "%Y-%m-" (time-subtract (current-time) (seconds-to-time a-month-ago))))
                (this-month (format-time-string "%Y-%m-" (current-time)))
