@@ -81,6 +81,7 @@ Example:
 (global-set-key (kbd "M-k")     'previous-line)
 (global-set-key (kbd "M-h")     'backward-char)
 (global-set-key (kbd "M-l")     'forward-char)
+(global-set-key (kbd "C-c v v") 'magit-status)  ;; Magit entry point
 
 
 ;; File cache (C-x C-f C-<tab>)
