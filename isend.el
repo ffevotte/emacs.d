@@ -1,4 +1,3 @@
-;;;###autoload
 (define-minor-mode isend-mode
   "Toggle ISend (Interactive Send) mode\\<isend-mode-map>.
 With no argument, this command toggles the mode.
@@ -17,11 +16,16 @@ buffer (such as `ansi-term' or `eshell')
   :lighter    " Isend"
   :keymap     '(([C-return] . isend-send)))
 
+(defvar isend-command-buffer nil
+  "Buffer to which lines will be sent using `isend-send'.")
+(make-variable-buffer-local 'isend-command-buffer)
+
+;;;###autoload
 (defun isend-associate (buffername)
  "Set the buffer to which commands will be sent using `isend-send'.
 This should usually be something like '*ansi-term*' or '*terminal*'."
  (interactive "b")
- (set (make-local-variable 'send-command-buffer) buffername)
+ (setq isend-command-buffer buffername)
  (isend-mode 1))
 
 (defun isend-send ()
@@ -30,7 +34,7 @@ Use `send-command-setbuffer' to set the associated terminal
 buffer. If the region is active, all lines spanned by it are
 sent."
  (interactive)
- (when (not (boundp 'send-command-buffer))
+ (when (not (boundp 'isend-command-buffer))
    (error "No associated terminal buffer. You should run `isend-associate'"))
  (let ((begin (point))
        (end   (point)))
@@ -42,8 +46,7 @@ sent."
    (goto-char end)
    (setq end (line-end-position))
    (let ((command (buffer-substring begin end)))
-     (save-excursion
-       (set-buffer send-command-buffer)
+     (with-current-buffer isend-command-buffer
        (goto-char (point-max))
        (insert command)
        (cond ((eq major-mode 'term-mode)(term-send-input))
