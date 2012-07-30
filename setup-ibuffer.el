@@ -2,10 +2,10 @@
 ;; IBuffer settings ;;
 ;;;;;;;;;;;;;;;;;;;;;;
 
+(require 'ibuffer)
+
 ;; Global customization
 ;;;;;;;;;;;;;;;;;;;;;;;
-
-(defalias 'list-buffers 'ibuffer)
 
 (setq ibuffer-show-empty-filter-groups nil
       ibuffer-marked-char ?✓)

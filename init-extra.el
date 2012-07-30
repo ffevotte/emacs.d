@@ -107,19 +107,21 @@ the prefix argument: a prefix ARG activates the region."
 
 
 ;; ANSI terminal
-(setq ansi-term-color-vector ;; ANSI Term colors
-      [unspecified "#000000" "#b21818" "#18b218" "#BE5F00"
-                   "#6D85BA" "#b218b2" "#18b2b2" "#b2b2b2"])
-(defun python-term ()        ;; Custom function to open a python process
-  "Open a python terminal"
+(defun python-term ()
+  "Open a python terminal."
   (interactive)
   (ansi-term "/usr/bin/python" "Python"))
-(defun term-send-Cright () (interactive) (term-send-raw-string "\e[1;5C"))
-(defun term-send-Cleft  () (interactive) (term-send-raw-string "\e[1;5D"))
-(add-hook 'term-mode-hook 'ff/term-mode-map-Cdirections)
-(defun ff/term-mode-map-Cdirections ()
-  (define-key term-raw-map (kbd "C-<right>") 'term-send-Cright)
-  (define-key term-raw-map (kbd "C-<left>")  'term-send-Cleft))
+(eval-after-load "term"
+  '(progn
+     (message "Setting up term...")
+     (setq ansi-term-color-vector ;; ANSI Term colors
+           [unspecified "#000000" "#b21818" "#18b218" "#BE5F00"
+                        "#6D85BA" "#b218b2" "#18b2b2" "#b2b2b2"])
+     (defun term-send-Cright () (interactive) (term-send-raw-string "\e[1;5C"))
+     (defun term-send-Cleft  () (interactive) (term-send-raw-string "\e[1;5D"))
+     (define-key term-raw-map (kbd "C-<right>") 'term-send-Cright)
+     (define-key term-raw-map (kbd "C-<left>")  'term-send-Cleft)
+     (message "Setting up term...done.")))
 
 
 ;; Windmove (use S-<arrows> to switch between windows)
@@ -131,11 +133,8 @@ the prefix argument: a prefix ARG activates the region."
 (defvar ff/use-org nil
   "Set this to non-nil to use org-mode")
 (when ff/use-org
-  (eval-after-load "org-mode"
-    '(progn
-       (load "setup-org")
-       (when (ff/require-or-warn 'org-shortcuts) ; Org-clock-in shortcuts
-	 (add-hook 'org-clock-before-select-task-hook 'org-clock-insert-shortcuts)))))
+  (eval-after-load "org"
+    '(load "setup-org")))
 
 
 ;; Abbrevs
@@ -151,7 +150,19 @@ the prefix argument: a prefix ARG activates the region."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; CEDET
-(load "setup-cedet")
+(eval-after-load "cedet"
+  '(when (>= (string-to-number cedet-version) 1.1)
+     (message "Setting up CEDET...")
+     (semantic-load-enable-code-helpers)
+     (add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode)
+     (setq semantic-idle-scheduler-idle-time 0.5)
+     (require 'semantic-ia)
+     (message "Setting up CEDET...done.")))
+(defun ff/semantic-auto-completion ()
+  "Activate semantic-ia source for auto-completion if available"
+  (ff/require-or-warn 'cedet)
+  (when (boundp 'ac-source-semantic)
+    (add-to-list 'ac-sources 'ac-source-semantic)))
 
 
 ;; Color-theme
@@ -200,12 +211,10 @@ the prefix argument: a prefix ARG activates the region."
 
 ;; Yasnippet
 (defun ff/turn-on-yasnippet ()
-  "Yasnippet is not installed")
-(when (ff/require-or-warn 'yasnippet-bundle)
-  (defun ff/turn-on-yasnippet ()
     "Locally turn on yasnippet minor mode"
-    (yas/minor-mode 1)))
-(when (ff/require-or-warn 'yasnippet)
+    (when (ff/require-or-warn 'yasnippet-bundle)
+      (yas/minor-mode 1)))
+(when (fboundp 'yas/compile-bundle)
   (defun ff/yas-compile-bundle ()
     "Compile a bundle of yasnippets"
     (interactive)
@@ -217,16 +226,14 @@ the prefix argument: a prefix ARG activates the region."
                           "yasnippet-bundle.el"
                           (list "~/.emacs.d/snippets" snippets-dir)
                           nil
-                          dropdown-file)))
-  (load "yasnippet-bundle"))
+                          dropdown-file))
+    (load "yasnippet-bundle")))
 
 
 ;; Autopair
 (defun ff/turn-on-autopair ()
-  "Don't do anything when autopair is not installed")
-(when (ff/require-or-warn 'autopair)
-  (defun ff/turn-on-autopair ()
-    "Turn on autopair minor mode"
+  "Turn on autopair minor mode if available."
+  (when (ff/require-or-warn 'autopair)
     (autopair-mode 1)))
 
 

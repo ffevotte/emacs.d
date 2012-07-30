@@ -10,7 +10,8 @@
 
 
 ;; custom version of org-clock.el to add org-clock-before-select-task-hook
-(load (expand-file-name "~/.emacs.d/org-clock.el"))
+(eval-after-load "org"
+  '(load (expand-file-name "~/.emacs.d/org-clock.el")))
 
 
 ;; Org-mode setup

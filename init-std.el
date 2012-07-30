@@ -55,12 +55,17 @@
 
 
 ;; IBuffer
-(load "setup-ibuffer")
-(add-hook 'ibuffer-mode-hook 'ff/turn-on-highlight-line)
+(defalias 'list-buffers 'ibuffer)
+(eval-after-load "ibuffer"
+  '(progn
+     (load "setup-ibuffer")
+     (add-hook 'ibuffer-mode-hook 'ff/turn-on-highlight-line)))
 
 
 ;; Dired
-(require 'dired-x)
+(autoload 'dired-jump "dired-x"
+  "Jump to Dired buffer corresponding to current buffer." t)
+(global-set-key (kbd "C-x C-j") 'dired-jump)
 (add-hook 'dired-mode-hook 'ff/turn-on-highlight-line)
 (add-hook 'dired-mode-hook 'ff/truncate-lines)
 
@@ -93,17 +98,19 @@
 
 
 ;; Hide-show mode
-(defun ff/hs-show-block-nonrecursive ()
-  "Show current block non-recursively (i.e. sub-blocks remain hidden)"
-  (interactive)
-  (hs-show-block)
-  (hs-hide-level 0))
 (eval-after-load "hideshow"
   '(progn
+     (message "Setting up hideshow...")
+     (defun ff/hs-show-block-nonrecursive ()
+       "Show current block non-recursively (i.e. sub-blocks remain hidden)"
+       (interactive)
+       (hs-show-block)
+       (hs-hide-level 0))
      (define-key hs-minor-mode-map (kbd "M-<right>") 'ff/hs-show-block-nonrecursive)
      (define-key hs-minor-mode-map (kbd "M-<left>")  'hs-hide-block)
      (define-key hs-minor-mode-map (kbd "M-<up>")    'hs-hide-all)
-     (define-key hs-minor-mode-map (kbd "M-<down>")  'hs-show-block)))
+     (define-key hs-minor-mode-map (kbd "M-<down>")  'hs-show-block)
+     (message "Setting up hideshow...done.")))
 (defun ff/turn-on-hideshow ()
   "Turn on Hide-Show mode"
   (hs-minor-mode 1))
