@@ -14,15 +14,21 @@ Example:
 
 ;; Extensions management
 (defun ff/require-or-warn (p)
-  "require a package or warn the user and return nil"
+  "Require a package or warn the user and return nil."
   (not (unless (require p nil 'noerror)
          (message (format "WARNING: could not load package %s" p))
          t)))
+(defun ff/fboundp (f)
+  "Test whether a function is bound and warn if not."
+  (if (fboundp f)
+      t
+    (message "WARNING: function %s unavailable" f)
+    nil))
 (if (not (load (expand-file-name "~/.emacs.d/elpa/package.el") 'noerror))
     (message "WARNING: could not load `package.el`")
-  (add-to-list 'package-archives '("elpa" . "http://tromey.com/elpa/"))
+  (add-to-list 'package-archives '("elpa"      . "http://tromey.com/elpa/"))
   (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
-  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+  (add-to-list 'package-archives '("melpa"     . "http://melpa.milkbox.net/packages/"))
   (package-initialize))
 
 
@@ -228,6 +234,15 @@ the prefix argument: a prefix ARG activates the region."
                           nil
                           dropdown-file))
     (load "yasnippet-bundle")))
+
+
+;; Adaptive-wrap
+(when (ff/fboundp 'adaptive-wrap-prefix-mode)
+  (defadvice visual-line-mode (after ff/adaptive-wrap-prefix-mode activate)
+    "Toggle `visual-line-mode' and `adaptive-wrap-prefix-mode' simultaneously."
+    (if visual-line-mode
+        (adaptive-wrap-prefix-mode 1)
+      (adaptive-wrap-prefix-mode -1))))
 
 
 ;; Autopair
