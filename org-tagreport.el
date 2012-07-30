@@ -93,7 +93,7 @@ commands are available:
           (insert "|" tag-title "|" (org-minutes-to-hh:mm-string time) "|")
           (when org-tagreport-details
             (save-excursion
-              (end-of-buffer)
+              (goto-char (point-max))
               (newline)
               (insert (format "* %s" tag-title))(newline-and-indent)
               (insert "#+BEGIN: clocktable :maxlevel 2 :scope agenda :link t")
@@ -112,11 +112,11 @@ commands are available:
       (while (search-forward "#+BEGIN:" nil t)
         (beginning-of-line)
         (org-update-dblock)
-        (next-line)))
+        (forward-line 1)))
     (save-excursion
       (while (search-forward "*0:00*" nil t)
         (beginning-of-line)
-        (previous-line)
+        (forward-line -1)
         (kill-line 2))))
   (toggle-read-only 1))
 
