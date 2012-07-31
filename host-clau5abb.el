@@ -11,7 +11,7 @@
 
 ;; custom version of org-clock.el to add org-clock-before-select-task-hook
 (eval-after-load "org"
-  '(load (expand-file-name "~/.emacs.d/org-clock.el")))
+  '(load "org-clock.el"))
 
 
 ;; Org-mode setup
@@ -32,8 +32,8 @@
 
 
 ;; Local installation path
-(add-to-list 'load-path "~/.emacs.d/cedet-1.1/common")
-(add-to-list 'load-path "~/.emacs.d/expand-region.el")
+(add-to-list 'load-path "~/.emacs.d/local/cedet-1.1/common")
+(add-to-list 'load-path "~/.emacs.d/local/expand-region.el")
 
 ;; Local Variables:
 ;;   mode: emacs-lisp

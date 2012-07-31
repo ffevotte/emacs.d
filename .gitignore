@@ -1,8 +1,11 @@
 *~
+.org-id-locations
 ac-comphist.dat
 bookmarks
 custom.el
 elpa/*
+local
 ff-autoloads.el
 org-clock-save.el
 tramp
+url

@@ -18,18 +18,36 @@ Example:
   (not (unless (require p nil 'noerror)
          (message (format "WARNING: could not load package %s" p))
          t)))
+
 (defun ff/fboundp (f)
   "Test whether a function is bound and warn if not."
   (if (fboundp f)
       t
     (message "WARNING: function %s unavailable" f)
     nil))
+
 (if (not (load (expand-file-name "~/.emacs.d/elpa/package.el") 'noerror))
     (message "WARNING: could not load `package.el`")
   (add-to-list 'package-archives '("elpa"      . "http://tromey.com/elpa/"))
   (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
   (add-to-list 'package-archives '("melpa"     . "http://melpa.milkbox.net/packages/"))
   (package-initialize))
+
+(defun ff/packages-upgrade ()
+  (interactive)
+  (package-list-packages)
+  (dolist (p '(adaptive-wrap
+               auto-complete popup
+               autopair
+               bookmark+
+               helm
+               ido-ubiquitous
+               magit
+               smex
+               yasnippet))
+    (condition-case nil
+        (package-install p)
+      ((debug error) nil))))
 
 
 ;; This seems to be needed to avoid errors

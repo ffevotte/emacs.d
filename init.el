@@ -3,6 +3,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (add-to-list 'load-path "~/.emacs.d" 'append)
+(add-to-list 'load-path "~/.emacs.d/color-theme")
+(add-to-list 'load-path "~/.emacs.d/local")
 
 
 ;; Load local rc file
