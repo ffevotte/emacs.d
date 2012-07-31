@@ -31,6 +31,10 @@
 (setq bh/organization-task-id "7da774e7-d69c-463b-88d2-e3ccc03f80fd")
 
 
+;; Magit
+(setq magit-repo-dirs '("~/.emacs.d" "~/.etc" "~/local/perso/projets/git/"))
+
+
 ;; Local installation path
 (add-to-list 'load-path "~/.emacs.d/local/cedet-1.1/common")
 (add-to-list 'load-path "~/.emacs.d/local/expand-region.el")
