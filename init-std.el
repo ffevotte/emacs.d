@@ -10,7 +10,7 @@
  visible-bell t)                      ;; Visible bell
 (show-paren-mode 1)                   ;; Parenthesis matching
 (column-number-mode 1)                ;; Show line and column numbers
-(line-number-mode 1)                  ;; 
+(line-number-mode 1)                  ;;
 (winner-mode 1)                       ;; Navigate through window layouts with C-c <arrows>
 
 
@@ -106,10 +106,16 @@
        (interactive)
        (hs-show-block)
        (hs-hide-level 0))
+     (defun ff/hs-show (&optional arg)
+       "Show block at point or if ARG is present, all blocks."
+       (interactive "P")
+       (if arg
+           (hs-show-all)
+         (hs-show-block)))
      (define-key hs-minor-mode-map (kbd "M-<right>") 'ff/hs-show-block-nonrecursive)
      (define-key hs-minor-mode-map (kbd "M-<left>")  'hs-hide-block)
      (define-key hs-minor-mode-map (kbd "M-<up>")    'hs-hide-all)
-     (define-key hs-minor-mode-map (kbd "M-<down>")  'hs-show-block)
+     (define-key hs-minor-mode-map (kbd "M-<down>")  'ff/hs-show)
      (message "Setting up hideshow...done.")))
 (defun ff/turn-on-hideshow ()
   "Turn on Hide-Show mode"
