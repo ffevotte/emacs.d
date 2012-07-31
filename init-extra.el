@@ -294,10 +294,10 @@ the prefix argument: a prefix ARG activates the region."
   (interactive)
   (message "Updating autoloads for home-made packages...")
   (let ((generated-autoload-file "~/.emacs.d/ff-autoloads.el"))
-    (dolist (x (list "slurm.el"         ;; Slurm-mode
-                     "isend.el"         ;; ISend-mode (associate buffer to a terminal)
-                     "org-tagreport.el" ;; Reports by tag for org-mode
-                     "ff-misc.el"))     ;; Stack-overflow
+    (dolist (x (list "~/.emacs.d/slurm.el"         ;; Slurm-mode
+                     "~/.emacs.d/isend.el"         ;; ISend-mode (associate buffer to a terminal)
+                     "~/.emacs.d/org-tagreport.el" ;; Reports by tag for org-mode
+                     "~/.emacs.d/ff-misc.el"))     ;; Stack-overflow
       (update-file-autoloads x 'save-after)))
   (message "Updating autoloads for home-made packages...done"))
 (unless (require 'ff-autoloads nil 'noerror)
