@@ -43,8 +43,7 @@ Example:
                helm
                ido-ubiquitous
                magit
-               smex
-               yasnippet))
+               smex))
     (condition-case nil
         (package-install p)
       ((debug error) nil))))
