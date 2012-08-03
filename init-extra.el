@@ -323,9 +323,11 @@ the prefix argument: a prefix ARG activates the region."
   "Remap <RET> to `newline-and-indent'."
   (local-set-key (kbd "RET") 'newline-and-indent))
 
-(defun ff/show-trailing-whitespaces ()
+(defun ff/delete-trailing-whitespace ()
   "Show trailing whitespaces"
-  (setq show-trailing-whitespace 1))
+  (setq show-trailing-whitespace 1)
+  (add-to-list 'write-file-functions
+               'delete-trailing-whitespace))
 
 
 ;; Text-mode
@@ -347,6 +349,6 @@ the prefix argument: a prefix ARG activates the region."
 (ff/add-hooks (list 'c-mode-common-hook 'lisp-mode-hook 'emacs-lisp-mode-hook 'python-mode-hook
                     'sh-mode-hook 'octave-mode-hook 'LaTeX-mode-hook)
               (list 'ff/setup-todo-keywords 'ff/remap-newline-indent 'ff/turn-on-autopair
-		    'ff/show-trailing-whitespaces))
+		    'ff/delete-trailing-whitespace))
 (ff/add-hooks '(c-mode-common-hook LaTeX-mode-hook)
               '(ff/turn-on-yasnippet))
