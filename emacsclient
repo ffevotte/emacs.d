@@ -1,0 +1,7 @@
+#!/bin/bash
+
+if [ ! -z "$EMACS_SERVER" ]; then
+    emacsclient -s $EMACS_SERVER $*
+else
+    emacsclient -c -a vim $*
+fi

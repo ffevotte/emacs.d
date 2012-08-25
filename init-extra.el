@@ -288,6 +288,10 @@ the prefix argument: a prefix ARG activates the region."
   (global-set-key (kbd "C->") 'er/contract-region))
 
 
+;; Automatically start server
+(load "setup-server")
+
+
 ;; Home-made packages
 (defun ff/update-autoloads ()
   (interactive)
