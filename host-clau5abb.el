@@ -6,7 +6,7 @@
 ;; Inconsolata font
 (setq default-frame-alist
       '((font-backend . "xft")
-        (font . "Inconsolata-11")))
+        (font . "Bitstream Vera Sans Mono-10")))
 
 
 ;; custom version of org-clock.el to add org-clock-before-select-task-hook
@@ -32,7 +32,7 @@
 
 
 ;; Magit
-(setq magit-repo-dirs '("~/.emacs.d" "~/.etc" "~/local/perso/projets/git/"))
+(setq magit-repo-dirs '("~/.emacs.d" "~/.emacs.d/local" "~/.etc" "~/local/perso/projets/git/"))
 
 
 ;; Local installation path
