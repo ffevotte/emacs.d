@@ -291,6 +291,10 @@ the prefix argument: a prefix ARG activates the region."
   (global-set-key (kbd "C->") 'er/contract-region))
 
 
+;; Slurm
+(require 'slurm)
+
+
 ;; Automatically start server
 (load "setup-server")
 
@@ -300,11 +304,10 @@ the prefix argument: a prefix ARG activates the region."
   (interactive)
   (message "Updating autoloads for home-made packages...")
   (let ((generated-autoload-file "~/.emacs.d/ff-autoloads.el"))
-    (dolist (x (list "~/.emacs.d/slurm.el"         ;; Slurm-mode
-                     "~/.emacs.d/ff-a2ps.el"       ;; Better UTF-8 capabilities for a2ps
-                     "~/.emacs.d/isend.el"         ;; ISend-mode (associate buffer to a terminal)
-                     "~/.emacs.d/org-tagreport.el" ;; Reports by tag for org-mode
-                     "~/.emacs.d/ff-misc.el"))     ;; Stack-overflow
+    (dolist (x (list "~/.emacs.d/ff-a2ps.el"           ;; Better UTF-8 capabilities for a2ps
+                     "~/.emacs.d/isend.el"             ;; ISend-mode (associate buffer to a terminal)
+                     "~/.emacs.d/org-tagreport.el"     ;; Reports by tag for org-mode
+                     "~/.emacs.d/ff-misc.el"))         ;; Stack-overflow
       (update-file-autoloads x 'save-after)))
   (message "Updating autoloads for home-made packages...done"))
 (unless (require 'ff-autoloads nil 'noerror)
