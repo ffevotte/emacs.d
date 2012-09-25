@@ -62,6 +62,7 @@ Example:
 (menu-bar-mode   -1)
 (tool-bar-mode   -1)
 (scroll-bar-mode -1)
+(pending-delete-mode 1) ;; Useful in combination with expand-region
 (setq-default
  indicate-buffer-boundaries 'left
  indicate-empty-lines t
@@ -138,6 +139,7 @@ the prefix argument: a prefix ARG activates the region."
 (eval-after-load "term"
   '(progn
      (message "Setting up term...")
+     (setq term-buffer-maximum-size 10000)
      (setq ansi-term-color-vector ;; ANSI Term colors
            [unspecified "#000000" "#b21818" "#18b218" "#BE5F00"
                         "#6D85BA" "#b218b2" "#18b2b2" "#b2b2b2"])
@@ -284,7 +286,7 @@ the prefix argument: a prefix ARG activates the region."
 
 ;; Expand-region
 (when (ff/require-or-warn 'expand-region)
-  (global-set-key (kbd "C-=") 'er/expand-region)
+  (global-set-key (kbd "C-x SPC") 'er/expand-region)
   (global-set-key (kbd "C-<") 'er/expand-region)
   (global-set-key (kbd "C->") 'er/contract-region))
 
