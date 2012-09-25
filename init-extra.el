@@ -327,11 +327,20 @@ the prefix argument: a prefix ARG activates the region."
   "Remap <RET> to `newline-and-indent'."
   (local-set-key (kbd "RET") 'newline-and-indent))
 
-(defun ff/delete-trailing-whitespace ()
+(defun ff/delete-trailing-whitespace (&optional argp)
   "Show trailing whitespaces"
-  (setq show-trailing-whitespace 1)
-  (add-to-list 'write-file-functions
-               'delete-trailing-whitespace))
+  (interactive "P")
+  (if argp
+      (progn
+        (setq show-trailing-whitespace nil)
+        (setq write-file-functions
+              (delete 'delete-trailing-whitespace write-file-functions))
+        (message "Deactivating delete-trailing-whitespace"))
+    (setq show-trailing-whitespace t)
+    (make-local-variable 'write-file-functions)
+    (add-to-list 'write-file-functions
+                 'delete-trailing-whitespace)
+    (message "Activating delete-trailing-whitespace")))
 
 
 ;; Text-mode
