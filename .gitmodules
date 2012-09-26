@@ -1,0 +1,9 @@
+[submodule "packages/slurm"]
+	path = packages/slurm
+	url = https://github.com/ffevotte/slurm.el.git
+[submodule "packages/expand-region"]
+	path = packages/expand-region
+	url = https://github.com/ffevotte/expand-region.el
+[submodule "packages/multiple-cursors"]
+	path = packages/multiple-cursors
+	url = https://github.com/magnars/multiple-cursors.el

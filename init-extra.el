@@ -285,14 +285,24 @@ the prefix argument: a prefix ARG activates the region."
 
 
 ;; Expand-region
+(add-to-list 'load-path "~/.emacs.d/packages/expand-region")
 (when (ff/require-or-warn 'expand-region)
-  (global-set-key (kbd "C-x SPC") 'er/expand-region)
-  (global-set-key (kbd "C-<") 'er/expand-region)
-  (global-set-key (kbd "C->") 'er/contract-region))
+  (global-set-key (kbd "C-x SPC") 'er/expand-region))
+
+
+;; Multiple cursors
+(add-to-list 'load-path "~/.emacs.d/packages/multiple-cursors")
+(when (ff/require-or-warn 'multiple-cursors)
+  (defalias 'mc 'mc/edit-lines)
+  (global-set-key (kbd "C-<") 'mc/mark-next-like-this)
+  (global-set-key (kbd "C->") 'mc/mark-previous-like-this)
+  (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+  (global-set-key (kbd "C-S-SPC") 'set-rectangular-region-anchor))
 
 
 ;; Slurm
-(require 'slurm)
+(add-to-list 'load-path "~/.emacs.d/packages/slurm")
+(ff/require-or-warn 'slurm)
 
 
 ;; Automatically start server
