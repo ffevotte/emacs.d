@@ -6,7 +6,5 @@
     (toggle-read-only 0)
     (delete-region (point-min) (point-max))
     (insert-buffer-substring buffer)
-    (insert "    ")
-    (while (= (forward-line) 0)
-      (insert "    "))
+    (indent-rigidly (point-min) (point-max) 4)
     (toggle-read-only 1)))

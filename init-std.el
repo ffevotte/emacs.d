@@ -34,12 +34,7 @@
 
 
 ;; Isearch
-(define-key isearch-mode-map (kbd "C-o")  ;; occur-mode for Isearch
-  (lambda ()
-    (interactive)
-    (let ((case-fold-search isearch-case-fold-search))
-      (occur (if isearch-regexp isearch-string
-               (regexp-quote isearch-string))))))
+(define-key isearch-mode-map (kbd "C-o") 'isearch-occur)
 
 
 ;; Highlight-line mode
@@ -133,6 +128,15 @@
 (defadvice scroll-down (before set-mark activate)
   "Set the mark before scrolling"
   (push-mark))
+
+
+;; Flyspell-mode
+(eval-after-load "flyspell"
+  '(progn
+     (defun ff/flyspell-buffer-after-activation ()
+       (when flyspell-mode
+         (flyspell-buffer)))
+     (add-hook 'flyspell-mode-hook 'ff/flyspell-buffer-after-activation)))
 
 
 
