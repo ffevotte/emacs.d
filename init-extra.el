@@ -103,6 +103,7 @@ Example:
 (global-set-key (kbd "M-k")     'previous-line)
 (global-set-key (kbd "M-h")     'backward-char)
 (global-set-key (kbd "M-l")     'forward-char)
+(global-set-key (kbd "C-x g")   'revert-buffer) ;; Revert buffer
 (global-set-key (kbd "C-c v v") 'magit-status)  ;; Magit entry point
 
 
