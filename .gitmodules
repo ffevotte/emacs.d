@@ -7,3 +7,6 @@
 [submodule "packages/multiple-cursors"]
 	path = packages/multiple-cursors
 	url = https://github.com/magnars/multiple-cursors.el
+[submodule "packages/a2ps-multibyte"]
+	path = packages/a2ps-multibyte
+	url = https://github.com/ffevotte/a2ps-multibyte.el.git

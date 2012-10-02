@@ -306,6 +306,13 @@ the prefix argument: a prefix ARG activates the region."
 (ff/require-or-warn 'slurm)
 
 
+;; a2ps-multibyte
+(add-to-list 'load-path "~/.emacs.d/packages/a2ps-multibyte")
+(when (ff/require-or-warn 'a2ps-multibyte)
+  (global-set-key (kbd "<print>")   'a2ps-buffer)
+  (global-set-key (kbd "S-<print>") 'a2ps-region))
+
+
 ;; Automatically start server
 (load "setup-server")
 
@@ -315,8 +322,7 @@ the prefix argument: a prefix ARG activates the region."
   (interactive)
   (message "Updating autoloads for home-made packages...")
   (let ((generated-autoload-file "~/.emacs.d/ff-autoloads.el"))
-    (dolist (x (list "~/.emacs.d/ff-a2ps.el"           ;; Better UTF-8 capabilities for a2ps
-                     "~/.emacs.d/isend.el"             ;; ISend-mode (associate buffer to a terminal)
+    (dolist (x (list "~/.emacs.d/isend.el"             ;; ISend-mode (associate buffer to a terminal)
                      "~/.emacs.d/org-tagreport.el"     ;; Reports by tag for org-mode
                      "~/.emacs.d/ff-misc.el"))         ;; Stack-overflow
       (update-file-autoloads x 'save-after)))
