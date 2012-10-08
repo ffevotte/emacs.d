@@ -171,6 +171,21 @@ the prefix argument: a prefix ARG activates the region."
   (abbrev-mode 1))
 
 
+;; Eval and replace lisp code
+(defun eval-and-replace (value)
+  "Evaluate the sexp at point and replace it with its value"
+  (interactive (list (eval-last-sexp nil)))
+  (kill-sexp -1)
+  (insert (format "%S" value)))
+(global-set-key
+ (kbd "C-x C-e")
+ (lambda (&optional argp)
+   (interactive "P")
+   (if argp
+       (call-interactively 'eval-and-replace)
+     (call-interactively 'eval-last-sexp))))
+
+
 
 
 ;; Non standard extensions
