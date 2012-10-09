@@ -119,6 +119,28 @@ Example:
   (setq semanticdb-default-save-directory mySemanticRep))
 
 
+;; Desktop
+(require 'desktop)
+(setq desktop-save 'ask)
+(defvar desktop-base-dir "~/.emacs.d/desktops/"
+  "Base directory for desktop files")
+(defun desktop-load (name)
+  (interactive
+   (list
+    (completing-read "Desktop name: "
+                     (remove "." (remove ".." (directory-files desktop-base-dir))))))
+  (desktop-change-dir (concat desktop-base-dir name))
+  (desktop-save-mode 1))
+(defun desktop-create ()
+  (interactive)
+  (when (null desktop-dirname)
+    (let ((name (read-from-minibuffer "Desktop name: ")))
+      (setq desktop-dirname (concat desktop-base-dir name))
+      (make-directory desktop-dirname 'parents)))
+  (desktop-save desktop-dirname)
+  (desktop-save-mode 1))
+
+
 ;; Change behaviour of exchange-point-and-mark
 (global-set-key (kbd "C-x C-x") 'ff/exchange-point-and-mark)
 (defun ff/exchange-point-and-mark (&optional arg)
