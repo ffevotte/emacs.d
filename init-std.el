@@ -121,6 +121,31 @@
 (setq compilation-scroll-output 'first-error) ;; scroll compilation buffer until first error
 
 
+;; gtags-mode
+(eval-after-load "gtags"
+  '(progn
+     (define-key gtags-mode-map (kbd "M-,") 'gtags-find-rtag)))
+(defun ff/turn-on-gtags ()
+  "Turn `gtags-mode' on if a global tags file has been generated.
+
+This function asynchronously runs 'global -u' to update global
+tags. When the command successfully returns, `gtags-mode' is
+turned on."
+  (interactive)
+  (let ((process (start-process "global -u"
+                                "*global output*"
+                                "global" "-u"))
+        (buffer  (current-buffer)))
+    (set-process-sentinel
+     process
+     `(lambda (process event)
+        (when (and (eq (process-status process) 'exit)
+                   (eq (process-exit-status process) 0))
+          (with-current-buffer ,buffer
+            (message "Activating gtags-mode")
+            (gtags-mode 1)))))))
+
+
 ;; Set mark before scrolling
 (defadvice scroll-up (before set-mark activate)
   "Set the mark before scrolling"
@@ -159,6 +184,7 @@
      ;; switch between header and implementation files
      (define-key c-mode-map   (kbd "C-c o") 'ff-find-other-file)
      (define-key c++-mode-map (kbd "C-c o") 'ff-find-other-file)))
+(add-hook 'c-mode-common-hook 'ff/turn-on-gtags)
 
 
 ;; LaTeX
