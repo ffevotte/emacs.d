@@ -154,6 +154,37 @@ the prefix argument: a prefix ARG activates the region."
     (exchange-point-and-mark t)))
 
 
+;; Find-file and switch-buffer in other window with a prefix arg
+(global-set-key (kbd "C-x C-f") 'ff/find-file)
+(defun ff/find-file (&optional argp)
+  "Use prefix argument to select where to find a file.
+
+Without prefix argument, visit the file in the current window.
+With a universal prefix arg, display the file in another window.
+With two universal arguments, visit the file in another window."
+  (interactive "p")
+  (cond ((eq argp 1)
+         (call-interactively 'find-file))
+        ((eq argp 4)
+         (call-interactively 'ido-display-file))
+        ((eq argp 16)
+         (call-interactively 'find-file-other-window))))
+
+(global-set-key (kbd "C-x b") 'ff/switch-to-buffer)
+(defun ff/switch-to-buffer (&optional argp)
+  "Use prefix argument to select where to switch to buffer.
+
+Without prefix argument, switch the buffer in the current window.
+With a universal prefix, display the buffer in another window.
+With two universal arguments, switch the buffer in another window."
+  (interactive "p")
+  (cond ((eq argp 1)
+         (call-interactively 'switch-to-buffer))
+        ((eq argp 4)
+         (call-interactively 'display-buffer))
+        (t
+         (call-interactively 'switch-to-buffer-other-window))))
+
 ;; ANSI terminal
 (defun python-term ()
   "Open a python terminal."
