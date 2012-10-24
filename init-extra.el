@@ -70,7 +70,7 @@ Example:
  fill-column 100                              ;; Larger fill column
  )
 (setq
- frame-title-format (list "%b Emacs")         ;; Window title
+ frame-title-format (list "%b - Emacs")       ;; Window title
  show-paren-style 'mixed                      ;; Show the whole expression if it is too large
  bookmark-default-file "~/.emacs.d/bookmarks" ;; Bookmarks file
  shift-select-mode nil                        ;; No shift selection
@@ -130,6 +130,10 @@ Example:
     (completing-read "Desktop name: "
                      (remove "." (remove ".." (directory-files desktop-base-dir))))))
   (desktop-change-dir (concat desktop-base-dir name))
+  (setq frame-title-format
+        (list (concat "%b - Emacs ["
+                      (file-name-nondirectory (directory-file-name desktop-dirname))
+                      "]")))
   (desktop-save-mode 1))
 (defun desktop-create ()
   (interactive)
