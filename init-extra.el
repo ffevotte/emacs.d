@@ -112,13 +112,6 @@ Example:
 (file-cache-add-directory "~/.emacs.d")
 
 
-;; No semantic.cache cluttering
-(let ((mySemanticRep (concat "/tmp/semantic.cache-" (getenv "USER"))))
-  (if (not (file-accessible-directory-p mySemanticRep))
-      (make-directory mySemanticRep))
-  (setq semanticdb-default-save-directory mySemanticRep))
-
-
 ;; Desktop
 (require 'desktop)
 (setq desktop-save 'ask)
@@ -250,18 +243,18 @@ With two universal arguments, switch the buffer in another window."
 
 ;; CEDET
 (eval-after-load "cedet"
-  '(when (>= (string-to-number cedet-version) 1.1)
-     (message "Setting up CEDET...")
-     (semantic-load-enable-code-helpers)
-     (add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode)
+  '(progn
      (setq semantic-idle-scheduler-idle-time 0.5)
-     (require 'semantic-ia)
-     (message "Setting up CEDET...done.")))
+     (add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode)
+     (add-to-list 'semantic-default-submodes 'global-semantic-idle-completions-mode)))
 (defun ff/semantic-auto-completion ()
   "Activate semantic-ia source for auto-completion if available"
   (ff/require-or-warn 'cedet)
   (when (boundp 'ac-source-semantic)
     (add-to-list 'ac-sources 'ac-source-semantic)))
+;; this is needed to avoid a bug in `semantic-ia-fast-jump'
+(eval-after-load "ia"
+  '(require 'semantic/analyze/refs))
 
 
 ;; Color-theme
