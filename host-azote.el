@@ -16,6 +16,12 @@
 (setq magit-repo-dirs '("~/.etc" "~/.emacs.d" "~/projets/git/" "~/EDF/atelier"))
 
 
+;; Recent CEDET version
+(load-file "/home/francois/.emacs.d/local/cedet-1.1/common/cedet.el")
+(semantic-load-enable-code-helpers)
+(require 'semantic-ia)
+
+
 ;; Local Variables:
 ;;   mode: emacs-lisp
 ;; End:
