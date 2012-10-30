@@ -35,6 +35,7 @@
 
 
 ;; Local installation path
+(add-to-list 'load-path "~/.emacs.d/local")
 (add-to-list 'load-path "~/.emacs.d/local/cedet-1.1/common")
 
 
