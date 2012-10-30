@@ -3,9 +3,11 @@
 ac-comphist.dat
 bookmarks
 custom.el
+desktops
 elpa/*
 local
 ff-autoloads.el
 org-clock-save.el
+semanticdb
 tramp
 url
