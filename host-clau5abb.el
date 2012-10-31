@@ -36,7 +36,20 @@
 
 ;; Local installation path
 (add-to-list 'load-path "~/.emacs.d/local")
-(add-to-list 'load-path "~/.emacs.d/local/cedet-1.1/common")
+(load-file "/home/H55056/.emacs.d/local/cedet-snapshot-8387/cedet-devel-load.el")
+
+
+(global-ede-mode 1)
+(ede-cpp-root-project "SN2D1D - SVN trunk"
+                      :name "SN2D1D - SVN trunk"
+                      :file "/home/H55056/local/HPCneutro/sn2d1d.svn/trunk/Makefile.am"
+                      :include-path '("./"
+                                      "/include/")
+                      ;; :system-include-path '("~/exp/include")
+                      ;; :spp-table '(("isUnix" . "")
+                      ;;              ("BOOST_TEST_DYN_LINK" . ""))
+                      )
+
 
 
 ;; Local Variables:

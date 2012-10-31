@@ -171,8 +171,15 @@ turned on."
   (add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode)
   (add-to-list 'semantic-default-submodes 'global-semantic-idle-completions-mode)
   (when (>= (string-to-number cedet-version) 1.1)
-    (semantic-load-enable-code-helpers)
-    (require 'semantic-ia)))
+    (require 'semantic/ia))
+  (eval-after-load "semantic"
+    '(progn
+       (require 'etags)
+       (define-key semantic-mode-map (kbd "C-c , ,")
+         (lambda ()
+           (interactive)
+           (ring-insert find-tag-marker-ring (point-marker))
+           (call-interactively 'semantic-ia-fast-jump))))))
 
 
 
