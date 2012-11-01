@@ -2,6 +2,10 @@
 ;; Local emacs configuration file for azote ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; Local installation path
+(load-file "~/.emacs.d/local/cedet-snapshot-8387/cedet-devel-load.el")
+
+
 ;; Bitstream font
 (setq default-frame-alist
       '((font-backend . "xft")
@@ -14,10 +18,6 @@
 
 ;; Magit configuration
 (setq magit-repo-dirs '("~/.etc" "~/.emacs.d" "~/projets/git/" "~/EDF/atelier"))
-
-
-;; Local installation path
-(add-to-list 'load-path "~/.emacs.d/local/cedet-1.1/common")
 
 
 ;; Local Variables:

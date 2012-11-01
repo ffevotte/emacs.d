@@ -164,24 +164,6 @@ turned on."
      (add-hook 'flyspell-mode-hook 'ff/flyspell-buffer-after-activation)))
 
 
-;; CEDET
-(when (require 'cedet nil 'noerror)
-  (setq semanticdb-default-save-directory "~/.emacs.d/semanticdb")
-  (setq semantic-idle-scheduler-idle-time 0.5)
-  (add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode)
-  (add-to-list 'semantic-default-submodes 'global-semantic-idle-completions-mode)
-  (when (>= (string-to-number cedet-version) 1.1)
-    (require 'semantic/ia))
-  (eval-after-load "semantic"
-    '(progn
-       (require 'etags)
-       (define-key semantic-mode-map (kbd "C-c , ,")
-         (lambda ()
-           (interactive)
-           (ring-insert find-tag-marker-ring (point-marker))
-           (call-interactively 'semantic-ia-fast-jump))))))
-
-
 
 
 ;; Mode-specific customizations

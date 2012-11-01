@@ -284,17 +284,30 @@ With two universal arguments, switch the buffer in another window."
     (add-to-list 'ac-dictionary-directories ff/auto-complete-ac-dict))
   (ac-config-default))
 
-;; Replace idle-semantic-completions-mode by auto-complete
+
+;; CEDET
+(when (ff/require-or-warn 'cedet)
+  (setq semanticdb-default-save-directory "~/.emacs.d/semanticdb")
+  (setq semantic-idle-scheduler-idle-time 0.5)
+  (add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode)
+  (when (>= (string-to-number cedet-version) 1.1)
+    (require 'semantic/ia))
+  (defun ff/semantic-ia-fast-jump ()
+    "Push point to the tag marker ring before calling `semantic-ia-fast-jump'"
+    (interactive)
+    (ring-insert find-tag-marker-ring (point-marker))
+    (when (not (null gtags-mode))
+      (gtags-push-context))
+    (call-interactively 'semantic-ia-fast-jump))
+  (eval-after-load "semantic"
+    '(progn
+       (require 'etags)
+       (define-key semantic-mode-map (kbd "C-c , ,") 'ff/semantic-ia-fast-jump))))
+
 (defun ff/semantic-auto-completion ()
   "Activate semantic-ia source for auto-completion if available"
-  (ff/require-or-warn 'cedet)
   (when (boundp 'ac-source-semantic)
-    (add-to-list 'ac-sources 'ac-source-semantic)
-    (setq semantic-default-submodes
-          (delete 'global-semantic-idle-completions-mode
-                  semantic-default-submodes))))
-
-
+    (add-to-list 'ac-sources 'ac-source-semantic)))
 
 
 ;; Yasnippet
