@@ -40,14 +40,36 @@
 
 
 ;; CEDET
-(global-ede-mode 1)
-(ede-cpp-root-project "SN2D1D - SVN trunk"
-                      :name "SN2D1D - SVN trunk"
-                      :file "/home/H55056/local/HPCneutro/sn2d1d.svn/trunk/Makefile.am"
-                      :include-path '("./"
-                                      "/include/")
-                      )
+(defun ff/generate-ede-projects (command include-path)
+  (let ((ede-config-buffer (current-buffer)))
+    (with-temp-buffer
+      (shell-command command (current-buffer))
+      (goto-char 0)
+      (let ((again t)
+            file)
+        (while again
+          (setq file (buffer-substring (line-beginning-position) (line-end-position)))
+          (if (> (forward-line) 0)
+              (setq again nil)
+            (print `(ede-cpp-root-project
+                     ,file
+                     :file ,file
+                     :include-path ',include-path)
+                   ede-config-buffer)))))))
 
+(defun ff/update-ede-projects ()
+  (interactive)
+  (with-temp-buffer
+    (ff/generate-ede-projects "find ~/local/HPCneutro -name autogen"
+                              '("." "/include"))
+    (ff/generate-ede-projects "find /scratch/H55056/cocagne -name tests.list"
+                              '("." "/../include"))
+    (write-file "~/.emacs.d/host-clau5abb-ede.el")))
+
+(global-ede-mode 1)
+(unless (load "~/.emacs.d/host-clau5abb-ede.el" 'noerror)
+  (ff/update-ede-projects)
+  (load "~/.emacs.d/host-clau5abb-ede.el" 'noerror))
 
 
 ;; Local Variables:
