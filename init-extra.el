@@ -236,6 +236,11 @@ With two universal arguments, switch the buffer in another window."
      (call-interactively 'eval-last-sexp))))
 
 
+;; Recursive minibuffer
+(setq enable-recursive-minibuffers t)
+(minibuffer-depth-indicate-mode 1)
+
+
 
 
 ;; Non standard extensions
@@ -296,7 +301,8 @@ With two universal arguments, switch the buffer in another window."
     "Push point to the tag marker ring before calling `semantic-ia-fast-jump'"
     (interactive)
     (ring-insert find-tag-marker-ring (point-marker))
-    (when (not (null gtags-mode))
+    (when (and (boundp 'gtags-mode)
+               (not (null gtags-mode)))
       (gtags-push-context))
     (call-interactively 'semantic-ia-fast-jump))
   (eval-after-load "semantic"
