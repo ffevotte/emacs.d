@@ -119,6 +119,8 @@
 
 ;; Compilation mode
 (setq compilation-scroll-output 'first-error) ;; scroll compilation buffer until first error
+(eval-after-load "compile"
+  '(load "setup-compile"))
 
 
 ;; gtags-mode
