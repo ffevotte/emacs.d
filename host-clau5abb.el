@@ -4,7 +4,15 @@
 
 ;; Local installation path
 (add-to-list 'load-path "~/.emacs.d/local")
-(load-file "~/.emacs.d/local/cedet-snapshot-8387/cedet-devel-load.el")
+
+(load-file "~/.emacs.d/local/cedet-snapshot-8387/cedet-devel-load.el") ; CEDET
+
+(add-to-list 'load-path "/home/H55056/.emacs.d/predictive")            ; Predictive
+(add-to-list 'load-path "/home/H55056/.emacs.d/predictive/texinfo")
+(add-to-list 'load-path "/home/H55056/.emacs.d/predictive/latex")
+(add-to-list 'load-path "/home/H55056/.emacs.d/predictive/html")
+(autoload 'predictive-mode "/home/H55056/.emacs.d/predictive/predictive"
+  "Turn on Predictive Completion Mode." t)
 
 
 ;; Bitstream font

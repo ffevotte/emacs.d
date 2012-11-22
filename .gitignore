@@ -5,9 +5,10 @@ bookmarks
 custom.el
 desktops
 elpa/*
-local
 ff-autoloads.el
+local
 org-clock-save.el
+predictive
 semanticdb
 tramp
 url
