@@ -158,11 +158,19 @@ turned on."
 ;; Flyspell-mode
 (eval-after-load "flyspell"
   '(progn
+     ;; Arrange for the entire buffer to be highlighted when `flyspell-mode' is activated
      (defun ff/flyspell-buffer-after-activation ()
+       "Run `flyspell-buffer' after `flyspell-mode' is activated."
        (when flyspell-mode
          (flyspell-buffer)))
-     (add-hook 'flyspell-mode-hook 'ff/flyspell-buffer-after-activation)))
+     (add-hook 'flyspell-mode-hook 'ff/flyspell-buffer-after-activation)
 
+     ;; Use <F1> to correct the word at point
+     (define-key flyspell-mode-map (kbd "<f1>") 'flyspell-correct-word-before-point)))
+
+(defun ff/turn-on-flyspell ()
+  "Turn `flyspell-mode' on."
+  (flyspell-mode 1))
 
 
 
