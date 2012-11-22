@@ -105,6 +105,12 @@ Example:
 (global-set-key (kbd "M-l")     'forward-char)
 (global-set-key (kbd "C-x g")   'revert-buffer) ;; Revert buffer
 (global-set-key (kbd "C-c v v") 'magit-status)  ;; Magit entry point
+;; Switch windows using C-pgUp / C-pgDn
+(global-set-key (kbd "C-<next>")  (lambda () (interactive) (other-window 1)))
+(global-set-key (kbd "C-<prior>") (lambda () (interactive) (other-window -1)))
+;; Move between pages (separated with ^L) with M-pgUp / M-pgDn
+(global-set-key (kbd "M-<next>")  (lambda () (interactive) (forward-page 1)(move-beginning-of-line 1)))
+(global-set-key (kbd "M-<prior>") (lambda () (interactive) (forward-page -1)(move-beginning-of-line 1)))
 
 
 ;; File cache (C-x C-f C-<tab>)
