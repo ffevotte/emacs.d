@@ -92,6 +92,7 @@ Example:
 ;; Enable some "forbidden" commands
 (put 'set-goal-column     'disabled nil) ;; (C-x C-n)
 (put 'narrow-to-region    'disabled nil) ;; (C-x n n)
+(put 'upcase-region       'disabled nil) ;; (C-x C-u)
 (put 'erase-buffer        'disabled nil)
 (put 'ido-exit-minibuffer 'disabled nil)
 
