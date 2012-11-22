@@ -12,6 +12,7 @@ Example:
       (add-hook hook function))))
 
 
+
 ;; Extensions management
 (defun ff/require-or-warn (p)
   "Require a package or warn the user and return nil."
@@ -55,7 +56,7 @@ Example:
 
 
 
-
+
 ;; Global customization
 ;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -89,6 +90,7 @@ Example:
 (defalias 'yes-or-no-p 'y-or-n-p)   ;; Don't bother typing 'yes'
 
 
+
 ;; Enable some "forbidden" commands
 (put 'set-goal-column     'disabled nil) ;; (C-x C-n)
 (put 'narrow-to-region    'disabled nil) ;; (C-x n n)
@@ -97,6 +99,7 @@ Example:
 (put 'ido-exit-minibuffer 'disabled nil)
 
 
+
 ;; Custom global key bindings
 (global-set-key (kbd "C-x C-i") 'imenu)         ;; jump to function definition
 (global-set-key (kbd "C-h a")   'apropos)       ;; search everything, not just commands
@@ -114,11 +117,13 @@ Example:
 (global-set-key (kbd "M-<prior>") (lambda () (interactive) (forward-page -1)(move-beginning-of-line 1)))
 
 
+
 ;; File cache (C-x C-f C-<tab>)
 (file-cache-add-directory "~/.etc")
 (file-cache-add-directory "~/.emacs.d")
 
 
+
 ;; Desktop
 (require 'desktop)
 (setq desktop-save 'ask)
@@ -145,6 +150,7 @@ Example:
   (desktop-save-mode 1))
 
 
+
 ;; Change behaviour of exchange-point-and-mark
 (global-set-key (kbd "C-x C-x") 'ff/exchange-point-and-mark)
 (defun ff/exchange-point-and-mark (&optional arg)
@@ -158,6 +164,7 @@ the prefix argument: a prefix ARG activates the region."
     (exchange-point-and-mark t)))
 
 
+
 ;; Find-file and switch-buffer in other window with a prefix arg
 (global-set-key (kbd "C-x C-f") 'ff/find-file)
 (defun ff/find-file (&optional argp)
@@ -189,6 +196,8 @@ With two universal arguments, switch the buffer in another window."
         (t
          (call-interactively 'switch-to-buffer-other-window))))
 
+
+
 ;; ANSI terminal
 (defun python-term ()
   "Open a python terminal."
@@ -208,11 +217,13 @@ With two universal arguments, switch the buffer in another window."
      (message "Setting up term...done.")))
 
 
+
 ;; Windmove (use S-<arrows> to switch between windows)
 (windmove-default-keybindings)
 (setq windmove-wrap-around t)
 
 
+
 ;; Org-mode
 (defvar ff/use-org nil
   "Set this to non-nil to use org-mode")
@@ -221,6 +232,7 @@ With two universal arguments, switch the buffer in another window."
     '(load "setup-org")))
 
 
+
 ;; Abbrevs
 (quietly-read-abbrev-file)
 (defun ff/turn-on-abbrev ()
@@ -228,6 +240,7 @@ With two universal arguments, switch the buffer in another window."
   (abbrev-mode 1))
 
 
+
 ;; Eval and replace lisp code
 (defun eval-and-replace (value)
   "Evaluate the sexp at point and replace it with its value"
@@ -243,13 +256,14 @@ With two universal arguments, switch the buffer in another window."
      (call-interactively 'eval-last-sexp))))
 
 
+
 ;; Recursive minibuffer
 (setq enable-recursive-minibuffers t)
 (minibuffer-depth-indicate-mode 1)
 
 
 
-
+
 ;; Non standard extensions
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -266,11 +280,13 @@ With two universal arguments, switch the buffer in another window."
 (ff/set-color-theme)
 
 
+
 ;; Ido-ubiquitous
 (when (ff/require-or-warn 'ido-ubiquitous)
   (ido-ubiquitous-mode 1))
 
 
+
 ;; Helm (successor to anything)
 (when (ff/require-or-warn 'helm-config)
   (global-set-key (kbd "C-x C-h") 'helm-mini)
@@ -278,6 +294,7 @@ With two universal arguments, switch the buffer in another window."
   (global-set-key (kbd "C-c M-x") 'helm-M-x))
 
 
+
 ;; Smex
 (when (ff/require-or-warn 'smex)
   (smex-initialize)
@@ -288,6 +305,7 @@ With two universal arguments, switch the buffer in another window."
   (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command))
 
 
+
 ;; Auto-complete
 (defvar ff/auto-complete-ac-dict nil
   "Path to the auto-complete dictionnary")
@@ -297,6 +315,7 @@ With two universal arguments, switch the buffer in another window."
   (ac-config-default))
 
 
+
 ;; CEDET
 (when (ff/require-or-warn 'cedet)
   (setq semanticdb-default-save-directory "~/.emacs.d/semanticdb")
@@ -323,6 +342,7 @@ With two universal arguments, switch the buffer in another window."
     (add-to-list 'ac-sources 'ac-source-semantic)))
 
 
+
 ;; Yasnippet
 (defun ff/turn-on-yasnippet ()
     "Locally turn on yasnippet minor mode"
@@ -344,6 +364,7 @@ With two universal arguments, switch the buffer in another window."
     (load "yasnippet-bundle")))
 
 
+
 ;; Adaptive-wrap
 (when (ff/fboundp 'adaptive-wrap-prefix-mode)
   (defadvice visual-line-mode (after ff/adaptive-wrap-prefix-mode activate)
@@ -353,6 +374,7 @@ With two universal arguments, switch the buffer in another window."
       (adaptive-wrap-prefix-mode -1))))
 
 
+
 ;; Autopair
 (defun ff/turn-on-autopair ()
   "Turn on autopair minor mode if available."
@@ -360,6 +382,7 @@ With two universal arguments, switch the buffer in another window."
     (autopair-mode 1)))
 
 
+
 ;; Bookmark+
 (when (ff/require-or-warn 'bookmark+)
   (ff/require-or-warn 'bookmark+-lit)
@@ -372,12 +395,19 @@ With two universal arguments, switch the buffer in another window."
   (global-set-key (kbd "C-x <kp-subtract>") 'bmkp-previous-bookmark-this-file/buffer-repeat))
 
 
+
+;; page-break-line
+(setq page-break-lines-char ?_)
+
+
+
 ;; Expand-region
 (add-to-list 'load-path "~/.emacs.d/packages/expand-region")
 (when (ff/require-or-warn 'expand-region)
   (global-set-key (kbd "C-x SPC") 'er/expand-region))
 
 
+
 ;; Multiple cursors
 (add-to-list 'load-path "~/.emacs.d/packages/multiple-cursors")
 (when (ff/require-or-warn 'multiple-cursors)
@@ -388,11 +418,13 @@ With two universal arguments, switch the buffer in another window."
   (global-set-key (kbd "C-S-SPC") 'set-rectangular-region-anchor))
 
 
+
 ;; Slurm
 (add-to-list 'load-path "~/.emacs.d/packages/slurm")
 (ff/require-or-warn 'slurm)
 
 
+
 ;; a2ps-multibyte
 (add-to-list 'load-path "~/.emacs.d/packages/a2ps-multibyte")
 (when (ff/require-or-warn 'a2ps-multibyte)
@@ -400,10 +432,12 @@ With two universal arguments, switch the buffer in another window."
   (global-set-key (kbd "S-<print>") 'a2ps-region))
 
 
+
 ;; Automatically start server
 (load "setup-server")
 
 
+
 ;; Home-made packages
 (defun ff/update-autoloads ()
   (interactive)
@@ -420,6 +454,7 @@ With two universal arguments, switch the buffer in another window."
 
 
 
+
 ;; Mode-specific customization
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -450,10 +485,12 @@ With two universal arguments, switch the buffer in another window."
     (message "Activating delete-trailing-whitespace")))
 
 
+
 ;; Text-mode
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 
 
+
 ;; LaTeX-mode
 (defun ff/TeX-turn-on-abbrev ()
   (abbrev-mode 1)
@@ -461,10 +498,12 @@ With two universal arguments, switch the buffer in another window."
 (add-hook 'TeX-mode-hook 'ff/TeX-turn-on-abbrev)
 
 
+
 ;; C-like modes
 (add-hook 'c-mode-common-hook 'ff/semantic-auto-completion)
 
 
+
 ;; Common features for programming modes
 (ff/add-hooks (list 'c-mode-common-hook 'lisp-mode-hook 'emacs-lisp-mode-hook 'python-mode-hook
                     'sh-mode-hook 'octave-mode-hook 'LaTeX-mode-hook)
