@@ -10,7 +10,7 @@
 ;; Bitstream font
 (setq default-frame-alist
       '((font-backend . "xft")
-        (font . "Bitstream Vera Sans Mono-10")))
+        (font . "Inconsolata-11")))
 
 
 ;; custom version of org-clock.el to add org-clock-before-select-task-hook
