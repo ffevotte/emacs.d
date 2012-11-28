@@ -497,6 +497,20 @@ With two universal arguments, switch the buffer in another window."
   (setq local-abbrev-table TeX-mode-abbrev-table))
 (add-hook 'TeX-mode-hook 'ff/TeX-turn-on-abbrev)
 
+(eval-after-load "latex"
+  '(define-key LaTeX-mode-map (kbd "~") 'ff/insert-tilde))
+(defun ff/insert-tilde ()
+  "Insert a tilde (~) character at point.
+
+Potentially remove surrounding spaces around point, so that the
+newly inserted character replaces them."
+  (interactive)
+  (skip-syntax-forward " ")
+  (let ((end (point)))
+    (skip-syntax-backward " ")
+    (delete-region (point) end)
+    (insert "~")))
+
 
 
 ;; C-like modes
