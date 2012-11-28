@@ -5,7 +5,6 @@
  initial-scratch-message ""           ;; Empty scratch buffer
  initial-major-mode 'fundamental-mode ;;   ... in fundamental-mode
  inhibit-splash-screen t              ;; No fancy splash screen
- x-select-enable-clipboard t          ;; Killing & yanking uses the clipboard
  set-mark-command-repeat-pop t        ;; Easily cycle through the Mark Ring
  visible-bell t)                      ;; Visible bell
 (show-paren-mode 1)                   ;; Parenthesis matching
