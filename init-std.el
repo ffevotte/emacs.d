@@ -1,5 +1,3 @@
-(add-to-list 'load-path "~/.emacs.d" 'append)
-
 ;; Global customization
 (setq
  initial-scratch-message ""           ;; Empty scratch buffer
@@ -19,6 +17,11 @@
 (global-set-key (kbd "<f5>")    'recompile)        ;; rerun last compilation command
 (global-set-key (kbd "C-x C-r") 'ido-recentf-open) ;; find recent files using C-x C-r
 (global-set-key (kbd "C-z")     nil)  ;; don't suspend emacs on C-z (but C-x C-z still works)
+
+
+;; Windmove (use S-<arrows> to switch between windows)
+(windmove-default-keybindings)
+(setq windmove-wrap-around t)
 
 
 ;; Make buffer names unique
@@ -173,6 +176,22 @@ turned on."
   "Turn `flyspell-mode' on."
   (flyspell-mode 1))
 
+
+;; Slurm
+(add-to-list 'load-path "~/.emacs.d/packages/slurm")
+(require 'slurm nil t)
+
+
+;; a2ps-multibyte
+(add-to-list 'load-path "~/.emacs.d/packages/a2ps-multibyte")
+(when (require 'a2ps-multibyte nil t)
+  (global-set-key (kbd "<print>")   'a2ps-buffer)
+  (global-set-key (kbd "S-<print>") 'a2ps-region))
+
+
+;; ISend
+(add-to-list 'load-path "~/.emacs.d/packages/isend")
+(require 'isend-mode nil t)
 
 
 ;; Mode-specific customizations

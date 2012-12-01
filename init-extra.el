@@ -218,12 +218,6 @@ With two universal arguments, switch the buffer in another window."
 
 
 
-;; Windmove (use S-<arrows> to switch between windows)
-(windmove-default-keybindings)
-(setq windmove-wrap-around t)
-
-
-
 ;; Org-mode
 (defvar ff/use-org nil
   "Set this to non-nil to use org-mode")
@@ -419,20 +413,6 @@ With two universal arguments, switch the buffer in another window."
 
 
 
-;; Slurm
-(add-to-list 'load-path "~/.emacs.d/packages/slurm")
-(ff/require-or-warn 'slurm)
-
-
-
-;; a2ps-multibyte
-(add-to-list 'load-path "~/.emacs.d/packages/a2ps-multibyte")
-(when (ff/require-or-warn 'a2ps-multibyte)
-  (global-set-key (kbd "<print>")   'a2ps-buffer)
-  (global-set-key (kbd "S-<print>") 'a2ps-region))
-
-
-
 ;; Automatically start server
 (load "setup-server")
 
@@ -443,8 +423,7 @@ With two universal arguments, switch the buffer in another window."
   (interactive)
   (message "Updating autoloads for home-made packages...")
   (let ((generated-autoload-file "~/.emacs.d/ff-autoloads.el"))
-    (dolist (x (list "~/.emacs.d/isend.el"             ;; ISend-mode (associate buffer to a terminal)
-                     "~/.emacs.d/org-tagreport.el"     ;; Reports by tag for org-mode
+    (dolist (x (list "~/.emacs.d/org-tagreport.el"     ;; Reports by tag for org-mode
                      "~/.emacs.d/ff-misc.el"))         ;; Stack-overflow
       (update-file-autoloads x 'save-after)))
   (message "Updating autoloads for home-made packages...done"))
