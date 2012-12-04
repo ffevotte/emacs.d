@@ -173,6 +173,21 @@ turned on."
   (flyspell-mode 1))
 
 
+;; ISend mode
+(add-to-list 'load-path "~/.emacs.d/packages/isend")
+(require 'isend nil t)
+
+
+;; Slurm mode
+(add-to-list 'load-path "~/.emacs.d/packages/slurm")
+(require 'slurm nil t)
+
+
+;; a2ps-multibyte (support for UTF-8 in a2ps)
+(add-to-list 'load-path "~/.emacs.d/packages/a2ps-multibyte")
+(require 'a2ps-multibyte)
+
+
 
 ;; Mode-specific customizations
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

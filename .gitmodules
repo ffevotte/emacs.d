@@ -10,3 +10,6 @@
 [submodule "packages/a2ps-multibyte"]
 	path = packages/a2ps-multibyte
 	url = https://github.com/ffevotte/a2ps-multibyte.el.git
+[submodule "packages/isend"]
+	path = packages/isend
+	url = https://github.com/ffevotte/isend-mode.el.git
