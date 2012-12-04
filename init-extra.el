@@ -241,6 +241,8 @@ With two universal arguments, switch the buffer in another window."
 
 
 
+;; LISP programming
+
 ;; Eval and replace lisp code
 (defun eval-and-replace (value)
   "Evaluate the sexp at point and replace it with its value"
@@ -254,6 +256,24 @@ With two universal arguments, switch the buffer in another window."
    (if argp
        (call-interactively 'eval-and-replace)
      (call-interactively 'eval-last-sexp))))
+
+;; Test macro expansion
+(defmacro ff/test-macroexpand (form)
+  "Display the given macro expansion in buffer *macroexpand*
+
+Example usage:
+  (ff/test-macroexpand '(ff/add-compilation-command \"run\" (kbd \"<f6>\")))
+"
+  `(progn
+     (with-current-buffer (get-buffer-create "*macroexpand*")
+       (setq buffer-read-only nil)
+       (erase-buffer)
+       (pp
+        (macroexpand ,form)
+        (current-buffer))
+       (setq buffer-read-only t))
+     (display-buffer "*macroexpand*")))
+
 
 
 
