@@ -16,7 +16,6 @@
 ;; Custom key bindings
 (global-set-key (kbd "M-g")     'goto-line)        ;; better keybinding for goto-line
 (global-set-key (kbd "C-c q")   'join-line)        ;; join this line and the previous one
-(global-set-key (kbd "<f5>")    'recompile)        ;; rerun last compilation command
 (global-set-key (kbd "C-x C-r") 'ido-recentf-open) ;; find recent files using C-x C-r
 (global-set-key (kbd "C-z")     nil)  ;; don't suspend emacs on C-z (but C-x C-z still works)
 

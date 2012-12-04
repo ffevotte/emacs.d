@@ -81,3 +81,45 @@
                1                                                         ;; Line number
                nil                                                       ;; Column number
                1))                                                       ;; Type (warning)
+
+
+
+;; Multiple compilation modes
+
+(defmacro ff/add-compilation-command (name &optional key)
+  (let ((buffer-name      (concat "*" name "*"))
+        (compile-symbol   (intern name))
+        (recompile-symbol (intern (concat "re" name))))
+    `(progn
+       (defun ,compile-symbol ()
+         ,(format
+           "This function behaves similarly to `compile', except it puts compilation
+results in the %s buffer." buffer-name)
+         (interactive)
+         (let ((compilation-buffer-name-function
+                (lambda (mode) "" ,buffer-name)))
+           (call-interactively 'compile)))
+
+       (defun ,recompile-symbol ()
+         ,(format
+           "This function behaves similarly to `recompile', except it reuses the
+last compilation parameters from buffer %s." buffer-name)
+         (interactive)
+         (if (get-buffer ,buffer-name)
+             (with-current-buffer ,buffer-name
+               (recompile))
+           (call-interactively ',compile-symbol)))
+
+       ,(when key
+          `(global-set-key ,key
+                           (lambda (argp)
+                             ,(format "When ARGP is set, call `%s', otherwise call `%s'"
+                                      (symbol-name compile-symbol)
+                                      (symbol-name recompile-symbol))
+                             (interactive "P")
+                             (if argp
+                                 (call-interactively ',compile-symbol)
+                               (call-interactively ',recompile-symbol))))))))
+
+(ff/add-compilation-command "build" (kbd "<f5>"))
+(ff/add-compilation-command "run"   (kbd "<f6>"))
