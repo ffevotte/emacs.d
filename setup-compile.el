@@ -68,7 +68,7 @@
     (goto-char (point-min))
     (setq buffer-read-only nil)
     (while (re-search-forward "^LaTeX Warning: " nil t)
-      (while (not (re-search-forward "on input line [[:digit:]]+\\.$" (line-end-position) t))
+      (while (not (re-search-forward "\\.$" (line-end-position) t))
         (end-of-line)
         (delete-char 1)
         (beginning-of-line)))
