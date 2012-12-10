@@ -1,6 +1,3 @@
-(setq compilation-error-regexp-alist nil)
-(setq compilation-error-regexp-alist-alist nil)
-
 ;; ANSI coloring in compilation buffers
 (require 'ansi-color)
 (defun ff/ansi-colorize-buffer ()
@@ -11,8 +8,10 @@
 
 
 
-;; Handle LaTeX compilation errors
-(defun compilation-error-latex-file ()
+;; Handle LaTeX compilation errors and warnings
+
+;; Parse LaTeX output to determine the source file
+(defun ff/compilation-error-latex-file ()
   "Analyse the LaTeX output to find the source file in which an error was reported."
   (condition-case nil
       (save-excursion
@@ -48,20 +47,7 @@
     ((error)
      nil)))
 
-;; Add LaTeX errors detection to the list
-(add-to-list 'compilation-error-regexp-alist 'latex-error)
-(add-to-list 'compilation-error-regexp-alist-alist
-             '(latex-error
-               "^l\\.\\([[:digit:]]+\\)[[:space:]]" ;; Regular expression
-               compilation-error-latex-file         ;; Filename
-               1                                    ;; Line number
-               nil                                  ;; Column number
-               2                                    ;; Type (error)
-               1))                                  ;; Highlight
-
-
-
-;; Handle LaTeX compilation warnings
+;; Unfill "LaTeX Warning" lines
 (defun ff/compilation-LaTeX-filter ()
   (interactive)
   (save-excursion
@@ -75,11 +61,23 @@
     (setq buffer-read-only t)))
 (add-hook 'compilation-filter-hook 'ff/compilation-LaTeX-filter)
 
+;; Add LaTeX errors detection to the list
+(add-to-list 'compilation-error-regexp-alist 'latex-error)
+(add-to-list 'compilation-error-regexp-alist-alist
+             '(latex-error
+               "^l\\.\\([[:digit:]]+\\)[[:space:]]" ;; Regular expression
+               ff/compilation-error-latex-file      ;; Filename
+               1                                    ;; Line number
+               nil                                  ;; Column number
+               2                                    ;; Type (error)
+               1))                                  ;; Highlight
+
+;; Add LaTeX warnings detection to the list
 (add-to-list 'compilation-error-regexp-alist 'latex-warning)
 (add-to-list 'compilation-error-regexp-alist-alist
              '(latex-warning
                "^LaTeX Warning: .* on input line \\([[:digit:]]+\\)\\.$" ;; Regular expression
-               compilation-error-latex-file                              ;; Filename
+               ff/compilation-error-latex-file                           ;; Filename
                1                                                         ;; Line number
                nil                                                       ;; Column number
                1))                                                       ;; Type (warning)
