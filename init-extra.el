@@ -218,12 +218,6 @@ With two universal arguments, switch the buffer in another window."
 
 
 
-;; Windmove (use S-<arrows> to switch between windows)
-(windmove-default-keybindings)
-(setq windmove-wrap-around t)
-
-
-
 ;; Org-mode
 (defvar ff/use-org nil
   "Set this to non-nil to use org-mode")

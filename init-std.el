@@ -1,4 +1,3 @@
-(add-to-list 'load-path "~/.emacs.d" 'append)
 
 ;; Global customization
 (setq
@@ -18,6 +17,27 @@
 (global-set-key (kbd "C-c q")   'join-line)        ;; join this line and the previous one
 (global-set-key (kbd "C-x C-r") 'ido-recentf-open) ;; find recent files using C-x C-r
 (global-set-key (kbd "C-z")     nil)  ;; don't suspend emacs on C-z (but C-x C-z still works)
+
+
+;; Windmove (use S-<arrows> to switch between windows)
+(windmove-default-keybindings)
+(setq windmove-wrap-around t)
+
+(eval-after-load "org"
+  ;; Reclaim S-<arrows> keys in org-mode
+  '(progn
+     (define-key org-mode-map (kbd "S-<left>")  nil) ;; Left/Right are directly reclaimed
+     (define-key org-mode-map (kbd "S-<right>") nil)
+     (add-hook 'org-shiftup-final-hook   'windmove-up)     ;; Up/Down are kept for places where
+     (add-hook 'org-shiftdown-final-hook 'windmove-down))) ;; they are useful (dates and such)
+
+(eval-after-load "org-agenda"
+  ;; Reclaim S-<arrows> keys in org-agenda-mode
+  '(progn
+     (define-key org-agenda-mode-map (kbd "S-<left>")  nil)
+     (define-key org-agenda-mode-map (kbd "S-<right>") nil)
+     (define-key org-agenda-mode-map (kbd "S-<up>")    nil)
+     (define-key org-agenda-mode-map (kbd "S-<down>")  nil)))
 
 
 ;; Make buffer names unique
