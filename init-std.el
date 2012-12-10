@@ -35,6 +35,10 @@
 (define-key isearch-mode-map (kbd "C-o") 'isearch-occur)
 
 
+;; TRAMP
+(setq tramp-auto-save-directory "~/.emacs.d/tramp-auto-save")
+
+
 ;; Highlight-line mode
 (defun ff/turn-on-highlight-line ()
   "Turn on and setup hl-line-mode"
