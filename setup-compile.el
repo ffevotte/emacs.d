@@ -111,17 +111,21 @@ last compilation parameters from buffer %s." buffer-name)
          (interactive)
          (if (get-buffer ,buffer-name)
              (with-current-buffer ,buffer-name
-               (recompile))
+               (let ((compilation-buffer-name-function
+                      (lambda (mode) "" ,buffer-name)))
+                 (call-interactively 'recompile)))
            (call-interactively ',compile-symbol)))
 
        ,(when key
           `(global-set-key ,key
-                           (lambda (argp)
-                             ,(format "When ARGP is set, call `%s', otherwise call `%s'"
+                           (lambda (arg)
+                             ,(format "With two universal prefix arguments, call `%s' with
+a prefix arg, otherwise call `%s'"
                                       (symbol-name compile-symbol)
                                       (symbol-name recompile-symbol))
                              (interactive "P")
-                             (setq current-prefix-arg nil)
-                             (if argp
-                                 (,compile-symbol)
-                               (,recompile-symbol))))))))
+                             (cond ((equal arg '(16))
+                                    (let ((current-prefix-arg '(4)))
+                                      (call-interactively ',compile-symbol)))
+                                   (t
+                                    (call-interactively ',recompile-symbol)))))))))

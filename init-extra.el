@@ -236,8 +236,10 @@ With two universal arguments, switch the buffer in another window."
 
 
 ;; Compilation
-(ff/add-compilation-command "build" (kbd "<f5>"))
-(ff/add-compilation-command "run"   (kbd "<f6>"))
+(ff/add-compilation-command "compile5" (kbd "<f5>"))
+(ff/add-compilation-command "compile6" (kbd "<f6>"))
+(ff/add-compilation-command "compile7" (kbd "<f7>"))
+(ff/add-compilation-command "compile8" (kbd "<f8>"))
 
 
 
