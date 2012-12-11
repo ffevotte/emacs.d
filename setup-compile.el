@@ -90,6 +90,10 @@
   (let ((buffer-name      (concat "*" name "*"))
         (compile-symbol   (intern name))
         (recompile-symbol (intern (concat "re" name))))
+    (when (fboundp compile-symbol)
+      (warn "redefining command `%s'" name))
+    (when (fboundp recompile-symbol)
+      (warn "redefining command `re%s'" name))
     `(progn
        (defun ,compile-symbol ()
          ,(format
@@ -117,9 +121,7 @@ last compilation parameters from buffer %s." buffer-name)
                                       (symbol-name compile-symbol)
                                       (symbol-name recompile-symbol))
                              (interactive "P")
+                             (setq current-prefix-arg nil)
                              (if argp
-                                 (call-interactively ',compile-symbol)
-                               (call-interactively ',recompile-symbol))))))))
-
-(ff/add-compilation-command "build" (kbd "<f5>"))
-(ff/add-compilation-command "run"   (kbd "<f6>"))
+                                 (,compile-symbol)
+                               (,recompile-symbol))))))))

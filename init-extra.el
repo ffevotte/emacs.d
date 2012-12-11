@@ -235,6 +235,12 @@ With two universal arguments, switch the buffer in another window."
 
 
 
+;; Compilation
+(ff/add-compilation-command "build" (kbd "<f5>"))
+(ff/add-compilation-command "run"   (kbd "<f6>"))
+
+
+
 ;; LISP programming
 
 ;; Eval and replace lisp code
