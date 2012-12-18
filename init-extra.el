@@ -164,6 +164,26 @@ the prefix argument: a prefix ARG activates the region."
 
 
 
+;; Miscellaneous commands
+(defun unfill-paragraph ()
+  "Unfill the paragraph at point.
+
+This repeatedly calls `join-line' until the whole paragraph does
+not contain hard line breaks any more."
+  (interactive)
+  (forward-paragraph 1)
+  (forward-paragraph -1)
+  (while (looking-at paragraph-start)
+    (forward-line 1))
+  (let ((beg (point)))
+    (forward-paragraph 1)
+    (backward-char 1)
+    (while (> (point) beg)
+      (join-line)
+      (beginning-of-line))))
+
+
+
 ;; Find-file and switch-buffer in other window with a prefix arg
 (global-set-key (kbd "C-x C-f") 'ff/find-file)
 (defun ff/find-file (&optional argp)
