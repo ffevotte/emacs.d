@@ -125,7 +125,6 @@ Example:
 
 
 ;; Desktop
-(require 'desktop)
 (setq desktop-save 'ask)
 (defvar desktop-base-dir "~/.emacs.d/desktops/"
   "Base directory for desktop files")
@@ -406,15 +405,19 @@ Example usage:
 
 
 ;; Bookmark+
-(when (ff/require-or-warn 'bookmark+)
-  (ff/require-or-warn 'bookmark+-lit)
-  (setq
-   bmkp-auto-light-when-jump      'all-in-buffer
-   bmkp-auto-light-when-set       'all-in-buffer
-   bmkp-light-style-autonamed     'lfringe
-   bmkp-light-style-non-autonamed 'rfringe)
-  (global-set-key (kbd "C-x <kp-add>")      'bmkp-next-bookmark-this-file/buffer-repeat)
-  (global-set-key (kbd "C-x <kp-subtract>") 'bmkp-previous-bookmark-this-file/buffer-repeat))
+(autoload 'bookmark-bmenu-list "bookmark+")
+(autoload 'bookmark-jump       "bookmark+")
+(autoload 'bookmark-set        "bookmark+")
+(eval-after-load "bookmark+"
+  '(progn
+     (ff/require-or-warn 'bookmark+-lit)
+     (setq
+      bmkp-auto-light-when-jump      'all-in-buffer
+      bmkp-auto-light-when-set       'all-in-buffer
+      bmkp-light-style-autonamed     'lfringe
+      bmkp-light-style-non-autonamed 'rfringe)
+     (global-set-key (kbd "C-x <kp-add>")      'bmkp-next-bookmark-this-file/buffer-repeat)
+     (global-set-key (kbd "C-x <kp-subtract>") 'bmkp-previous-bookmark-this-file/buffer-repeat)))
 
 
 
