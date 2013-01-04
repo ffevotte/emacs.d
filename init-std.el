@@ -10,6 +10,7 @@
 (column-number-mode 1)                ;; Show line and column numbers
 (line-number-mode 1)                  ;;
 (winner-mode 1)                       ;; Navigate through window layouts with C-c <arrows>
+(define-coding-system-alias 'UTF-8 'utf-8)
 
 
 ;; Custom key bindings
