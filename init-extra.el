@@ -188,6 +188,37 @@ not contain hard line breaks any more."
       (join-line)
       (beginning-of-line))))
 
+(defun rotate-windows (count)
+  "Rotate your windows"
+  (interactive "p")
+  (let* ((non-dedicated-windows (remove-if 'window-dedicated-p (window-list)))
+        (num-windows (length non-dedicated-windows))
+        (i 0)
+        (step (+ num-windows count)))
+    (cond ((not (> num-windows 1))
+           (message "You can't rotate a single window!"))
+          (t
+           (dotimes (counter (- num-windows 1))
+             (let* ((next-i (% (+ step i) num-windows))
+                    (w1 (elt non-dedicated-windows i))
+                    (w2 (elt non-dedicated-windows next-i))
+
+                    (b1 (window-buffer w1))
+                    (b2 (window-buffer w2))
+
+                    (s1 (window-start w1))
+                    (s2 (window-start w2)))
+               (set-window-buffer w1 b2)
+               (set-window-buffer w2 b1)
+               (set-window-start w1 s2)
+               (set-window-start w2 s1)
+               (setq i next-i)))))))
+(defun rotate-windows-backwards (count)
+  (interactive "p")
+  (rotate-windows (- count)))
+(global-set-key (kbd "ESC S-<right>") 'rotate-windows-backwards)
+(global-set-key (kbd "ESC S-<left>")  'rotate-windows)
+
 
 
 ;; Find-file and switch-buffer in other window with a prefix arg
