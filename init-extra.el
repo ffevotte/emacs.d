@@ -124,6 +124,11 @@ Example:
 
 
 
+;; CUA rectangles
+(cua-selection-mode 1)
+
+
+
 ;; Desktop
 (setq desktop-save 'ask)
 (defvar desktop-base-dir "~/.emacs.d/desktops/"
