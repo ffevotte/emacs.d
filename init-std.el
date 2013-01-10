@@ -226,6 +226,7 @@ turned on."
 (add-hook 'octave-mode-hook      'ff/turn-on-hideshow)
 
 
+
 ;; C-like modes
 (eval-after-load "cc-mode"
   '(progn
@@ -235,13 +236,26 @@ turned on."
 (add-hook 'c-mode-common-hook 'ff/turn-on-gtags)
 
 
+
 ;; LaTeX
-(setq reftex-label-alist '(AMSTeX))          ;; Use \eqref for equation references
-(add-hook 'LaTeX-mode-hook 'turn-on-reftex)  ;; Turn on refTeX
+
+;; Use \eqref for equation references
+(setq reftex-label-alist '(AMSTeX))
+
+;; Turn on `reftex-mode' and `LaTeX-math-mode'
+(defun turn-on-latex-math-mode () (LaTeX-math-mode 1))
+(add-hook 'LaTeX-mode-hook 'turn-on-latex-math-mode)
+(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+
+;; Fix incompatibility between latex-preview and gs versions
+(setq preview-gs-options '("-q" "-dNOSAFER" "-dNOPAUSE" "-DNOPLATFONTS"
+                           "-dPrinted" "-dTextAlphaBits=4" "-dGraphicsAlphaBits=4"))
+
 
 
 ;; Gnuplot-mode
 (setq gnuplot-display-process nil)  ;; don't display the gnuplot window
+
 
 
 ;; Octave-mode
