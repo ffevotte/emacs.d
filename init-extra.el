@@ -254,26 +254,6 @@ With two universal arguments, switch the buffer in another window."
 
 
 
-;; ANSI terminal
-(defun python-term ()
-  "Open a python terminal."
-  (interactive)
-  (ansi-term "/usr/bin/python" "Python"))
-(eval-after-load "term"
-  '(progn
-     (message "Setting up term...")
-     (setq term-buffer-maximum-size 10000)
-     (setq ansi-term-color-vector ;; ANSI Term colors
-           [unspecified "#000000" "#b21818" "#18b218" "#BE5F00"
-                        "#6D85BA" "#b218b2" "#18b2b2" "#b2b2b2"])
-     (defun term-send-Cright () (interactive) (term-send-raw-string "\e[1;5C"))
-     (defun term-send-Cleft  () (interactive) (term-send-raw-string "\e[1;5D"))
-     (define-key term-raw-map (kbd "C-<right>") 'term-send-Cright)
-     (define-key term-raw-map (kbd "C-<left>")  'term-send-Cleft)
-     (message "Setting up term...done.")))
-
-
-
 ;; Org-mode
 (defvar ff/use-org nil
   "Set this to non-nil to use org-mode")

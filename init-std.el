@@ -17,7 +17,8 @@
 (global-set-key (kbd "M-g")     'goto-line)        ;; better keybinding for goto-line
 (global-set-key (kbd "C-c q")   'join-line)        ;; join this line and the previous one
 (global-set-key (kbd "C-x C-r") 'ido-recentf-open) ;; find recent files using C-x C-r
-(global-set-key (kbd "C-z")     nil)  ;; don't suspend emacs on C-z (but C-x C-z still works)
+(global-set-key (kbd "C-z")     nil)               ;; don't suspend emacs on C-z (but C-x C-z still works)
+(global-set-key (kbd "<f5>")    'recompile)        ;; re-run last compilation command
 
 
 ;; Windmove (use S-<arrows> to switch between windows)
@@ -80,6 +81,23 @@
      (add-hook 'ibuffer-mode-hook 'ff/turn-on-highlight-line)))
 
 
+;; ANSI terminal
+(defun python-term ()
+  "Open a python terminal."
+  (interactive)
+  (ansi-term "/usr/bin/ipython" "Python"))
+(eval-after-load "term"
+  '(progn
+     (message "Setting up term...")
+     (setq term-buffer-maximum-size 100000)
+     (setq ansi-term-color-vector ;; ANSI Term colors
+           [unspecified "#000000" "#b21818" "#18b218" "#BE5F00"
+                        "#6D85BA" "#b218b2" "#18b2b2" "#b2b2b2"])
+     (defun term-send-Cright () (interactive) (term-send-raw-string "\e[1;5C"))
+     (defun term-send-Cleft  () (interactive) (term-send-raw-string "\e[1;5D"))
+     (define-key term-raw-map (kbd "C-<right>") 'term-send-Cright)
+     (define-key term-raw-map (kbd "C-<left>")  'term-send-Cleft)
+     (message "Setting up term...done.")))
 ;; Dired
 (autoload 'dired-jump "dired-x"
   "Jump to Dired buffer corresponding to current buffer." t)
