@@ -28,13 +28,18 @@
 
 ;; Org-mode setup
 (setq ff/use-org t)
-(setq org-agenda-files '("/netdata/H55056/org" "/netdata/H55056/org/notes"))
+(setq org-agenda-files '("/netdata/H55056/org"
+                         "/netdata/H55056/org/notes"
+                         "/netdata/H55056/org/notes/cocagne"
+                         "/netdata/H55056/org/notes/informatique"
+                         "/netdata/H55056/org/notes/2d1d"
+                         "/netdata/H55056/org/notes/stages"))
 (setq org-default-notes-file "/netdata/H55056/org/refile.org")
 (setq org-default-todo-file "/netdata/H55056/org/todo.org")
 (setq diary-file "/netdata/H55056/org/diary")
 (setq org-tag-alist
       (quote
-       ((:startgroup)("p_sf")("p_sc")("p_hp")("p_non")(:endgroup)
+       ((:startgroup)("p_sf")("p_sc")("p_f3c")("p_hp")("p_non")(:endgroup)("p_ho")
         ("a_ana".?a)("a_maq".?m)("a_dev".?d)("a_etu".?e)("a_red".?r)("a_com".?c)("a_for".?f)("a_adm")
         ("c_cocagne".?C)("c_2d1d".?S)
         ("l_cxx")("l_py")("l_oct")
