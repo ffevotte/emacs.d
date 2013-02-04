@@ -242,6 +242,8 @@ turned on."
 ;; ISend mode
 (add-to-list 'load-path "~/.emacs.d/packages/isend")
 (require 'isend nil t)
+(add-hook 'isend-mode-hook 'isend-default-shell-setup)
+(add-hook 'isend-mode-hook 'isend-default-ipython-setup)
 
 
 
