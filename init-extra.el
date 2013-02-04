@@ -101,20 +101,34 @@ Example:
 
 
 ;; Custom global key bindings
-(global-set-key (kbd "C-x C-i") 'imenu)         ;; jump to function definition
-(global-set-key (kbd "C-h a")   'apropos)       ;; search everything, not just commands
-(global-set-key (kbd "M-j")     'next-line)     ;; VI-like movement with M-{h,j,k,l}
-(global-set-key (kbd "M-k")     'previous-line)
-(global-set-key (kbd "M-h")     'backward-char)
-(global-set-key (kbd "M-l")     'forward-char)
-(global-set-key (kbd "C-x g")   'revert-buffer) ;; Revert buffer
-(global-set-key (kbd "C-c v v") 'magit-status)  ;; Magit entry point
+(define-minor-mode custom-bindings-mode
+  "Install custom key bindings.
+
+\\{custom-bindings-mode-map}"
+  :global t
+  :init-value t
+  :keymap (make-sparse-keymap))
+(defun custom-set-key (key command)
+  (define-key custom-bindings-mode-map key command))
+(defun promote-minor-mode-map (mode)
+  (if (not (eq (car (car minor-mode-map-alist)) mode))
+      (let ((mykeys (assq mode minor-mode-map-alist)))
+        (assq-delete-all mode minor-mode-map-alist)
+        (add-to-list 'minor-mode-map-alist mykeys))))
+
+(custom-set-key (kbd "C-h a")   'apropos)       ;; search everything, not just commands
+(custom-set-key (kbd "H-j")     'next-line)     ;; VI-like movement with M-{h,j,k,l}
+(custom-set-key (kbd "H-k")     'previous-line)
+(custom-set-key (kbd "H-h")     'backward-char)
+(custom-set-key (kbd "H-l")     'forward-char)
+(custom-set-key (kbd "C-x g")   'revert-buffer) ;; Revert buffer
+(custom-set-key (kbd "C-c v")   'magit-status)  ;; Magit entry point
 ;; Switch windows using C-pgUp / C-pgDn
-(global-set-key (kbd "C-<next>")  (lambda () (interactive) (other-window 1)))
-(global-set-key (kbd "C-<prior>") (lambda () (interactive) (other-window -1)))
+(custom-set-key (kbd "C-<next>")  (defun ff/next-window () (interactive) (other-window 1)))
+(custom-set-key (kbd "C-<prior>") (defun ff/prev-window () (interactive) (other-window -1)))
 ;; Move between pages (separated with ^L) with M-pgUp / M-pgDn
-(global-set-key (kbd "M-<next>")  (lambda () (interactive) (forward-page 1)(move-beginning-of-line 1)))
-(global-set-key (kbd "M-<prior>") (lambda () (interactive) (forward-page -1)(move-beginning-of-line 1)))
+(custom-set-key (kbd "M-<next>")  (defun ff/next-page () (interactive) (forward-page 1)(move-beginning-of-line 1)))
+(custom-set-key (kbd "M-<prior>") (defun ff/prev-page () (interactive) (forward-page -1)(move-beginning-of-line 1)))
 
 
 
@@ -157,7 +171,7 @@ Example:
 
 
 ;; Change behaviour of exchange-point-and-mark
-(global-set-key (kbd "C-x C-x") 'ff/exchange-point-and-mark)
+(custom-set-key (kbd "C-x C-x") 'ff/exchange-point-and-mark)
 (defun ff/exchange-point-and-mark (&optional arg)
   "Exchange point and mark.
 
@@ -216,13 +230,17 @@ not contain hard line breaks any more."
 (defun rotate-windows-backwards (count)
   (interactive "p")
   (rotate-windows (- count)))
-(global-set-key (kbd "ESC S-<right>") 'rotate-windows-backwards)
-(global-set-key (kbd "ESC S-<left>")  'rotate-windows)
+(custom-set-key (kbd "ESC S-<right>") 'rotate-windows-backwards)
+(custom-set-key (kbd "M-S-<right>")   'rotate-windows-backwards)
+(custom-set-key (kbd "H-<right>")     'rotate-windows-backwards)
+(custom-set-key (kbd "ESC S-<left>")  'rotate-windows)
+(custom-set-key (kbd "M-S-<left>")    'rotate-windows)
+(custom-set-key (kbd "H-<left>")      'rotate-windows)
 
 
 
 ;; Find-file and switch-buffer in other window with a prefix arg
-(global-set-key (kbd "C-x C-f") 'ff/find-file)
+(custom-set-key (kbd "C-x C-f") 'ff/find-file)
 (defun ff/find-file (&optional argp)
   "Use prefix argument to select where to find a file.
 
@@ -237,7 +255,7 @@ With two universal arguments, visit the file in another window."
         ((eq argp 16)
          (call-interactively 'find-file-other-window))))
 
-(global-set-key (kbd "C-x b") 'ff/switch-to-buffer)
+(custom-set-key (kbd "C-x b") 'ff/switch-to-buffer)
 (defun ff/switch-to-buffer (&optional argp)
   "Use prefix argument to select where to switch to buffer.
 
@@ -287,9 +305,11 @@ With two universal arguments, switch the buffer in another window."
   (interactive (list (eval-last-sexp nil)))
   (kill-sexp -1)
   (insert (format "%S" value)))
-(global-set-key
+(custom-set-key
  (kbd "C-x C-e")
- (lambda (&optional argp)
+ (defun ff/eval-last-sexp (&optional argp)
+   "Evaluate sexp before point.
+With a prefix argument, replace the sexp by its evaluation."
    (interactive "P")
    (if argp
        (call-interactively 'eval-and-replace)
@@ -347,9 +367,10 @@ Example usage:
 
 ;; Helm (successor to anything)
 (when (ff/require-or-warn 'helm-config)
-  (global-set-key (kbd "C-x C-h") 'helm-mini)
-  (global-set-key (kbd "C-x C-r") 'helm-recentf)
-  (global-set-key (kbd "C-c M-x") 'helm-M-x))
+  (custom-set-key (kbd "C-x C-h") 'helm-mini)
+  (custom-set-key (kbd "C-x C-r") 'helm-recentf)
+  (custom-set-key (kbd "C-c M-x") 'helm-M-x)
+  (custom-set-key (kbd "C-x C-i") 'helm-imenu))
 
 
 
@@ -357,10 +378,8 @@ Example usage:
 (when (ff/require-or-warn 'smex)
   (smex-initialize)
   ;; Enhanced M-x
-  (global-set-key (kbd "M-x") 'smex)
-  (global-set-key (kbd "M-X") 'smex-major-mode-commands)
-  ;; Traditional M-x.
-  (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command))
+  (custom-set-key (kbd "M-x") 'smex)
+  (custom-set-key (kbd "M-X") 'smex-major-mode-commands))
 
 
 
@@ -453,8 +472,8 @@ Example usage:
       bmkp-auto-light-when-set       'all-in-buffer
       bmkp-light-style-autonamed     'lfringe
       bmkp-light-style-non-autonamed 'rfringe)
-     (global-set-key (kbd "C-x <kp-add>")      'bmkp-next-bookmark-this-file/buffer-repeat)
-     (global-set-key (kbd "C-x <kp-subtract>") 'bmkp-previous-bookmark-this-file/buffer-repeat)))
+     (custom-set-key (kbd "C-x <kp-add>")      'bmkp-next-bookmark-this-file/buffer-repeat)
+     (custom-set-key (kbd "C-x <kp-subtract>") 'bmkp-previous-bookmark-this-file/buffer-repeat)))
 
 
 
@@ -466,7 +485,7 @@ Example usage:
 ;; Expand-region
 (add-to-list 'load-path "~/.emacs.d/packages/expand-region")
 (when (ff/require-or-warn 'expand-region)
-  (global-set-key (kbd "C-x SPC") 'er/expand-region))
+  (custom-set-key (kbd "C-x SPC") 'er/expand-region))
 
 
 
@@ -474,10 +493,10 @@ Example usage:
 (add-to-list 'load-path "~/.emacs.d/packages/multiple-cursors")
 (when (ff/require-or-warn 'multiple-cursors)
   (defalias 'mc 'mc/edit-lines)
-  (global-set-key (kbd "C-<") 'mc/mark-next-like-this)
-  (global-set-key (kbd "C->") 'mc/mark-previous-like-this)
-  (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
-  (global-set-key (kbd "C-S-SPC") 'set-rectangular-region-anchor))
+  (custom-set-key (kbd "H-<") 'mc/mark-next-like-this)
+  (custom-set-key (kbd "H->") 'mc/mark-previous-like-this)
+  (custom-set-key (kbd "C-c H-<") 'mc/mark-all-like-this)
+  (custom-set-key (kbd "H-SPC") 'set-rectangular-region-anchor))
 
 
 
@@ -580,3 +599,7 @@ newly inserted character replaces them."
 		    'auto-dtw-mode))
 (ff/add-hooks '(c-mode-common-hook LaTeX-mode-hook)
               '(ff/turn-on-yasnippet))
+
+
+
+(promote-minor-mode-map 'custom-bindings-mode)
