@@ -13,6 +13,7 @@
 (define-coding-system-alias 'UTF-8 'utf-8)
 
 
+
 ;; Custom key bindings
 (global-set-key (kbd "M-g")     'goto-line)        ;; better keybinding for goto-line
 (global-set-key (kbd "C-c q")   'join-line)        ;; join this line and the previous one
@@ -21,6 +22,7 @@
 (global-set-key (kbd "<f5>")    'recompile)        ;; re-run last compilation command
 
 
+
 ;; Windmove (use S-<arrows> to switch between windows)
 (windmove-default-keybindings)
 (setq windmove-wrap-around t)
@@ -42,6 +44,7 @@
      (define-key org-agenda-mode-map (kbd "S-<down>")  nil)))
 
 
+
 ;; Make buffer names unique
 (require 'uniquify)
 (setq
@@ -49,30 +52,36 @@
  uniquify-separator         ":")
 
 
+
 ;; Navigate in the kill ring using M-y
 (browse-kill-ring-default-keybindings)
 
 
+
 ;; Isearch
 (define-key isearch-mode-map (kbd "C-o") 'isearch-occur)
 
 
+
 ;; TRAMP
 (setq tramp-auto-save-directory "~/.emacs.d/tramp-auto-save")
 
 
+
 ;; Highlight-line mode
 (defun ff/turn-on-highlight-line ()
   "Turn on and setup hl-line-mode"
   (hl-line-mode 1))
 
 
+
 ;; Truncate long lines
 (defun ff/truncate-lines ()
   "Truncate long lines"
   (setq truncate-lines t))
 
 
+
 ;; IBuffer
 (defalias 'list-buffers 'ibuffer)
 (eval-after-load "ibuffer"
@@ -81,6 +90,7 @@
      (add-hook 'ibuffer-mode-hook 'ff/turn-on-highlight-line)))
 
 
+
 ;; ANSI terminal
 (defun python-term ()
   "Open a python terminal."
@@ -98,6 +108,9 @@
      (define-key term-raw-map (kbd "C-<right>") 'term-send-Cright)
      (define-key term-raw-map (kbd "C-<left>")  'term-send-Cleft)
      (message "Setting up term...done.")))
+
+
+
 ;; Dired
 (autoload 'dired-jump "dired-x"
   "Jump to Dired buffer corresponding to current buffer." t)
@@ -106,10 +119,12 @@
 (add-hook 'dired-mode-hook 'ff/truncate-lines)
 
 
+
 ;; Recentf
 (load "setup-recentf")
 
 
+
 ;; Ido mode
 (setq
  ido-enable-flex-matching               t
@@ -119,6 +134,7 @@
  ido-default-buffer-method              'selected-window)
 (ido-mode 1)
 (ido-everywhere)
+
 (defun ido-recentf-open ()
   "Use `ido-completing-read' to \\[find-file] a recent file"
   (interactive)
@@ -127,12 +143,14 @@
     (message "Aborting")))
 
 
+
 ;; Auto-revert-mode for version-controlled files
 (defadvice vc-find-file-hook (after ff/auto-revert-mode-for-vc activate)
   "vc-find-file-hook advice for activating auto-revert-mode"
   (when vc-mode (auto-revert-mode 1)))
 
 
+
 ;; Hide-show mode
 (eval-after-load "hideshow"
   '(progn
@@ -158,12 +176,14 @@
   (hs-minor-mode 1))
 
 
+
 ;; Compilation mode
 (setq compilation-scroll-output 'first-error) ;; scroll compilation buffer until first error
 (eval-after-load "compile"
   '(load "setup-compile"))
 
 
+
 ;; gtags-mode
 (eval-after-load "gtags"
   '(progn
@@ -189,6 +209,7 @@ turned on."
             (gtags-mode 1)))))))
 
 
+
 ;; Set mark before scrolling
 (defadvice scroll-up (before set-mark activate)
   "Set the mark before scrolling"
@@ -198,6 +219,7 @@ turned on."
   (push-mark))
 
 
+
 ;; Flyspell-mode
 (eval-after-load "flyspell"
   '(progn
@@ -216,22 +238,26 @@ turned on."
   (flyspell-mode 1))
 
 
+
 ;; ISend mode
 (add-to-list 'load-path "~/.emacs.d/packages/isend")
 (require 'isend nil t)
 
 
+
 ;; Slurm mode
 (add-to-list 'load-path "~/.emacs.d/packages/slurm")
 (require 'slurm nil t)
 
 
+
 ;; a2ps-multibyte (support for UTF-8 in a2ps)
 (add-to-list 'load-path "~/.emacs.d/packages/a2ps-multibyte")
 (require 'a2ps-multibyte)
 
 
-
+
+
 ;; Mode-specific customizations
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -244,7 +270,7 @@ turned on."
 (add-hook 'octave-mode-hook      'ff/turn-on-hideshow)
 
 
-
+
 ;; C-like modes
 (eval-after-load "cc-mode"
   '(progn
@@ -254,7 +280,7 @@ turned on."
 (add-hook 'c-mode-common-hook 'ff/turn-on-gtags)
 
 
-
+
 ;; LaTeX
 
 (setq reftex-label-alist '(AMSTeX)) ;; Use \eqref for equation references
@@ -272,11 +298,11 @@ turned on."
                            "-dPrinted" "-dTextAlphaBits=4" "-dGraphicsAlphaBits=4"))
 
 
-
+
 ;; Gnuplot-mode
 (setq gnuplot-display-process nil)  ;; don't display the gnuplot window
 
 
-
+
 ;; Octave-mode
 (add-to-list 'auto-mode-alist '("\\.m\\'" . octave-mode))
