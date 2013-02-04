@@ -1,5 +1,5 @@
-;; Useful helper functions
-;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Useful helper functions
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun ff/add-hooks (hooks functions)
   "Add each function in FUNCTIONS to all hooks in HOOKS.
@@ -13,7 +13,7 @@ Example:
 
 
 
-;; Extensions management
+;;; Extensions management (package.el)
 (defun ff/require-or-warn (p)
   "Require a package or warn the user and return nil."
   (not (unless (require p nil 'noerror)
@@ -57,8 +57,8 @@ Example:
 
 
 
-;; Global customization
-;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Global customization
+;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (menu-bar-mode   -1)
 (tool-bar-mode   -1)
@@ -91,7 +91,7 @@ Example:
 
 
 
-;; Enable some "forbidden" commands
+;;; Enable some "forbidden" commands
 (put 'set-goal-column     'disabled nil) ;; (C-x C-n)
 (put 'narrow-to-region    'disabled nil) ;; (C-x n n)
 (put 'upcase-region       'disabled nil) ;; (C-x C-u)
@@ -100,7 +100,7 @@ Example:
 
 
 
-;; Custom global key bindings
+;;; Custom global key bindings
 (define-minor-mode custom-bindings-mode
   "Install custom key bindings.
 
@@ -132,18 +132,18 @@ Example:
 
 
 
-;; File cache (C-x C-f C-<tab>)
+;;; File cache (C-x C-f C-<tab>)
 (file-cache-add-directory "~/.etc")
 (file-cache-add-directory "~/.emacs.d")
 
 
 
-;; CUA rectangles
+;;; CUA rectangles
 (cua-selection-mode 1)
 
 
 
-;; Desktop
+;;; Desktop
 (setq desktop-save 'ask)
 (defvar desktop-base-dir "~/.emacs.d/desktops/"
   "Base directory for desktop files")
@@ -170,7 +170,7 @@ Example:
 
 
 
-;; Change behaviour of exchange-point-and-mark
+;;; Change behaviour of exchange-point-and-mark
 (custom-set-key (kbd "C-x C-x") 'ff/exchange-point-and-mark)
 (defun ff/exchange-point-and-mark (&optional arg)
   "Exchange point and mark.
@@ -184,7 +184,7 @@ the prefix argument: a prefix ARG activates the region."
 
 
 
-;; Miscellaneous commands
+;;; Miscellaneous commands
 (defun unfill-paragraph ()
   "Unfill the paragraph at point.
 
@@ -239,7 +239,7 @@ not contain hard line breaks any more."
 
 
 
-;; Find-file and switch-buffer in other window with a prefix arg
+;;; Find-file and switch-buffer in other window with a prefix arg
 (custom-set-key (kbd "C-x C-f") 'ff/find-file)
 (defun ff/find-file (&optional argp)
   "Use prefix argument to select where to find a file.
@@ -272,7 +272,7 @@ With two universal arguments, switch the buffer in another window."
 
 
 
-;; Org-mode
+;;; Org-mode
 (defvar ff/use-org nil
   "Set this to non-nil to use org-mode")
 (when ff/use-org
@@ -281,7 +281,7 @@ With two universal arguments, switch the buffer in another window."
 
 
 
-;; Abbrevs
+;;; Abbrevs
 (quietly-read-abbrev-file)
 (defun ff/turn-on-abbrev ()
   "Turn on abbrev-mode"
@@ -289,7 +289,7 @@ With two universal arguments, switch the buffer in another window."
 
 
 
-;; Compilation
+;;; Compilation
 (ff/add-compilation-command "compile5" (kbd "<f5>"))
 (ff/add-compilation-command "compile6" (kbd "<f6>"))
 (ff/add-compilation-command "compile7" (kbd "<f7>"))
@@ -297,7 +297,7 @@ With two universal arguments, switch the buffer in another window."
 
 
 
-;; LISP programming
+;;; LISP programming
 
 ;; Eval and replace lisp code
 (defun eval-and-replace (value)
@@ -332,20 +332,27 @@ Example usage:
        (setq buffer-read-only t))
      (display-buffer "*macroexpand*")))
 
+(defun imenu-elisp-sections ()
+  (setq imenu-prev-index-position-function nil)
+  (add-to-list 'imenu-generic-expression
+               '("SubSections" "^;;; \\(.+\\)$" 1) t)
+  (add-to-list 'imenu-generic-expression
+               '("Sections" "^;;;; \\(.+\\)$" 1) t))
+(add-hook 'emacs-lisp-mode-hook 'imenu-elisp-sections)
 
 
 
-;; Recursive minibuffer
+;;; Recursive minibuffer
 (setq enable-recursive-minibuffers t)
 (minibuffer-depth-indicate-mode 1)
 
 
 
 
-;; Non standard extensions
-;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Non standard extensions
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Color-theme
+;;; Color-theme
 (defun ff/set-color-theme-hook (frame)
   (select-frame frame)
   (ff/set-color-theme))
@@ -359,13 +366,13 @@ Example usage:
 
 
 
-;; Ido-ubiquitous
+;;; Ido-ubiquitous
 (when (ff/require-or-warn 'ido-ubiquitous)
   (ido-ubiquitous-mode 1))
 
 
 
-;; Helm (successor to anything)
+;;; Helm (successor to anything)
 (when (ff/require-or-warn 'helm-config)
   (custom-set-key (kbd "C-x C-h") 'helm-mini)
   (custom-set-key (kbd "C-x C-r") 'helm-recentf)
@@ -374,7 +381,7 @@ Example usage:
 
 
 
-;; Smex
+;;; Smex
 (when (ff/require-or-warn 'smex)
   (smex-initialize)
   ;; Enhanced M-x
@@ -383,7 +390,7 @@ Example usage:
 
 
 
-;; Auto-complete
+;;; Auto-complete
 (defvar ff/auto-complete-ac-dict nil
   "Path to the auto-complete dictionnary")
 (when (ff/require-or-warn 'auto-complete-config)
@@ -393,7 +400,7 @@ Example usage:
 
 
 
-;; CEDET
+;;; CEDET
 (when (ff/require-or-warn 'cedet)
   (setq semanticdb-default-save-directory "~/.emacs.d/semanticdb")
   (setq semantic-idle-scheduler-idle-time 0.5)
@@ -420,7 +427,7 @@ Example usage:
 
 
 
-;; Yasnippet
+;;; Yasnippet
 (defun ff/turn-on-yasnippet ()
     "Locally turn on yasnippet minor mode"
     (when (ff/require-or-warn 'yasnippet-bundle)
@@ -442,7 +449,7 @@ Example usage:
 
 
 
-;; Adaptive-wrap
+;;; Adaptive-wrap
 (when (ff/fboundp 'adaptive-wrap-prefix-mode)
   (defadvice visual-line-mode (after ff/adaptive-wrap-prefix-mode activate)
     "Toggle `visual-line-mode' and `adaptive-wrap-prefix-mode' simultaneously."
@@ -452,7 +459,7 @@ Example usage:
 
 
 
-;; Autopair
+;;; Autopair
 (defun ff/turn-on-autopair ()
   "Turn on autopair minor mode if available."
   (when (ff/require-or-warn 'autopair)
@@ -460,7 +467,7 @@ Example usage:
 
 
 
-;; Bookmark+
+;;; Bookmark+
 (autoload 'bookmark-bmenu-list "bookmark+")
 (autoload 'bookmark-jump       "bookmark+")
 (autoload 'bookmark-set        "bookmark+")
@@ -477,19 +484,19 @@ Example usage:
 
 
 
-;; page-break-line
+;;; page-break-line
 (setq page-break-lines-char ?_)
 
 
 
-;; Expand-region
+;;; Expand-region
 (add-to-list 'load-path "~/.emacs.d/packages/expand-region")
 (when (ff/require-or-warn 'expand-region)
   (custom-set-key (kbd "C-x SPC") 'er/expand-region))
 
 
 
-;; Multiple cursors
+;;; Multiple cursors
 (add-to-list 'load-path "~/.emacs.d/packages/multiple-cursors")
 (when (ff/require-or-warn 'multiple-cursors)
   (defalias 'mc 'mc/edit-lines)
@@ -500,12 +507,12 @@ Example usage:
 
 
 
-;; Automatically start server
+;;; Automatically start server
 (load "setup-server")
 
 
 
-;; Home-made packages
+;;; Home-made packages
 (defun ff/update-autoloads ()
   (interactive)
   (message "Updating autoloads for home-made packages...")
@@ -520,7 +527,7 @@ Example usage:
 
 
 
-;; Manage trailing whitespace
+;;; Manage trailing whitespace
 
 (define-minor-mode auto-dtw-mode
   "Automatically delete trailing whitespace."
@@ -544,8 +551,8 @@ Example usage:
 
 
 
-;; Mode-specific customization
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Mode-specific customization
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Common helper function to be used for hooks
 (defun ff/setup-todo-keywords ()
@@ -560,12 +567,12 @@ Example usage:
 
 
 
-;; Text-mode
+;;; Text-mode
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 
 
 
-;; LaTeX-mode
+;;; LaTeX-mode
 (defun ff/TeX-turn-on-abbrev ()
   (abbrev-mode 1)
   (setq local-abbrev-table TeX-mode-abbrev-table))
@@ -587,12 +594,12 @@ newly inserted character replaces them."
 
 
 
-;; C-like modes
+;;; C-like modes
 (add-hook 'c-mode-common-hook 'ff/semantic-auto-completion)
 
 
 
-;; Common features for programming modes
+;;; Common features for programming modes
 (ff/add-hooks (list 'c-mode-common-hook 'lisp-mode-hook 'emacs-lisp-mode-hook 'python-mode-hook
                     'sh-mode-hook 'octave-mode-hook 'LaTeX-mode-hook)
               (list 'ff/setup-todo-keywords 'ff/remap-newline-indent 'ff/turn-on-autopair
