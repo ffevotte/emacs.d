@@ -500,6 +500,29 @@ Example usage:
   (require 'ff-autoloads))
 
 
+
+;; Manage trailing whitespace
+
+(define-minor-mode auto-dtw-mode
+  "Automatically delete trailing whitespace."
+  :lighter    " dtw"
+  :init-value nil
+  (setq show-trailing-whitespace auto-dtw-mode))
+
+(add-to-list 'write-file-functions 'ff/auto-dtw)
+(defun ff/auto-dtw ()
+  "Delete trailing whitespace, except on the current line if point is at EOL."
+  (when auto-dtw-mode
+    (let ((ws  (save-excursion
+                 (if (eolp)
+                     (let ((end (point)))
+                       (search-backward-regexp "[^[:space:]]")
+                       (buffer-substring (1+ (point)) end))
+                   ""))))
+      (delete-trailing-whitespace)
+      (insert ws))))
+
+
 
 
 ;; Mode-specific customization
@@ -515,21 +538,6 @@ Example usage:
 (defun ff/remap-newline-indent ()
   "Remap <RET> to `newline-and-indent'."
   (local-set-key (kbd "RET") 'newline-and-indent))
-
-(defun ff/delete-trailing-whitespace (&optional argp)
-  "Show trailing whitespaces"
-  (interactive "P")
-  (if argp
-      (progn
-        (setq show-trailing-whitespace nil)
-        (setq write-file-functions
-              (delete 'delete-trailing-whitespace write-file-functions))
-        (message "Deactivating delete-trailing-whitespace"))
-    (setq show-trailing-whitespace t)
-    (make-local-variable 'write-file-functions)
-    (add-to-list 'write-file-functions
-                 'delete-trailing-whitespace)
-    (message "Activating delete-trailing-whitespace")))
 
 
 
@@ -569,6 +577,6 @@ newly inserted character replaces them."
 (ff/add-hooks (list 'c-mode-common-hook 'lisp-mode-hook 'emacs-lisp-mode-hook 'python-mode-hook
                     'sh-mode-hook 'octave-mode-hook 'LaTeX-mode-hook)
               (list 'ff/setup-todo-keywords 'ff/remap-newline-indent 'ff/turn-on-autopair
-		    'ff/delete-trailing-whitespace))
+		    'auto-dtw-mode))
 (ff/add-hooks '(c-mode-common-hook LaTeX-mode-hook)
               '(ff/turn-on-yasnippet))
