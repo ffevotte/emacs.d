@@ -77,7 +77,7 @@ Example:
  shift-select-mode nil                        ;; No shift selection
  mouse-yank-at-point t                        ;; Yank at point (like in a tty)
  whitespace-line-column fill-column           ;; Better whitespace-mode defaults
- whitespace-style '(face trailing lines-tail tabs)
+ whitespace-style '(tab-mark indentation trailing lines-tail)
  imenu-auto-rescan t                          ;; Imenu shoud always rescan the buffers
  diff-switches "-u"                           ;; Unified diffs
  a2ps-switches '("-l" "100")                  ;; Custom command-line args for a2ps
@@ -117,12 +117,13 @@ Example:
         (add-to-list 'minor-mode-map-alist mykeys))))
 
 (custom-set-key (kbd "C-h a")   'apropos)       ;; search everything, not just commands
+(custom-set-key (kbd "<print>") 'a2ps-buffer)   ;; print the current buffer
+(custom-set-key (kbd "C-c v")   'magit-status)  ;; entry point for Magit
+(custom-set-key (kbd "C-x g")   'revert-buffer) ;; revert buffer
 (custom-set-key (kbd "H-j")     'next-line)     ;; VI-like movement with M-{h,j,k,l}
 (custom-set-key (kbd "H-k")     'previous-line)
 (custom-set-key (kbd "H-h")     'backward-char)
 (custom-set-key (kbd "H-l")     'forward-char)
-(custom-set-key (kbd "C-x g")   'revert-buffer) ;; Revert buffer
-(custom-set-key (kbd "C-c v")   'magit-status)  ;; Magit entry point
 ;; Switch windows using C-pgUp / C-pgDn
 (custom-set-key (kbd "C-<next>")  (defun ff/next-window () (interactive) (other-window 1)))
 (custom-set-key (kbd "C-<prior>") (defun ff/prev-window () (interactive) (other-window -1)))
