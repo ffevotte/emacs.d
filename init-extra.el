@@ -124,6 +124,10 @@ Example:
 (custom-set-key (kbd "H-k")     'previous-line)
 (custom-set-key (kbd "H-h")     'backward-char)
 (custom-set-key (kbd "H-l")     'forward-char)
+(custom-set-key (kbd "H-M-j")   'forward-paragraph)
+(custom-set-key (kbd "H-M-k")   'backward-paragraph)
+(custom-set-key (kbd "H-M-h")   'backward-word)
+(custom-set-key (kbd "H-M-l")   'forward-word)
 ;; Switch windows using C-pgUp / C-pgDn
 (custom-set-key (kbd "C-<next>")  (defun ff/next-window () (interactive) (other-window 1)))
 (custom-set-key (kbd "C-<prior>") (defun ff/prev-window () (interactive) (other-window -1)))
@@ -231,12 +235,8 @@ not contain hard line breaks any more."
 (defun rotate-windows-backwards (count)
   (interactive "p")
   (rotate-windows (- count)))
-(custom-set-key (kbd "ESC S-<right>") 'rotate-windows-backwards)
-(custom-set-key (kbd "M-S-<right>")   'rotate-windows-backwards)
-(custom-set-key (kbd "H-<right>")     'rotate-windows-backwards)
-(custom-set-key (kbd "ESC S-<left>")  'rotate-windows)
-(custom-set-key (kbd "M-S-<left>")    'rotate-windows)
-(custom-set-key (kbd "H-<left>")      'rotate-windows)
+(custom-set-key (kbd "H-<right>") 'rotate-windows-backwards)
+(custom-set-key (kbd "H-<left>")  'rotate-windows)
 
 
 
