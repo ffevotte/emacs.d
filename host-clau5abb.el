@@ -85,6 +85,10 @@
   (load "~/.emacs.d/host-clau5abb-ede.el" 'noerror))
 
 
+;; Frequently used ssh hosts
+(setq ssh-term-hosts '("ivanoe1.noe.edf.fr"
+                       "ivanoe2.noe.edf.fr"))
+
 ;; Local Variables:
 ;;   mode: emacs-lisp
 ;; End:

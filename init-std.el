@@ -96,6 +96,7 @@
   "Open a python terminal."
   (interactive)
   (ansi-term "/usr/bin/ipython" "Python"))
+
 (eval-after-load "term"
   '(progn
      (message "Setting up term...")
@@ -108,6 +109,24 @@
      (define-key term-raw-map (kbd "C-<right>") 'term-send-Cright)
      (define-key term-raw-map (kbd "C-<left>")  'term-send-Cleft)
      (message "Setting up term...done.")))
+
+(defvar ssh-term-hosts nil
+  "Frequently used ssh hosts.")
+(defun ssh-term (argp)
+  "Connect to a remote host by SSH.
+Frequently used host names can be interactively completed from `ssh-term-hosts'."
+  (interactive "P")
+  (let ((host (completing-read "Host: " ssh-term-hosts))
+        (user (if argp (read-from-minibuffer "User: ") ""))
+        (port (if argp (read-from-minibuffer "Port: ") "")))
+    (let ((switches (list host)))
+      (when (not (equal user ""))
+        (setq switches (cons "-l" (cons user switches))))
+      (when (not (equal port ""))
+        (setq switches (cons "-p" (cons port switches))))
+      (switch-to-buffer (apply 'make-term (concat "ssh " host) "ssh" nil switches))
+      (term-mode)
+      (term-char-mode))))
 
 
 
