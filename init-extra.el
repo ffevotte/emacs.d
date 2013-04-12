@@ -152,6 +152,19 @@ Example:
 
 
 
+;;; Terminal
+(defun get-or-create-term (argp)
+  (interactive "P")
+  (let* ((term-name "ansi-term")
+         (full-term-name (concat "*" term-name "*"))
+         (term-program "/bin/bash"))
+    (if (get-buffer full-term-name)
+        (switch-to-buffer full-term-name)
+      (ansi-term term-program term-name))))
+(custom-set-key (kbd "<f2>") 'get-or-create-term)
+
+
+
 ;;; Desktop
 (setq desktop-save 'ask)
 (defvar desktop-base-dir "~/.emacs.d/desktops/"
