@@ -207,6 +207,7 @@ the prefix argument: a prefix ARG activates the region."
 
 
 ;;; Miscellaneous commands
+
 (defun unfill-paragraph ()
   "Unfill the paragraph at point.
 
@@ -252,8 +253,25 @@ not contain hard line breaks any more."
 (defun rotate-windows-backwards (count)
   (interactive "p")
   (rotate-windows (- count)))
+
 (custom-set-key (kbd "H-<right>") 'rotate-windows-backwards)
 (custom-set-key (kbd "H-<left>")  'rotate-windows)
+
+(defun move-line-up ()
+  "Move up the current line."
+  (interactive)
+  (transpose-lines 1)
+  (forward-line -2)
+  (indent-according-to-mode))
+(defun move-line-down ()
+  "Move down the current line."
+  (interactive)
+  (forward-line 1)
+  (transpose-lines 1)
+  (forward-line -1)
+  (indent-according-to-mode))
+(custom-set-key (kbd "C-S-<up>")   'move-line-up)
+(custom-set-key (kbd "C-S-<down>") 'move-line-down)
 
 
 
@@ -450,6 +468,7 @@ Example usage:
   '(progn
      (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
      (yas-reload-all)))
+
 (defun ff/turn-on-yasnippet ()
     "Locally turn on yasnippet minor mode"
     (when (ff/require-or-warn 'yasnippet)
