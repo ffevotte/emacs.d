@@ -44,7 +44,11 @@ Example:
                helm
                ido-ubiquitous
                magit
-               smex))
+               markdown-mode
+               page-break-lines
+               smex
+               wgrep
+               yasnippet))
     (condition-case nil
         (package-install p)
       ((debug error) nil))))
