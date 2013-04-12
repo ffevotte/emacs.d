@@ -429,24 +429,14 @@ Example usage:
 
 
 ;;; Yasnippet
+(eval-after-load "yasnippet"
+  '(progn
+     (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
+     (yas-reload-all)))
 (defun ff/turn-on-yasnippet ()
     "Locally turn on yasnippet minor mode"
-    (when (ff/require-or-warn 'yasnippet-bundle)
-      (yas/minor-mode 1)))
-(when (fboundp 'yas/compile-bundle)
-  (defun ff/yas-compile-bundle ()
-    "Compile a bundle of yasnippets"
-    (interactive)
-    (let* ((yasnippet-file (locate-file "yasnippet.el" load-path))
-           (root-dir       (file-name-directory yasnippet-file))
-           (snippets-dir   (concat root-dir "snippets"))
-           (dropdown-file  (locate-file "dropdown-list.el" load-path)))
-      (yas/compile-bundle yasnippet-file
-                          "yasnippet-bundle.el"
-                          (list "~/.emacs.d/snippets" snippets-dir)
-                          nil
-                          dropdown-file))
-    (load "yasnippet-bundle")))
+    (when (ff/require-or-warn 'yasnippet)
+      (yas-minor-mode 1)))
 
 
 
