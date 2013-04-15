@@ -79,6 +79,7 @@ Example:
  show-paren-style 'mixed                      ;; Show the whole expression if it is too large
  bookmark-default-file "~/.emacs.d/bookmarks" ;; Bookmarks file
  shift-select-mode nil                        ;; No shift selection
+ display-buffer-reuse-frames t                ;; If a buffer is displayed in another frame, raise it
  mouse-yank-at-point t                        ;; Yank at point (like in a tty)
  whitespace-line-column fill-column           ;; Better whitespace-mode defaults
  whitespace-style '(tab-mark indentation trailing lines-tail)
