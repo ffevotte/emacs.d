@@ -170,17 +170,22 @@ Example:
 (setq desktop-save 'ask)
 (defvar desktop-base-dir "~/.emacs.d/desktops/"
   "Base directory for desktop files")
+
+(defun desktop--set-frame-title ()
+  (setq frame-title-format
+        (list (concat "%b - Emacs ["
+                      (file-name-nondirectory (directory-file-name desktop-dirname))
+                      "]"))))
+
 (defun desktop-load (name)
   (interactive
    (list
     (completing-read "Desktop name: "
                      (remove "." (remove ".." (directory-files desktop-base-dir))))))
   (desktop-change-dir (concat desktop-base-dir name))
-  (setq frame-title-format
-        (list (concat "%b - Emacs ["
-                      (file-name-nondirectory (directory-file-name desktop-dirname))
-                      "]")))
+  (desktop--set-frame-title)
   (desktop-save-mode 1))
+
 (defun desktop-create ()
   (interactive)
   (when (or (not (boundp 'desktop-dirname))
@@ -189,6 +194,7 @@ Example:
       (setq desktop-dirname (concat desktop-base-dir name))
       (make-directory desktop-dirname 'parents)))
   (desktop-save desktop-dirname)
+  (desktop--set-frame-title)
   (desktop-save-mode 1))
 
 
