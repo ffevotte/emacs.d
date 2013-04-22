@@ -199,6 +199,26 @@ Example:
 
 
 
+;;; Undo in regions
+
+(custom-set-key (kbd "C-_") 'ff/undo)
+(defun ff/undo (&optional arg)
+  "Call undo, improving the use of regions."
+  (interactive "p")
+  (if (use-region-p)
+      (let ((m (set-marker (make-marker) (mark)))
+            (p (set-marker (make-marker) (point)))
+            (deactivate-mark nil))
+        (message "ff/undo use-region")
+        (undo arg)
+        (goto-char p)
+        (set-mark m)
+        (set-marker p nil)
+        (set-marker m nil))
+    (undo arg)))
+
+
+
 ;;; Miscellaneous commands
 
 (defun unfill-paragraph ()
