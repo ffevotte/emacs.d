@@ -199,20 +199,6 @@ Example:
 
 
 
-;;; Change behaviour of exchange-point-and-mark
-(custom-set-key (kbd "C-x C-x") 'ff/exchange-point-and-mark)
-(defun ff/exchange-point-and-mark (&optional arg)
-  "Exchange point and mark.
-
-Inverse standard behaviour of `exchange-point-and-mark' regarding
-the prefix argument: a prefix ARG activates the region."
-  (interactive "P")
-  (if arg
-      (exchange-point-and-mark nil)
-    (exchange-point-and-mark t)))
-
-
-
 ;;; Miscellaneous commands
 
 (defun unfill-paragraph ()
