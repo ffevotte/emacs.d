@@ -41,6 +41,7 @@ Example:
                auto-complete popup
                autopair
                bookmark+
+               git-gutter
                helm
                ido-ubiquitous
                magit
