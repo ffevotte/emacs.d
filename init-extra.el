@@ -582,9 +582,10 @@ Example usage:
   "Delete trailing whitespace, except on the current line if point is at EOL."
   (when auto-dtw-mode
     (let ((ws  (save-excursion
-                 (if (eolp)
+                 (if (and (eolp)
+                          (looking-back "[[:space:]]"))
                      (let ((end (point)))
-                       (search-backward-regexp "[^[:space:]]")
+                       (search-backward-regexp "[^[:space:]]" nil t)
                        (buffer-substring (1+ (point)) end))
                    ""))))
       (delete-trailing-whitespace)
