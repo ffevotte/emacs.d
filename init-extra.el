@@ -73,7 +73,7 @@ Example:
  indicate-buffer-boundaries 'left
  indicate-empty-lines t
  indent-tabs-mode nil                         ;; Indent with spaces
- fill-column 100                              ;; Larger fill column
+ fill-column 80                               ;; Larger fill column
  )
 (setq
  frame-title-format (list "%b - Emacs")       ;; Window title
@@ -101,6 +101,7 @@ Example:
 (put 'set-goal-column     'disabled nil) ;; (C-x C-n)
 (put 'narrow-to-region    'disabled nil) ;; (C-x n n)
 (put 'upcase-region       'disabled nil) ;; (C-x C-u)
+(put 'downcase-region     'disabled nil) ;; (C-x C-l)
 (put 'erase-buffer        'disabled nil)
 (put 'ido-exit-minibuffer 'disabled nil)
 
@@ -647,6 +648,11 @@ newly inserted character replaces them."
 		    'auto-dtw-mode))
 (ff/add-hooks '(c-mode-common-hook LaTeX-mode-hook)
               '(ff/turn-on-yasnippet))
+
+
+
+;;; Markdown-mode
+(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 
 
 
