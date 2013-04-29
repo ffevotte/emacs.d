@@ -211,7 +211,6 @@ Example:
       (let ((m (set-marker (make-marker) (mark)))
             (p (set-marker (make-marker) (point)))
             (deactivate-mark nil))
-        (message "ff/undo use-region")
         (undo arg)
         (goto-char p)
         (set-mark m)
