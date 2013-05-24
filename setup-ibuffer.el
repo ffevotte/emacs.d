@@ -32,7 +32,8 @@
   (ibuffer-switch-to-saved-filter-groups "default")
   (local-set-key (kbd "M-<up>")   'ff/ibuffer-hide-all-filters)
   (local-set-key (kbd "M-<down>") 'ff/ibuffer-show-all-filters)
-  (local-set-key (kbd "/ f")      'ff/ibuffer-filter-by-filename))
+  (local-set-key (kbd "/ f")      'ff/ibuffer-filter-by-filename)
+  (local-set-key (kbd "!")        'ff/ibuffer-do-shell-command))
 
 (defun ff/ibuffer-setup ()
   (add-to-list 'ibuffer-formats
@@ -69,7 +70,7 @@
         (while (< prev-point (point))
           (setq prev-point (point))
           (ibuffer-forward-filter-group)
-          (ff/ibuffer-hide-filter-group (point)))))))  
+          (ff/ibuffer-hide-filter-group (point)))))))
 
 (defun ff/ibuffer-show-all-filters ()
   "Show all ibuffer filter groups"
@@ -135,3 +136,30 @@
   (ibuffer-mark-by-name-regexp "*Compile-Log*")
   (ibuffer-mark-by-name-regexp "*vc-diff*")
   (ibuffer-do-delete))
+
+
+;; Run shell commands on multiple files
+(defun ff/ibuffer-do-shell-command-files (command)
+  "Run shell command COMMAND, passing it all marked buffer files as argument."
+  (interactive "MCommand: ")
+  (eval
+   (append `(start-process ,command ,(format "*IBuffer command: %s*" command) command)
+           (mapcar 'buffer-file-name (ibuffer-get-marked-buffers)))))
+
+(defun ff/ibuffer-do-shell-command (arg)
+  "Run a shell command on marked buffer files.
+
+The exact behaviour depends on the value of the argument:
+
+- when called interactively without prefix argument (arg=1), the
+  command is run separately for each marked buffer file (see
+  `ibuffer-do-shell-command-file').
+
+- when called with a universal prefix argument (arg=4), the
+  command is run collectively for all marked prefix files (see
+  `ff/ibuffer-do-shell-command-files')."
+  (interactive "p")
+  (cond ((eq arg 1)
+         (call-interactively 'ibuffer-do-shell-command-file))
+        ((eq arg 4)
+         (call-interactively 'ff/ibuffer-do-shell-command-files))))
