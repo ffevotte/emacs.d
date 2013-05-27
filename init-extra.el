@@ -313,6 +313,22 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key [remap move-beginning-of-line]
                 'smarter-move-beginning-of-line)
 
+(defun ff/insert-file-name (filename &optional args)
+  "Insert name of file FILENAME into buffer after point.
+
+  Prefixed with \\[universal-argument], expand the file name to
+  its fully canocalized path.  See `expand-file-name'.
+
+  The default with no prefix is to use the relative path to file
+  name from current directory, `default-directory'.  See
+  `file-relative-name'."
+  (interactive "fInsert file name: \nP")
+  (cond ((eq nil args)
+         (insert (file-relative-name filename)))
+        (t
+         (insert filename))))
+(custom-set-key (kbd "C-c f") 'ff/insert-file-name)
+
 
 
 ;;; Find-file and switch-buffer in other window with a prefix arg
