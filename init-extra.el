@@ -46,6 +46,7 @@ Example:
                ido-ubiquitous
                magit
                markdown-mode
+               key-chord
                page-break-lines
                smex
                wgrep
@@ -141,6 +142,19 @@ Example:
 ;; Move between pages (separated with ^L) with M-pgUp / M-pgDn
 (custom-set-key (kbd "M-<next>")  (defun ff/next-page () (interactive) (forward-page 1)(move-beginning-of-line 1)))
 (custom-set-key (kbd "M-<prior>") (defun ff/prev-page () (interactive) (forward-page -1)(move-beginning-of-line 1)))
+
+;; Key chords
+(defun custom-set-chord (chord command)
+  "Key chord mode is not installed; do nothing"
+  nil)
+(when (fboundp 'key-chord-mode)
+  (key-chord-mode 1)
+  (defun custom-set-chord (chord command)
+    (key-chord-define custom-bindings-mode-map chord command))
+  (custom-set-chord "JJ" 'beginning-of-buffer)
+  (custom-set-chord "KK" 'end-of-buffer)
+  (custom-set-chord "QQ" 'join-line)
+  (custom-set-chord "AA" (lambda () (interactive)(join-line 1))))
 
 
 
