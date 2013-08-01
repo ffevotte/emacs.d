@@ -639,8 +639,11 @@ Example usage:
     (let ((ws  (save-excursion
                  (if (and (eolp)
                           (looking-back "[[:space:]]"))
-                     (let ((end (point)))
+                     (let ((end (point))
+                           (bol (- (line-beginning-position) 1)))
                        (search-backward-regexp "[^[:space:]]" nil t)
+                       (when (< (point) bol)
+                         (goto-char bol))
                        (buffer-substring (1+ (point)) end))
                    ""))))
       (delete-trailing-whitespace)
