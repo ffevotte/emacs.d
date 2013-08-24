@@ -696,6 +696,14 @@ newly inserted character replaces them."
 
 
 ;;; C-like modes
+(eval-after-load "cc-mode"
+  '(progn
+     (c-add-style "my-cc-style"
+                  '("gnu"
+                    (c-offsets-alist . ((innamespace . [0])))))
+     (setq c-default-style '((java-mode . "java")
+                             (awk-mode  . "awk")
+                             (c++-mode  . "my-cc-style")))))
 (add-hook 'c-mode-common-hook 'ff/semantic-auto-completion)
 
 
