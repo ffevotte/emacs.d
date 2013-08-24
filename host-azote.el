@@ -20,6 +20,10 @@
 (setq magit-repo-dirs '("~/.etc" "~/.emacs.d" "~/projets/git/" "~/EDF/atelier"))
 
 
+;; Python info documentation
+(add-to-list 'Info-directory-list "/home/francois/.local/share/info")
+(load-file "/home/francois/.emacs.d/local/pydoc-info.el")
+
 ;; Local Variables:
 ;;   mode: emacs-lisp
 ;; End:
