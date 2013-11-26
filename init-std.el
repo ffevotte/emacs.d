@@ -176,7 +176,7 @@ Frequently used host names can be interactively completed from `ssh-term-hosts'.
  ido-use-filename-at-point              'guess
  ido-default-buffer-method              'selected-window)
 (ido-mode 1)
-(ido-everywhere)
+(ido-everywhere 1)
 
 (defun ido-recentf-open ()
   "Use `ido-completing-read' to \\[find-file] a recent file"

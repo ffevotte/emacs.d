@@ -420,6 +420,7 @@ With a prefix argument, replace the sexp by its evaluation."
    (if argp
        (call-interactively 'eval-and-replace)
      (call-interactively 'eval-last-sexp))))
+(custom-set-key (kbd "C-<f2>") 'eval-region)
 
 ;; Test macro expansion
 (defmacro ff/test-macroexpand (form)
@@ -653,7 +654,6 @@ Example usage:
                    ""))))
       (delete-trailing-whitespace)
       (insert ws))))
-
 
 
 
