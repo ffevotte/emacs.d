@@ -546,13 +546,18 @@ Example usage:
 
 
 
-;;; Adaptive-wrap
+;;; Visual-line-mode and line wrapping
 (when (ff/fboundp 'adaptive-wrap-prefix-mode)
   (defadvice visual-line-mode (after ff/adaptive-wrap-prefix-mode activate)
     "Toggle `visual-line-mode' and `adaptive-wrap-prefix-mode' simultaneously."
     (if visual-line-mode
         (adaptive-wrap-prefix-mode 1)
       (adaptive-wrap-prefix-mode -1))))
+
+(defadvice visual-line-mode (after ff/no-auto-fill activate)
+  "Disable `auto-fill-mode' when `visual-line-mode' is active"
+  (if visual-line-mode
+      (auto-fill-mode -1)))
 
 
 
