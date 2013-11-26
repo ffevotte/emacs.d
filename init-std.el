@@ -68,6 +68,30 @@
 
 
 
+;; Count words
+(defun count-words (start end)
+  (interactive "r")
+  (save-excursion
+    (let ((n 0))
+      (goto-char start)
+      (while (< (point) end)
+        (if (forward-word 1)
+            (setq n (1+ n))))
+      n)))
+
+(defun ff/count-lines-region (start end)
+  (interactive "r")
+  (unless (region-active-p)
+    (setq start (point-min)
+          end   (point-max)))
+  (let ((lines (count-lines start end))
+        (words (count-words start end))
+        (chars (- end start)))
+    (message "%d lines, %d words, %d chars" lines words chars)))
+(define-key global-map [remap count-lines-region] 'ff/count-lines-region)
+
+
+
 ;; Highlight-line mode
 (defun ff/turn-on-highlight-line ()
   "Turn on and setup hl-line-mode"
