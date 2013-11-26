@@ -684,8 +684,6 @@ Example usage:
   (setq local-abbrev-table TeX-mode-abbrev-table))
 (add-hook 'TeX-mode-hook 'ff/TeX-turn-on-abbrev)
 
-(eval-after-load "latex"
-  '(define-key LaTeX-mode-map (kbd "~") 'ff/insert-tilde))
 (defun ff/insert-tilde ()
   "Insert a tilde (~) character at point.
 
@@ -697,6 +695,43 @@ newly inserted character replaces them."
     (skip-syntax-backward " ")
     (delete-region (point) end)
     (insert "~")))
+
+(defun ff/tex-replace-macro (macro body)
+  (interactive
+   (save-excursion
+     (let (m b)
+       (beginning-of-line)
+       (search-forward "{")
+       (let ((beg (point)))
+         (backward-char)
+         (forward-sexp)
+         (setq m (buffer-substring beg (- (point) 1))))
+       (search-forward "{")
+       (let ((beg (point)))
+         (backward-char)
+         (forward-sexp)
+         (setq b (buffer-substring beg (- (point) 1))))
+       (list m b))))
+  (save-excursion
+    (query-replace (concat body " ") (concat macro "\\ ")))
+  (save-excursion
+    (query-replace body macro)))
+
+(defun ff/align-latex-table ()
+  "Align columns in a latex tabular environment."
+  (interactive)
+  (save-excursion
+    (search-backward "\\begin{tabular}")
+    (forward-line 1)
+    (let ((beg (point)))
+      (search-forward "\\end{tabular}")
+      (forward-line -1)
+      (align-regexp beg (point) "\\(\\s-*\\)&" 1 1 t))))
+
+(eval-after-load "latex"
+  '(progn
+     (define-key LaTeX-mode-map (kbd "~")     'ff/insert-tilde)
+     (define-key LaTeX-mode-map (kbd "C-c a") 'ff/align-latex-table)))
 
 
 
