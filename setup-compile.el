@@ -61,17 +61,6 @@
     (setq buffer-read-only t)))
 (add-hook 'compilation-filter-hook 'ff/compilation-LaTeX-filter)
 
-;; Add LaTeX errors detection to the list
-(add-to-list 'compilation-error-regexp-alist 'latex-error)
-(add-to-list 'compilation-error-regexp-alist-alist
-             '(latex-error
-               "^l\\.\\([[:digit:]]+\\)[[:space:]]" ;; Regular expression
-               ff/compilation-error-latex-file      ;; Filename
-               1                                    ;; Line number
-               nil                                  ;; Column number
-               2                                    ;; Type (error)
-               1))                                  ;; Highlight
-
 ;; Add LaTeX warnings detection to the list
 (add-to-list 'compilation-error-regexp-alist 'latex-warning)
 (add-to-list 'compilation-error-regexp-alist-alist
