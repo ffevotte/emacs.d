@@ -128,10 +128,16 @@
      (setq ansi-term-color-vector ;; ANSI Term colors
            [unspecified "#000000" "#b21818" "#18b218" "#BE5F00"
                         "#6D85BA" "#b218b2" "#18b2b2" "#b2b2b2"])
-     (defun term-send-Cright () (interactive) (term-send-raw-string "\e[1;5C"))
-     (defun term-send-Cleft  () (interactive) (term-send-raw-string "\e[1;5D"))
-     (define-key term-raw-map (kbd "C-<right>") 'term-send-Cright)
-     (define-key term-raw-map (kbd "C-<left>")  'term-send-Cleft)
+     (defmacro ff/term-send-raw (name binding string)
+       (let ((fun-symbol (intern (format "ff/term-send-%s" name))))
+         `(define-key term-raw-map (kbd ,binding)
+            (defun ,fun-symbol ()
+              ,(format "Send \"%s\" as raw characters to the terminal process." string)
+              (interactive)
+              (term-send-raw-string ,string)))))
+     (ff/term-send-raw "Cright" "C-<right>"     "\e[1;5C")
+     (ff/term-send-raw "Cleft"  "C-<left>"      "\e[1;5D")
+     (ff/term-send-raw "Cw"     "C-<backspace>" "\C-w")
      (message "Setting up term...done.")))
 
 (defvar ssh-term-hosts nil
