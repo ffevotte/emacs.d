@@ -661,6 +661,29 @@ Example usage:
 
 
 
+;;; Multi-term
+(when (ff/require-or-warn 'multi-term)
+  (custom-set-key
+   (kbd "<f2>")
+   (defun ff/multi-term (argp)
+     (interactive "P")
+     (prin1 argp)
+     (cond ((and (listp argp)
+                 (eq (car argp) 4))
+            (let ((current-prefix-arg nil))
+              (multi-term)))
+           ((and (listp argp)
+                 (eq (car argp) 16))
+            (let ((current-prefix-arg '(4)))
+              (multi-term)))
+           (t
+            (call-interactively 'multi-term-next)))))
+
+  (setq multi-term-dedicated-select-after-open-p t)
+  (custom-set-key (kbd "C-<f2>") 'multi-term-dedicated-toggle))
+
+
+
 ;;; Automatically start server
 (load "setup-server")
 
