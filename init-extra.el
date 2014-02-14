@@ -447,6 +447,8 @@ With two universal arguments, switch the buffer in another window."
 (ff/add-compilation-command "compile6" (kbd "<f6>"))
 (ff/add-compilation-command "compile7" (kbd "<f7>"))
 (ff/add-compilation-command "compile8" (kbd "<f8>"))
+(global-set-key (kbd "C-x `") (make-repeatable-command 'next-error))
+(global-set-key (kbd "C-x è") 'next-error-repeat)
 
 
 
