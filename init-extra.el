@@ -679,6 +679,10 @@ Example usage:
            (t
             (call-interactively 'multi-term-next)))))
 
+  (add-to-list 'term-bind-key-alist '("C-c C-j" . term-line-mode))
+  (add-to-list 'term-bind-key-alist '("C-c C-k" . term-char-mode))
+  (add-to-list 'term-bind-key-alist '("C-c C-u" . universal-argument))
+
   (setq multi-term-dedicated-select-after-open-p t)
   (custom-set-key (kbd "C-<f2>") 'multi-term-dedicated-toggle))
 
