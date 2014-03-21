@@ -320,13 +320,20 @@ point reaches the beginning or end of the buffer, stop there."
   :diminish outline-minor-mode
   :config   (use-package outshine
               :load-path "packages/outshine"
-              :config  (progn
-                         (add-hook 'outline-minor-mode-hook
-                                   'outshine-hook-function)
-                         (define-key outline-minor-mode-map
-                           (kbd "<backtab>") 'outshine-cycle-buffer)
-                         (define-key outline-mode-map
-                           (kbd "<backtab>") 'outshine-cycle-buffer))))
+              :config
+	      (progn
+		;; Always use modern style for Emacs Lisp
+		(defun outshine-modern-header-style-in-elisp-p () t)
+
+		;; Activate outshine
+		(add-hook 'outline-minor-mode-hook
+			  'outshine-hook-function)
+
+		;; Use S-<tab> to cycle buffer visibility
+		(define-key outline-minor-mode-map
+		  (kbd "<backtab>") 'outshine-cycle-buffer)
+		(define-key outline-mode-map
+		  (kbd "<backtab>") 'outshine-cycle-buffer))))
 
 
 ;; ** auto-complete
