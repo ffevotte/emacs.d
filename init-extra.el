@@ -459,7 +459,7 @@ point reaches the beginning or end of the buffer, stop there."
 
 (use-package magit
   :load-path "packages/magit"
-  :defer     t
+  :commands  magit-status
   :init      (custom-set-key (kbd "C-c v") 'magit-status)
   :config    (when (not (fboundp 'process-live-p))
                ;; This hack is needed for older emacs versions
