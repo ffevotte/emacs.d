@@ -2,6 +2,9 @@
 ;; Recentf settings and improvements ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; Standard custoimization
+(setq recentf-max-saved-items 1000
+      recentf-auto-cleanup    60)
 
 ;; Arrange for recentf to always merge its list with `recentf-save-file'.
 ;;   (this is useful when multiple Emacs instances are running simultaneously)
@@ -51,12 +54,3 @@ will be pushed in front of `recentf-list'."
       (unless (string= file ff/recentf-marker)
         (ff/recentf-merge (cdr list))
         (recentf-push file)))))
-
-
-;; Start and configure recentf
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(require 'recentf)
-(setq recentf-max-saved-items 1000
-      recentf-auto-cleanup    60)
-(recentf-mode 1)

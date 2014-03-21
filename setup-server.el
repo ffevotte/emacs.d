@@ -1,5 +1,7 @@
 (require 'server)
 
+(defvar ff/main-server-name "server")
+
 (defun ff/server-start ()
   "Start an emacs server using an automatically generated name.
 
@@ -43,5 +45,4 @@ If an emacs server is already running, it is restarted."
   (server-start)
   (setenv "EMACS_SERVER" server-name))
 
-(defvar ff/main-server-name "server")
-(ff/server-start)
+(provide 'setup-server)

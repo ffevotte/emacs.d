@@ -1,23 +1,32 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Emacs configuration file ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(add-to-list 'load-path "~/.emacs.d" 'append)
-(add-to-list 'load-path "~/.emacs.d/color-theme")
+(menu-bar-mode   -1)
+(tool-bar-mode   -1)
+(scroll-bar-mode -1)
 
 
-;; Load local rc file
-(let* ((fullhostname (system-name))
-       (hostname     (substring fullhostname 0
-                                (progn
-                                  (string-match "\\." (concat fullhostname ".domain"))
-                                  (- (match-end 0) 1)))))
-  (load (concat "host-" hostname) 'noerror))
+
+(setq user-emacs-directory "~/.emacs.d.new/")
+(add-to-list 'load-path user-emacs-directory 'append)
 
 
-;; Base configuration  (only standard packages)
-(load "init-std")
+(defmacro with-timer (title &rest forms)
+  (let ((nowvar (make-symbol "now"))
+        (body   `(progn ,@forms)))
+    `(let ((,nowvar (current-time)))
+       (message "%s..." ,title)
+       (prog1 ,body
+         (let ((elapsed
+                (float-time (time-subtract (current-time) ,nowvar))))
+           (message "%s... done (%.3fs)" ,title elapsed))))))
 
+
 
-;; Extended configuration
-(load "init-extra" 'noerror)
+(with-timer
+ "Loading configuration files"
+
+ ;; use-package
+ (require 'bind-key    "~/.emacs.d.new/packages/use-package/bind-key.el")
+ (require 'use-package "~/.emacs.d.new/packages/use-package/use-package.el")
+ (setq use-package-verbose t)
+
+ (use-package init-std)
+ (use-package init-extra))

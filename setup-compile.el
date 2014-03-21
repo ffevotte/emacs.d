@@ -1,3 +1,8 @@
+;; scroll compilation buffer until first error
+(setq compilation-scroll-output 'first-error)
+
+
+
 ;; ANSI coloring in compilation buffers
 (require 'ansi-color)
 (defun ff/ansi-colorize-buffer ()
@@ -70,51 +75,3 @@
                1                                                         ;; Line number
                nil                                                       ;; Column number
                1))                                                       ;; Type (warning)
-
-
-
-;; Multiple compilation modes
-
-(defmacro ff/add-compilation-command (name &optional key)
-  (let ((buffer-name      (concat "*" name "*"))
-        (compile-symbol   (intern name))
-        (recompile-symbol (intern (concat "re" name))))
-    (when (fboundp compile-symbol)
-      (warn "redefining command `%s'" name))
-    (when (fboundp recompile-symbol)
-      (warn "redefining command `re%s'" name))
-    `(progn
-       (defun ,compile-symbol ()
-         ,(format
-           "This function behaves similarly to `compile', except it puts compilation
-results in the %s buffer." buffer-name)
-         (interactive)
-         (let ((compilation-buffer-name-function
-                (lambda (mode) "" ,buffer-name)))
-           (call-interactively 'compile)))
-
-       (defun ,recompile-symbol ()
-         ,(format
-           "This function behaves similarly to `recompile', except it reuses the
-last compilation parameters from buffer %s." buffer-name)
-         (interactive)
-         (if (get-buffer ,buffer-name)
-             (with-current-buffer ,buffer-name
-               (let ((compilation-buffer-name-function
-                      (lambda (mode) "" ,buffer-name)))
-                 (call-interactively 'recompile)))
-           (call-interactively ',compile-symbol)))
-
-       ,(when key
-          `(global-set-key ,key
-                           (lambda (arg)
-                             ,(format "With two universal prefix arguments, call `%s' with
-a prefix arg, otherwise call `%s'"
-                                      (symbol-name compile-symbol)
-                                      (symbol-name recompile-symbol))
-                             (interactive "P")
-                             (cond ((equal arg '(16))
-                                    (let ((current-prefix-arg '(4)))
-                                      (call-interactively ',compile-symbol)))
-                                   (t
-                                    (call-interactively ',recompile-symbol)))))))))
