@@ -28,5 +28,16 @@
  (require 'use-package "~/.emacs.d.new/packages/use-package/use-package.el")
  (setq use-package-verbose t)
 
+ ;; Load local rc file
+ (let* ((fullhostname (system-name))
+        (hostname     (substring fullhostname 0
+                                 (progn
+                                   (string-match "\\." (concat fullhostname ".domain"))
+                                   (- (match-end 0) 1)))))
+   (load (concat "host-" hostname) 'noerror))
+
+ ;; Standard configuration
  (use-package init-std)
+
+ ;; Extra packages
  (use-package init-extra))
