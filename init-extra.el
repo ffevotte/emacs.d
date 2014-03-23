@@ -688,6 +688,16 @@ With a prefix argument, replace the sexp by its evaluation."
                                     (c++-mode  . "my-cc-style")))))
 
 
+;; ** Python
+
+(use-package info
+  :defer  t
+  :config (use-package pydoc-info
+            :load-path "packages/pydoc-info"
+            :init (add-to-list 'Info-default-directory-list
+                               (concat user-emacs-directory "share/info"))))
+
+
 ;; ** Fortran
 
 (use-package fortran-index-args
