@@ -24,7 +24,7 @@
  "Loading configuration files"
 
  ;; use-package
- (let ((use-package-dir (concat user-emacs-directory "packages/use-package/")))
+ (let ((use-package-dir (concat user-emacs-directory "share/elisp/use-package/")))
    (require 'bind-key    (concat use-package-dir "bind-key.el"))
    (require 'use-package (concat use-package-dir "use-package.el")))
  (setq use-package-verbose t)

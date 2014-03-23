@@ -259,7 +259,7 @@ turned on."
 
 ;; Isend
 (use-package isend
-  :load-path "packages/isend"
+  :load-path "share/elisp/isend"
   :commands  isend
   :config    (progn
                (add-hook 'isend-mode-hook 'isend-default-shell-setup)
@@ -269,13 +269,13 @@ turned on."
 
 ;; SLURM
 (use-package slurm
-  :load-path "packages/slurm")
+  :load-path "share/elisp/slurm")
 
 
 
 ;; a2ps-multibyte
 (use-package a2ps-multibyte
-  :load-path "packages/a2ps-multibyte")
+  :load-path "share/elisp/a2ps-multibyte")
 
 
 

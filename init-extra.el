@@ -14,7 +14,7 @@ Variable files are located in the \"var\" subdirectory of `user-emacs-directory'
 
 ;; ** cl-lib
 (use-package cl-lib
-  :load-path "packages/cl-lib"
+  :load-path "share/elisp/cl-lib"
   :defer t)
 
 
@@ -196,14 +196,14 @@ With two universal arguments, switch the buffer in another window."
 
 ;; ** Save & restore sessions
 (use-package desktop+
-  :load-path "packages/desktop+"
+  :load-path "share/elisp/desktop+"
   :commands  (desktop-create desktop-load)
   :init      (setq desktop-save 'ask))
 
 
 ;; ** smex
 (use-package smex
-  :load-path "packages/smex"
+  :load-path "share/elisp/smex"
   :commands  smex
   :init      (custom-set-key (kbd "M-x") 'smex)
   :config    (smex-initialize))
@@ -211,7 +211,7 @@ With two universal arguments, switch the buffer in another window."
 
 ;; ** ido-ubiquitous
 (use-package ido-ubiquitous
-  :load-path "packages/ido-ubiquitous"
+  :load-path "share/elisp/ido-ubiquitous"
   :commands  ido-ubiquitous-mode
   :idle      (with-timer
               "Initializing ido-ubiquitous"
@@ -220,7 +220,7 @@ With two universal arguments, switch the buffer in another window."
 
 ;; ** helm
 (use-package helm-config
-  :load-path "packages/helm"
+  :load-path "share/elisp/helm"
   :commands  (helm-mini helm-recentf helm-M-x helm-imenu)
   :init    (progn
              (custom-set-key (kbd "C-x C-h") 'helm-mini)
@@ -232,7 +232,7 @@ With two universal arguments, switch the buffer in another window."
 ;; ** bookmarks
 
 (use-package bookmark+
-  :load-path "packages/bookmark+"
+  :load-path "share/elisp/bookmark+"
   :commands  (bookmark-bmenu-list bookmark-jump bookmark-set)
   :init    (progn
              (setq bookmark-default-file (ff/variable-file "bookmarks.el"))
@@ -340,7 +340,7 @@ point reaches the beginning or end of the buffer, stop there."
   :commands outline-minor-mode
   :diminish outline-minor-mode
   :config   (use-package outshine
-              :load-path "packages/outshine"
+              :load-path "share/elisp/outshine"
               :config
 	      (progn
 		;; Always use modern style for Emacs Lisp
@@ -360,9 +360,9 @@ point reaches the beginning or end of the buffer, stop there."
 ;; ** auto-complete
 (use-package popup
   :defer     t
-  :load-path "packages/popup")
+  :load-path "share/elisp/popup")
 (use-package auto-complete-config
-  :load-path "packages/auto-complete"
+  :load-path "share/elisp/auto-complete"
   :commands  ac-config-default
   :init      (setq ac-comphist-file (ff/variable-file "ac-comphist.dat"))
   :idle      (with-timer
@@ -372,7 +372,7 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;; ** YAsnippet
 (use-package yasnippet
-  :load-path "packages/yasnippet"
+  :load-path "share/elisp/yasnippet"
   :commands  (yas-reload-all yas-minor-mode-on)
   :config  (progn
              (setq yas-snippet-dirs `(,(ff/emacsd "snippets")))
@@ -383,7 +383,7 @@ point reaches the beginning or end of the buffer, stop there."
 (setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
 
 (use-package adaptive-wrap
-  :load-path "packages/adaptive-wrap"
+  :load-path "share/elisp/adaptive-wrap"
   :config (progn
             (defun ff/activate-adaptive-wrap-prefix-mode ()
               "Toggle `visual-line-mode' and `adaptive-wrap-prefix-mode' simultaneously."
@@ -399,14 +399,14 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;; ** Expand region
 (use-package expand-region
-  :load-path "packages/expand-region"
+  :load-path "share/elisp/expand-region"
   :commands  er/expand-region
   :init      (custom-set-key (kbd "C-x SPC") 'er/expand-region))
 
 
 ;; ** Multiple cursors
 (use-package multiple-cursors
-  :load-path "packages/multiple-cursors"
+  :load-path "share/elisp/multiple-cursors"
   :commands (mc/mark-next-like-this
              mc/mark-previous-like-this
              mc/mark-all-like-this
@@ -423,7 +423,7 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;; ** Autopair
 (use-package autopair
-  :load-path "packages/autopair"
+  :load-path "share/elisp/autopair"
   :commands  autopair-on
   :init      (defun ff/autopair-on () t)
   :config    (defun ff/autopair-on () (autopair-on)))
@@ -469,7 +469,7 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;; ** Editable grep
 (use-package wgrep
-  :load-path "packages/wgrep"
+  :load-path "share/elisp/wgrep"
   :commands  wgrep-change-to-wgrep-mode)
 
 (use-package grep
@@ -482,14 +482,14 @@ point reaches the beginning or end of the buffer, stop there."
 
 (use-package git-commit-mode
   :defer     t
-  :load-path "packages/git-modes")
+  :load-path "share/elisp/git-modes")
 
 (use-package git-rebase-mode
   :defer     t
-  :load-path "packages/git-modes")
+  :load-path "share/elisp/git-modes")
 
 (use-package magit
-  :load-path "packages/magit"
+  :load-path "share/elisp/magit"
   :commands  magit-status
   :init      (custom-set-key (kbd "C-c v") 'magit-status)
   :config    (when (not (fboundp 'process-live-p))
@@ -517,7 +517,7 @@ C-u C-u:       create new terminal and choose program"
          (call-interactively 'multi-term-next))))
 
 (use-package multi-term
-  :load-path "packages/multi-term"
+  :load-path "share/elisp/multi-term"
   :commands  (multi-term
               multi-term-next
               multi-term-dedicated-toggle)
@@ -634,7 +634,7 @@ newly inserted character replaces them."
 
 ;; ** Markdown
 (use-package markdown-mode
-  :load-path "packages/markdown-mode"
+  :load-path "share/elisp/markdown-mode"
   :mode ("\\.md\\'" . markdown-mode))
 
 
@@ -650,7 +650,7 @@ newly inserted character replaces them."
             (global-set-key (kbd "C-x è") 'next-error-repeat)))
 
 (use-package multi-compile
-  :load-path "packages/multi-compile"
+  :load-path "share/elisp/multi-compile"
   :init (progn
           (multi-compile "compile5" :key (kbd "<f5>"))
           (multi-compile "compile6" :key (kbd "<f6>"))
@@ -717,7 +717,7 @@ With a prefix argument, replace the sexp by its evaluation."
 (use-package info
   :defer  t
   :config (use-package pydoc-info
-            :load-path "packages/pydoc-info"
+            :load-path "share/elisp/pydoc-info"
             :init (add-to-list 'Info-default-directory-list
                                (ff/emacsd "share/info"))))
 
@@ -725,7 +725,7 @@ With a prefix argument, replace the sexp by its evaluation."
 ;; ** Fortran
 
 (use-package fortran-index-args
-  :load-path "packages/fortran-index-args"
+  :load-path "share/elisp/fortran-index-args"
   :commands  fia/toggle)
 
 (use-package fortran

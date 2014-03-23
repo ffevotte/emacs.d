@@ -2,18 +2,39 @@ all: byte-compile pydoc-info
 
 # * Byte-compilation
 
-TESTS = $(shell ./scripts/find-tests)
-byte-compile-tests: $(TESTS)
+byte-compile: bc-packages bc-emacsd
 
-%.elc:%.el
-	rm -f $@
-	touch $@
+bc-packages:
+	chmod -R u+w share/elisp
 
-byte-compile: byte-compile-tests
-	emacs -q -batch --load "init.el" --eval '(byte-recompile-directory "." 0)'
+	@echo "Installing packages"
+	rsync -av                                     \
+	  -f '- *tests.el'                            \
+	  -f '- *test.el'                             \
+	  -f '- features/support/*'                   \
+	  -f 'P *.elc' -f '+ */' -f '+ *.el' -f '- *' \
+	  --prune-empty-dirs --delete-excluded        \
+	  packages/ share/elisp/
+	@
+	@echo Byte-compiling packages
+	emacs -q -batch --load "init.el" \
+	  --eval '(byte-recompile-directory "share/elisp" 0)'
 
-clean:
+	chmod -R a-w share/elisp
+
+bc-emacsd:
+	emacs -q --batch --load "init.el" \
+	  --load "bin/byte-compile.el"    \
+	  --eval '(byte-recompile-directory-non-recursive "./")'
+
+clean: bc-clean
+bc-clean:
 	find . -name '*.elc' -delete
+
+distclean: bc-distclean
+bc-distclean:
+	$(RM) share/elisp
+
 
 # * pydoc-info
 
@@ -31,6 +52,10 @@ $(PYDOC_INFO_DIR): $(PYDOC_INFO)
 	install-info --info-dir=$(PYDOC_INFO_BASE) $(PYDOC_INFO)
 
 pydoc-info: $(PYDOC_INFO_DIR)
+
+distclean: pydoc-distclean
+pydoc-distclean:
+	$(RM) $(PYDOC_INFO_BASE)
 
 
 # Local Variables:
