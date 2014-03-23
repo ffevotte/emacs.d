@@ -13,7 +13,7 @@
 (setq ibuffer-saved-filter-groups
       `(("default"
          ("Terminals" (mode . term-mode))
-         ("emacs.d" (filename . ,(expand-file-name "~/.emacs.d/")))
+         ("emacs.d" (filename . ,(expand-file-name user-emacs-directory)))
 	 ("Help" (or (mode . Man-mode)
                      (mode . woman-mode)
                      (mode . Info-mode)

@@ -1,5 +1,17 @@
 ;; * Utilities
 
+;; ** path to subcomponents
+
+(defun ff/variable-file (name)
+  "Path to a variable file of given NAME
+Variable files are located in the \"var\" subdirectory of `user-emacs-directory'"
+  (expand-file-name (concat user-emacs-directory "var/" name)))
+
+(defun ff/emacsd (name)
+  "Path to a subdirectory of `user-emacs-directory'"
+  (expand-file-name (concat user-emacs-directory name)))
+
+
 ;; ** cl-lib
 (use-package cl-lib
   :load-path "packages/cl-lib"
@@ -74,7 +86,6 @@ Example:
 
 ;; * User Interface
 
-
 ;; ** Color theme
 
 (when (window-system)
@@ -100,13 +111,15 @@ Example:
  whitespace-style '(tab-mark indentation trailing lines-tail)
  diff-switches "-u"                           ;; Unified diffs
  a2ps-switches '("-l" "100")                  ;; Custom command-line args for a2ps
- custom-file "~/.emacs.d/custom.el"           ;; Separate custom file
  )
-(load custom-file 'noerror)
 (add-hook 'after-save-hook          ;; Automatically make shebang-ed scripts executable
           'executable-make-buffer-file-executable-if-script-p)
 (defalias 'yes-or-no-p 'y-or-n-p)   ;; Don't bother typing 'yes'
 (pending-delete-mode 1) ;; Useful in combination with expand-region
+
+;; Separate custom file
+(setq custom-file (ff/variable-file "custom.el"))
+(load custom-file 'noerror)
 
 
 ;; ** Enable "forbidden" commands
@@ -142,6 +155,11 @@ Example:
 ;; ** Recursive minibuffer
 (setq enable-recursive-minibuffers t)
 (minibuffer-depth-indicate-mode 1)
+
+
+;; ** TRAMP
+
+(setq tramp-persistency-file-name (ff/variable-file "tramp"))
 
 
 ;; ** Find-file and switch-buffer in other window with a prefix arg
@@ -213,11 +231,12 @@ With two universal arguments, switch the buffer in another window."
 
 ;; ** bookmarks
 
-(setq bookmark-default-file "~/.emacs.d/bookmarks")
-
 (use-package bookmark+
   :load-path "packages/bookmark+"
   :commands  (bookmark-bmenu-list bookmark-jump bookmark-set)
+  :init    (progn
+             (setq bookmark-default-file (ff/variable-file "bookmarks.el"))
+             (setq bmkp-last-as-first-bookmark-file nil))
   :config  (progn
              (require 'bookmark+-lit)
              (setq
@@ -225,8 +244,10 @@ With two universal arguments, switch the buffer in another window."
               bmkp-auto-light-when-set       'all-in-buffer
               bmkp-light-style-autonamed     'lfringe
               bmkp-light-style-non-autonamed 'rfringe)
-             (custom-set-key (kbd "C-x <kp-add>")      'bmkp-next-bookmark-this-file/buffer-repeat)
-             (custom-set-key (kbd "C-x <kp-subtract>") 'bmkp-previous-bookmark-this-file/buffer-repeat)))
+             (custom-set-key (kbd "C-x <kp-add>")
+                             'bmkp-next-bookmark-this-file/buffer-repeat)
+             (custom-set-key (kbd "C-x <kp-subtract>")
+                             'bmkp-previous-bookmark-this-file/buffer-repeat)))
 
 
 
@@ -343,6 +364,7 @@ point reaches the beginning or end of the buffer, stop there."
 (use-package auto-complete-config
   :load-path "packages/auto-complete"
   :commands  ac-config-default
+  :init      (setq ac-comphist-file (ff/variable-file "ac-comphist.dat"))
   :idle      (with-timer
               "Initializing auto-complete"
               (ac-config-default)))
@@ -353,7 +375,7 @@ point reaches the beginning or end of the buffer, stop there."
   :load-path "packages/yasnippet"
   :commands  (yas-reload-all yas-minor-mode-on)
   :config  (progn
-             (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
+             (setq yas-snippet-dirs `(,(ff/emacsd "snippets")))
              (yas-reload-all)))
 
 
@@ -390,6 +412,8 @@ point reaches the beginning or end of the buffer, stop there."
              mc/mark-all-like-this
              set-rectangular-region-anchor)
   :init    (progn
+             (setq mc/list-file (ff/variable-file "mc-lists.el"))
+
              (defalias 'mc 'mc/edit-lines)
              (custom-set-key (kbd "H-<")     'mc/mark-next-like-this)
              (custom-set-key (kbd "H->")     'mc/mark-previous-like-this)
@@ -695,7 +719,7 @@ With a prefix argument, replace the sexp by its evaluation."
   :config (use-package pydoc-info
             :load-path "packages/pydoc-info"
             :init (add-to-list 'Info-default-directory-list
-                               (concat user-emacs-directory "share/info"))))
+                               (ff/emacsd "share/info"))))
 
 
 ;; ** Fortran

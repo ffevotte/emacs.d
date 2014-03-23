@@ -24,8 +24,9 @@
  "Loading configuration files"
 
  ;; use-package
- (require 'bind-key    "~/.emacs.d.new/packages/use-package/bind-key.el")
- (require 'use-package "~/.emacs.d.new/packages/use-package/use-package.el")
+ (let ((use-package-dir (concat user-emacs-directory "packages/use-package/")))
+   (require 'bind-key    (concat use-package-dir "bind-key.el"))
+   (require 'use-package (concat use-package-dir "use-package.el")))
  (setq use-package-verbose t)
 
  ;; Load local rc file
