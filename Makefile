@@ -6,6 +6,7 @@ all:
 all: directories
 directories:
 	mkdir -p var
+	mkdir -p var/desktops
 
 
 # * Byte-compilation

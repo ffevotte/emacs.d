@@ -195,10 +195,18 @@ With two universal arguments, switch the buffer in another window."
 
 
 ;; ** Save & restore sessions
+
+(use-package revive
+  :load-path "share/elisp/revive"
+  :defer     t)
+
 (use-package desktop+
   :load-path "share/elisp/desktop+"
   :commands  (desktop-create desktop-load)
-  :init      (setq desktop-save 'ask))
+  :config  (progn
+             (setq desktop-base-dir (ff/variable-file "desktops/"))
+             (setq desktop-save 'ask)
+             (use-package "setup-desktop")))
 
 
 ;; ** smex

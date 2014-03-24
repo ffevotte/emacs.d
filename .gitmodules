@@ -73,3 +73,9 @@
 [submodule "packages/pydoc-info"]
 	path = packages/pydoc-info
 	url = https://github.com/visigoth/pydoc-info.git
+[submodule "packages/revive"]
+	path = packages/revive
+	url = https://github.com/emacsmirror/revive.git
+[submodule "packages/desktop+"]
+	path = packages/desktop+
+	url = https://github.com/ffevotte/desktop-plus.git
