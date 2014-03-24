@@ -709,6 +709,17 @@ With a prefix argument, replace the sexp by its evaluation."
 
 (add-hook 'emacs-lisp-mode-hook 'outline-minor-mode)
 
+;; *** Auto-compile
+(use-package packed
+  :load-path "share/elisp/packed"
+  :defer     t)
+(use-package auto-compile
+  :load-path "share/elisp/auto-compile"
+  :commands  turn-on-auto-compile-mode
+  :init      (add-hook 'emacs-lisp-mode-hook
+                       'turn-on-auto-compile-mode)
+  :config    t)
+
 
 ;; ** C/C++
 

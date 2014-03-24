@@ -79,3 +79,9 @@
 [submodule "packages/desktop+"]
 	path = packages/desktop+
 	url = https://github.com/ffevotte/desktop-plus.git
+[submodule "packages/auto-compile"]
+	path = packages/auto-compile
+	url = https://github.com/tarsius/auto-compile.git
+[submodule "packages/packed"]
+	path = packages/packed
+	url = https://github.com/tarsius/packed.git
