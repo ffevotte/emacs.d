@@ -1,7 +1,16 @@
-all: byte-compile pydoc-info
+all:
+
+
+# * Directories
+
+all: directories
+directories:
+	mkdir -p var
+
 
 # * Byte-compilation
 
+all: byte-compile
 byte-compile: bc-packages bc-emacsd
 
 PKG_INSTALL_DIR = share/elisp
@@ -42,6 +51,8 @@ bc-distclean:
 
 # * pydoc-info
 
+all: pydoc-info
+
 PYDOC_INFO = share/info/python.info
 PYDOC_INFO_BASE = $(shell dirname $${PWD}/$(PYDOC_INFO))
 PYDOC_INFO_DIR = $(PYDOC_INFO_BASE)/dir
@@ -61,6 +72,16 @@ distclean: pydoc-distclean
 pydoc-distclean:
 	$(RM) $(PYDOC_INFO_BASE)
 
+
+# * Yasnippet
+
+all: yasnippet
+yasnippet:
+	emacs -q --batch --load init.el --eval '(yas-recompile-all)'
+
+
+
+# * Postamble
 
 # Local Variables:
 #  eval: (outline-minor-mode 1)

@@ -373,7 +373,7 @@ point reaches the beginning or end of the buffer, stop there."
 ;; ** YAsnippet
 (use-package yasnippet
   :load-path "share/elisp/yasnippet"
-  :commands  (yas-reload-all yas-minor-mode-on)
+  :commands  (yas-reload-all yas-minor-mode-on yas-recompile-all)
   :config  (progn
              (setq yas-snippet-dirs `(,(ff/emacsd "snippets")))
              (yas-reload-all)))

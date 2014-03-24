@@ -1,4 +1,5 @@
-*~
 *.elc
-var
+*~
 share
+snippets/*/.yas-compiled-snippets.el
+var
