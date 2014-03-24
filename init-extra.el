@@ -121,6 +121,9 @@ Example:
 (setq custom-file (ff/variable-file "custom.el"))
 (load custom-file 'noerror)
 
+;; Variable files
+(setq url-configuration-directory (ff/variable-file "url/"))
+
 
 ;; ** Enable "forbidden" commands
 (put 'set-goal-column     'disabled nil) ;; (C-x C-n)
