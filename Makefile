@@ -1,5 +1,9 @@
 all:
 
+EMACS = emacs -q --load "init.el"
+ifndef INTERACTIVE
+  EMACS := $(EMACS) --batch
+endif
 
 # * Directories
 
@@ -30,13 +34,13 @@ bc-packages:
 	  packages/ $(PKG_INSTALL_DIR)/
 	@
 	@echo Byte-compiling packages
-	emacs -q -batch --load "init.el" \
+	$(EMACS) \
 	  --eval '(byte-recompile-directory "$(PKG_INSTALL_DIR)" 0)'
 
 	chmod -R a-w $(PKG_INSTALL_DIR)
 
 bc-emacsd:
-	emacs -q --batch --load "init.el" \
+	$(EMACS) \
 	  --load "bin/byte-compile.el"    \
 	  --eval '(byte-recompile-directory-non-recursive "./")'
 
@@ -78,7 +82,7 @@ pydoc-distclean:
 
 all: yasnippet
 yasnippet:
-	emacs -q --batch --load init.el --eval '(yas-recompile-all)'
+	$(EMACS) --eval '(yas-recompile-all)'
 
 
 
