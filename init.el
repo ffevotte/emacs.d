@@ -3,8 +3,6 @@
 (scroll-bar-mode -1)
 
 
-
-(setq user-emacs-directory "~/.emacs.d.new/")
 (add-to-list 'load-path user-emacs-directory 'append)
 
 
