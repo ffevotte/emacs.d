@@ -4,8 +4,11 @@ all: byte-compile pydoc-info
 
 byte-compile: bc-packages bc-emacsd
 
+PKG_INSTALL_DIR = share/elisp
+
 bc-packages:
-	chmod -R u+w share/elisp
+	mkdir -p $(PKG_INSTALL_DIR)
+	chmod -R u+w $(PKG_INSTALL_DIR)
 
 	@echo "Installing packages"
 	rsync -av                                     \
@@ -14,13 +17,13 @@ bc-packages:
 	  -f '- features/support/*'                   \
 	  -f 'P *.elc' -f '+ */' -f '+ *.el' -f '- *' \
 	  --prune-empty-dirs --delete-excluded        \
-	  packages/ share/elisp/
+	  packages/ $(PKG_INSTALL_DIR)/
 	@
 	@echo Byte-compiling packages
 	emacs -q -batch --load "init.el" \
-	  --eval '(byte-recompile-directory "share/elisp" 0)'
+	  --eval '(byte-recompile-directory "$(PKG_INSTALL_DIR)" 0)'
 
-	chmod -R a-w share/elisp
+	chmod -R a-w $(PKG_INSTALL_DIR)
 
 bc-emacsd:
 	emacs -q --batch --load "init.el" \
@@ -29,11 +32,12 @@ bc-emacsd:
 
 clean: bc-clean
 bc-clean:
-	find . -name '*.elc' -delete
+	find $(PKG_INSTALL_DIR) -name '*.elc' -delete
+	$(RM) *.elc
 
 distclean: bc-distclean
 bc-distclean:
-	$(RM) share/elisp
+	$(RM) $(PKG_INSTALL_DIR)
 
 
 # * pydoc-info
