@@ -83,6 +83,11 @@ Example:
       (add-hook hook function))))
 
 
+;; ** Hacks
+(when (not (boundp 'warning-suppress-types))
+  (setq warning-suppress-types nil))
+
+
 
 ;; * User Interface
 
@@ -540,7 +545,8 @@ C-u C-u:       create new terminal and choose program"
 
               (defun ff/multi-term-bind (key fun)
                 (setq term-bind-key-alist
-                      (remove* key term-bind-key-alist :test 'equal :key 'car))
+                      (delq (assoc key term-bind-key-alist)
+                            term-bind-key-alist))
                 (add-to-list 'term-bind-key-alist (cons key fun)))
 
               (ff/multi-term-bind "C-c C-j" 'term-line-mode)
