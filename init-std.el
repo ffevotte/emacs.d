@@ -93,11 +93,17 @@
 
 
 ;; Recent files
+
 (use-package recentf
   :defer  t
   :idle   (with-timer "Initializing recentf"
                       (recentf-mode 1))
-  :config (load "setup-recentf"))
+  :config (progn
+            (setq recentf-max-saved-items 1000)
+            (setq recentf-auto-cleanup    60)
+            (setq recentf-save-file (ff/variable-file "recentf"))
+            (use-package sync-recentf
+              :load-path "share/elisp/sync-recentf")))
 
 
 

@@ -85,3 +85,6 @@
 [submodule "packages/packed"]
 	path = packages/packed
 	url = https://github.com/tarsius/packed.git
+[submodule "packages/sync-recentf"]
+	path = packages/sync-recentf
+	url = https://github.com/ffevotte/sync-recentf.git
