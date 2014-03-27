@@ -19,10 +19,12 @@ all: byte-compile
 byte-compile: bc-packages bc-emacsd
 
 PKG_INSTALL_DIR = share/elisp
+PKG_DIR_LOCK    = chmod -R a-w $(PKG_INSTALL_DIR)
+PKG_DIR_UNLOCK  = chmod -R u+w $(PKG_INSTALL_DIR)
 
 bc-packages:
 	mkdir -p $(PKG_INSTALL_DIR)
-	chmod -R u+w $(PKG_INSTALL_DIR)
+	$(PKG_DIR_UNLOCK)
 
 	@echo "Installing packages"
 	rsync -av                                     \
@@ -32,12 +34,12 @@ bc-packages:
 	  -f 'P *.elc' -f '+ */' -f '+ *.el' -f '- *' \
 	  --prune-empty-dirs --delete-excluded        \
 	  packages/ $(PKG_INSTALL_DIR)/
-	@
+
 	@echo Byte-compiling packages
 	$(EMACS) \
 	  --eval '(byte-recompile-directory "$(PKG_INSTALL_DIR)" 0)'
 
-	chmod -R a-w $(PKG_INSTALL_DIR)
+	$(PKG_DIR_LOCK)
 
 bc-emacsd:
 	$(EMACS) \
@@ -46,7 +48,10 @@ bc-emacsd:
 
 clean: bc-clean
 bc-clean:
+	$(PKG_DIR_UNLOCK)
 	find $(PKG_INSTALL_DIR) -name '*.elc' -delete
+	$(PKG_DIR_LOCK)
+
 	$(RM) *.elc
 
 distclean: bc-distclean
