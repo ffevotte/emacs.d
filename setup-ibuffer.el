@@ -3,6 +3,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;
 
 (require 'ibuffer)
+(eval-when-compile
+  (defvar ibuffer-hidden-filter-groups))
 
 ;; Global customization
 ;;;;;;;;;;;;;;;;;;;;;;;
@@ -64,9 +66,8 @@
   (save-excursion
     (if (not (eq major-mode 'ibuffer-mode))
         nil
-      (progn
+      (let ((prev-point 0))
         (goto-char 0)
-        (setq prev-point 0)
         (while (< prev-point (point))
           (setq prev-point (point))
           (ibuffer-forward-filter-group)
@@ -78,9 +79,8 @@
   (save-excursion
     (if (not (eq major-mode 'ibuffer-mode))
         nil
-      (progn
+      (let ((prev-point 0))
         (goto-char 0)
-        (setq prev-point 0)
         (while (< prev-point (point))
           (setq prev-point (point))
           (ibuffer-forward-filter-group)

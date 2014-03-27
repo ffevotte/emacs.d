@@ -57,13 +57,23 @@ not contain hard line breaks any more."
 
 
 ;; * User interface
+
+(defun non-dedicated-window-list (&optional frame minibuf window)
+  "Return the list of non-dedicated windows.
+Arguments have the same meaning as in `window-list'."
+  (let ((l nil))
+    (dolist (w (window-list frame minibuf window))
+      (unless (window-dedicated-p w)
+        (setq l (cons w l))))
+    (nreverse l)))
+
 (defun rotate-windows (count)
   "Rotate your windows"
   (interactive "p")
-  (let* ((non-dedicated-windows (remove-if 'window-dedicated-p (window-list)))
-        (num-windows (length non-dedicated-windows))
-        (i 0)
-        (step (+ num-windows count)))
+  (let* ((non-dedicated-windows (non-dedicated-window-list))
+         (num-windows (length non-dedicated-windows))
+         (i 0)
+         (step (+ num-windows count)))
     (cond ((not (> num-windows 1))
            (message "You can't rotate a single window!"))
           (t
