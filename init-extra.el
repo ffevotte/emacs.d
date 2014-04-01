@@ -236,10 +236,7 @@ With two universal arguments, switch the buffer in another window."
 ;; ** ido-ubiquitous
 (use-package ido-ubiquitous
   :load-path "share/elisp/ido-ubiquitous"
-  :commands  ido-ubiquitous-mode
-  :idle      (with-timer
-              "Initializing ido-ubiquitous"
-              (ido-ubiquitous-mode 1)))
+  :config    (ido-ubiquitous-mode 1))
 
 
 ;; ** helm
@@ -389,9 +386,7 @@ point reaches the beginning or end of the buffer, stop there."
   :load-path "share/elisp/auto-complete"
   :commands  ac-config-default
   :init      (setq ac-comphist-file (ff/variable-file "ac-comphist.dat"))
-  :idle      (with-timer
-              "Initializing auto-complete"
-              (ac-config-default)))
+  :config    (ac-config-default))
 
 
 ;; ** YAsnippet
@@ -484,11 +479,8 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;; ** Server
 (use-package setup-server
-  :commands ff/server-start ff/main-server
-  :idle-priority 1
-  :idle     (with-timer
-             "Starting server"
-             (ff/server-start)))
+  :commands (ff/server-start ff/main-server)
+  :config (ff/server-start))
 
 
 ;; ** Editable grep

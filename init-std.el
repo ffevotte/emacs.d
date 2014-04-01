@@ -97,7 +97,7 @@
 (use-package recentf
   :defer  t
   :idle   (with-timer "Initializing recentf"
-                      (recentf-mode 1))
+            (recentf-mode 1))
   :config (progn
             (setq recentf-max-saved-items 1000)
             (setq recentf-auto-cleanup    60)

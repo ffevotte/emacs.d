@@ -7,6 +7,7 @@
 
 
 (defmacro with-timer (title &rest forms)
+  (declare (indent 1))
   (let ((nowvar (make-symbol "now"))
         (body   `(progn ,@forms)))
     `(let ((,nowvar (current-time)))
