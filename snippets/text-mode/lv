@@ -2,5 +2,5 @@
 #name : Local Variable
 # --
 `comment-start`Local Variables:`comment-end`
-`comment-start`$0`comment-end`
+`comment-start`  $0`comment-end`
 `comment-start`End:`comment-end`
