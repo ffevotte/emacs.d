@@ -375,7 +375,15 @@ point reaches the beginning or end of the buffer, stop there."
 		(define-key outline-minor-mode-map
 		  (kbd "<backtab>") 'outshine-cycle-buffer)
 		(define-key outline-mode-map
-		  (kbd "<backtab>") 'outshine-cycle-buffer))))
+		  (kbd "<backtab>") 'outshine-cycle-buffer)
+
+                ;; Unwanted key bindings
+                (mapc (lambda (key)
+                        (define-key outline-minor-mode-map key nil))
+                      (list (kbd "L")
+                            (kbd "J")
+                            (kbd "M-<down>")
+                            (kbd "M-<up>"))))))
 
 
 ;; ** auto-complete
