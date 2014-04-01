@@ -1,6 +1,6 @@
 ;; * Utilities
 
-;; ** path to subcomponents
+;; ** Path to subcomponents
 
 (defun ff/variable-file (name)
   "Path to a variable file of given NAME
@@ -12,10 +12,15 @@ Variable files are located in the \"var\" subdirectory of `user-emacs-directory'
   (expand-file-name (concat user-emacs-directory name)))
 
 
-;; ** cl-lib
+;; ** Lisp utilities
 (use-package cl-lib
   :load-path "share/elisp/cl-lib"
   :defer t)
+
+(defun assq-replace (key value alist)
+  (set alist
+       (cons (cons key value)
+             (assq-delete-all key (symbol-value alist)))))
 
 
 ;; ** Custom global key bindings
@@ -91,12 +96,15 @@ Example:
 
 ;; * User Interface
 
-;; ** Color theme
+;; ** Theme
 
 (when (window-system)
   (use-package color-theme-tango
     :load-path "color-theme"
-    :config (color-theme-tango)))
+    :config (color-theme-tango))
+
+  (assq-replace 'font-backend "xft"                         'default-frame-alist)
+  (assq-replace 'font         "Bitstream Vera Sans Mono-9"  'default-frame-alist))
 
 
 ;; ** Global settings
