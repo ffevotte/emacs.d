@@ -31,6 +31,7 @@ bc-packages:
 	  -f '- *tests.el'                            \
 	  -f '- *test.el'                             \
 	  -f '- features/support/*'                   \
+	  -f '- *-pkg.el'                             \
 	  -f 'P *.elc' -f '+ */' -f '+ *.el' -f '- *' \
 	  --prune-empty-dirs --delete-excluded        \
 	  packages/ $(PKG_INSTALL_DIR)/

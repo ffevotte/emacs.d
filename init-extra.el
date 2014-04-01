@@ -136,6 +136,7 @@ Example:
 
 ;; Variable files
 (setq url-configuration-directory (ff/variable-file "url/"))
+(setq auto-save-list-file-prefix  (ff/variable-file "auto-save-list/"))
 
 
 ;; ** Enable "forbidden" commands
