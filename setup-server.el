@@ -27,7 +27,7 @@ If an emacs server is already running, it is restarted."
           (display-warning 'ff/server-start
                            "Could not find any unused server name."
                            :warning)
-        (message "Starting server with name %s." server-name)
+        (message "Starting server with name `%s'." server-name)
         (server-start))))
   (setenv "EMACS_SERVER" server-name))
 
@@ -42,6 +42,7 @@ If an emacs server is already running, it is restarted."
     (delete-process server-process))
 
   (setq server-name ff/main-server-name)
+  (message "Starting main emacs server with name `%s'." server-name)
   (server-start)
   (setenv "EMACS_SERVER" server-name))
 

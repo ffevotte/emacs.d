@@ -476,7 +476,7 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;; ** Server
 (use-package setup-server
-  :commands ff/server-start
+  :commands ff/server-start ff/main-server
   :idle-priority 1
   :idle     (with-timer
              "Starting server"
