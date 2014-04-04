@@ -415,8 +415,9 @@ point reaches the beginning or end of the buffer, stop there."
 (use-package auto-complete-config
   :load-path "share/elisp/auto-complete"
   :commands  ac-config-default
-  :init      (setq ac-comphist-file (ff/variable-file "ac-comphist.dat"))
-  :config    (ac-config-default))
+  :init    (progn
+             (setq ac-comphist-file (ff/variable-file "ac-comphist.dat"))
+             (ac-config-default)))
 
 
 ;; ** YAsnippet
@@ -509,8 +510,7 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;; ** Server
 (use-package setup-server
-  :commands (ff/server-start ff/main-server)
-  :config (ff/server-start))
+  :init (ff/server-start))
 
 
 ;; ** Editable grep
