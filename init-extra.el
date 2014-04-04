@@ -163,9 +163,31 @@ Example:
 ;; Switch windows using C-pgUp / C-pgDn
 (custom-set-key (kbd "C-<next>")   (defun ff/next-window () (interactive) (other-window 1)))
 (custom-set-key (kbd "C-<prior>")  (defun ff/prev-window () (interactive) (other-window -1)))
-;; Move between pages (separated with ^L) with M-pgUp / M-pgDn
-(custom-set-key (kbd "M-<next>")   (defun ff/next-page () (interactive) (forward-page 1)(move-beginning-of-line 1)))
-(custom-set-key (kbd "M-<prior>")  (defun ff/prev-page () (interactive) (forward-page -1)(move-beginning-of-line 1)))
+
+;; *** Move between pages or section headers with M-pgUp / M-pgDn
+(defun ff/move-by-heading-or-page (move-heading move-page choose default-pos)
+  (goto-char (funcall choose
+                      (if (and (boundp 'outline-minor-mode)
+                               outline-minor-mode)
+                          (save-excursion
+                            (funcall move-heading)
+                            (point))
+                        (funcall default-pos))
+                      (save-excursion
+                        (funcall move-page 1)
+                        (move-beginning-of-line 1)
+                        (point)))))
+
+(custom-set-key (kbd "M-<next>")   (defun ff/next-page ()
+                                     (interactive)
+                                     (ff/move-by-heading-or-page 'outline-next-heading
+                                                                 'forward-page
+                                                                 'min 'point-max)))
+(custom-set-key (kbd "M-<prior>")  (defun ff/prev-page ()
+                                     (interactive)
+                                     (ff/move-by-heading-or-page 'outline-previous-heading
+                                                                 'backward-page
+                                                                 'max 'point-min)))
 
 
 ;; ** Recursive minibuffer
