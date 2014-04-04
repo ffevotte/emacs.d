@@ -1,0 +1,6 @@
+#!/bin/bash
+
+TMPFILE=$(mktemp -t "emacs-a2ps-XXXXXX.ps")
+a2ps "$@" -o ${TMPFILE}
+evince ${TMPFILE}
+rm -f ${TMPFILE}

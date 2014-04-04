@@ -123,7 +123,6 @@ Example:
  whitespace-line-column fill-column           ;; Better whitespace-mode defaults
  whitespace-style '(tab-mark indentation trailing lines-tail)
  diff-switches "-u"                           ;; Unified diffs
- a2ps-switches '("-l" "100")                  ;; Custom command-line args for a2ps
  )
 (add-hook 'after-save-hook          ;; Automatically make shebang-ed scripts executable
           'executable-make-buffer-file-executable-if-script-p)
@@ -593,6 +592,39 @@ C-u C-u:       create new terminal and choose program"
           (message "%s" (prin1-to-string `(setenv ,var ,value)))
           (setenv var value)))))
   (message "Sourcing environment from `%s'... done." filename))
+
+
+;; ** Print with a2ps
+(use-package a2ps-multibyte
+  :load-path "share/elisp/a2ps-multibyte"
+  :commands  (a2ps-buffer a2ps-region)
+  :config  (progn
+             (setq a2ps-command  (ff/emacsd "bin/a2ps")
+                   a2ps-switches '("-l" "100"))
+
+             (add-hook 'a2ps-filter-functions
+                       (defun ff/a2ps-insert-page-breaks ()
+                         (ff/insert-page-breaks 76 5)))
+
+             (defun ff/insert-page-breaks (page-size page-offset-max)
+               (let ((try-move (lambda (f)
+                                 (let ((orig-pos  (point))
+                                       (orig-line (line-number-at-pos)))
+                                   (funcall f)
+                                   (unless (or (and (looking-at "\^L")
+                                                    (> page-size
+                                                       (- orig-line (line-number-at-pos))))
+                                               (> page-offset-max
+                                                  (- orig-line (line-number-at-pos))))
+                                     (goto-char orig-pos))))))
+                 (goto-char (point-min))
+                 (while (= 0 (forward-line page-size))
+                   (funcall try-move 'ff/prev-page)
+                   (funcall try-move 'backward-paragraph)
+                   (unless (looking-at "\^L")
+                     (insert "\^L"))
+                   (unless (eolp)
+                     (insert "\n")))))))
 
 
 

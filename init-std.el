@@ -279,12 +279,6 @@ turned on."
 
 
 
-;; a2ps-multibyte
-(use-package a2ps-multibyte
-  :load-path "share/elisp/a2ps-multibyte")
-
-
-
 ;; Miscellaneous functions
 (use-package ff-misc
   :commands (count-words ff/count-lines-region)
