@@ -285,7 +285,8 @@ turned on."
   :bind     (("C-S-<up>"   . move-line-up)
              ("C-S-<down>" . move-line-down)
              ("H-<left>"   . rotate-windows)
-             ("H-<right>"  . rotate-windows-backwards))
+             ("H-<right>"  . rotate-windows-backwards)
+             ("M-c"        . ff/capitalize-word))
   :init     (define-key global-map [remap count-lines-region] 'ff/count-lines-region))
 
 ;; Set mark before scrolling

@@ -55,6 +55,11 @@ not contain hard line breaks any more."
   (forward-line -1)
   (indent-according-to-mode))
 
+(defun ff/capitalize-word (arg)
+  (interactive "p")
+  (capitalize-word (- arg)))
+
+
 
 ;; * User interface
 
