@@ -150,6 +150,7 @@ Example:
 ;; ** Global key bindings
 (custom-set-key (kbd "C-h a")      'apropos)       ;; search everything, not just commands
 (custom-set-key (kbd "<print>")    'a2ps-buffer)   ;; print the current buffer
+(custom-set-key (kbd "C-<print>")  'a2ps-region)
 (custom-set-key (kbd "C-x g")      'revert-buffer) ;; revert buffer
 ;; VI-like movement with H-{h,j,k,l}
 (custom-set-key (kbd "H-j")        'next-line)
