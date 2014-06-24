@@ -11,7 +11,7 @@ else
         ${EDITOR} -e "(ff/source \"$1\")"
     }
 
-    function man () {
+    function E-man () {
         if [ $# -eq 2 ]; then
             PAGE="$2($1)"
         else
@@ -20,11 +20,11 @@ else
         ${EDITOR} --eval "(man \"${PAGE}\")"
     }
 
-    function info () {
+    function E-info () {
         ${EDITOR} --eval "(info \"$1\")"
     }
 
-    function grep () {
+    function E-grep () {
         local QUOTED="grep -nH"
         while [ $# -gt 0 ]; do
             QUOTED="${QUOTED} \\\"$1\\\""
