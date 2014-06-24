@@ -579,14 +579,36 @@ C-u C-u:       create new terminal and choose program"
                             term-bind-key-alist))
                 (add-to-list 'term-bind-key-alist (cons key fun)))
 
+              (defun ff/term-char-mode (argp)
+                (interactive "P")
+                (when (and argp
+                           (use-region-p))
+                  (kill-ring-save (min (point) (mark))
+                                  (max (point) (mark)))
+                  (goto-char (point-max))
+                  (yank))
+                (call-interactively 'term-char-mode)
+                (term-send-left))
+
+              (defmacro ff/multi-term-raw (key)
+                `(ff/multi-term-bind
+                  ,key
+                  (lambda ()
+                    ,(format "Send raw %s" key)
+                    (interactive)
+                    (term-send-raw-string (kbd ,key)))))
+
               (ff/multi-term-bind "C-c C-j" 'term-line-mode)
-              (ff/multi-term-bind "C-c C-k" 'term-char-mode)
+              (ff/multi-term-bind "C-c C-k" 'ff/term-char-mode)
               (ff/multi-term-bind "C-c C-u" 'universal-argument)
               (ff/multi-term-bind "C-r"     'term-send-reverse-search-history)
-              (ff/multi-term-bind "C-z"     'term-send-raw)
-              (ff/multi-term-bind "C-u"     'term-send-raw)
-              (ff/multi-term-bind "C-k"     'term-send-raw)
-              (ff/multi-term-bind "C-y"     'term-send-raw)))
+              (ff/multi-term-raw  "C-z")
+              (ff/multi-term-raw  "C-u")
+              (ff/multi-term-raw  "C-k")
+              (ff/multi-term-raw  "C-y")
+              (ff/multi-term-raw  "C-x ~")
+
+              (define-key term-mode-map (kbd "C-c C-k") 'ff/term-char-mode)))
 
 
 ;; ** Source environment
