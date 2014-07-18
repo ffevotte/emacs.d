@@ -195,10 +195,9 @@ Example:
 
 (when (window-system)
   ;; Tango color theme
-  (use-package tangotango-theme
+  (use-package naquadah-theme
     :config (load-theme 'naquadah t))
 
-  ;; ANSI color theme
   (use-package term
     :defer    t
     :config (progn
