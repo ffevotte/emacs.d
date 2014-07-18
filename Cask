@@ -1,10 +1,6 @@
 (source gnu)
 (source melpa)
 
-;; * Infrastructure
-(depends-on "cask")
-(depends-on "use-package")
-
 (depends-on "adaptive-wrap")
 (depends-on "auctex")
 (depends-on "auto-compile")

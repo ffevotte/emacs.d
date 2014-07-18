@@ -1,3 +1,9 @@
+if ! which cask >/dev/null; then
+    EMACS_USER_DIR="$(readlink -f $(dirname ${BASH_SOURCE[0]}))"
+    CASK_ROOT="${EMACS_USER_DIR}/packages/cask"
+    export PATH="${CASK_ROOT}/bin:${PATH}"
+fi
+
 if [ -z "${EMACS_SERVER}" ]; then
     export EDITOR="emacsclient -s server -c -a vim"
 else

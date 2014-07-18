@@ -28,14 +28,13 @@ Variable files are located in the \"var\" subdirectory of `user-emacs-directory'
 
 ;; *** Dependencies
 
-(let ((cask-path (or (getenv "CASK_PATH")
-                     "~/.cask/")))
-  (require 'cask (concat (directory-file-name cask-path)
-                         "/cask.el")))
+(add-to-list 'load-path (ff/emacsd "packages/cask"))
+(require 'cask)
 (cask-initialize)
 
 ;; *** Configuration
 
+(add-to-list 'load-path (ff/emacsd "packages/use-package"))
 (require 'use-package)
 (setq use-package-verbose t)
 
