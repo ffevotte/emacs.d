@@ -10,11 +10,19 @@ else
     export EDITOR="emacsclient -s ${EMACS_SERVER}"
 
     function E () {
-        ${EDITOR} -e "(find-file \"$1\")"
+        local CMD
+        read -d\0 CMD <<EOF
+          (find-file "$1")
+EOF
+        ${EDITOR} --eval "${CMD}"
     }
 
     function E-source () {
-        ${EDITOR} -e "(ff/source \"$1\")"
+        local CMD
+        read -d\0 CMD <<EOF
+          (ff/source "$1")
+EOF
+        ${EDITOR} --eval "${CMD}"
     }
 
     function E-man () {
@@ -23,23 +31,34 @@ else
         else
             PAGE="$1"
         fi
-        ${EDITOR} --eval "(man \"${PAGE}\")"
+
+        local CMD
+        read -d\0 CMD <<EOF
+          (man "${PAGE}")
+EOF
+        ${EDITOR} --eval "${CMD}"
     }
 
     function E-info () {
-        ${EDITOR} --eval "(info \"$1\")"
+        local CMD
+        read -d\0 CMD <<EOF
+          (info "$1")
+EOF
+        ${EDITOR} --eval "${CMD}"
     }
 
     function E-grep () {
-        local QUOTED="grep -nH"
-        while [ $# -gt 0 ]; do
-            QUOTED="${QUOTED} \\\"$1\\\""
-            shift
-        done
-        ${EDITOR} --eval \
-            "(grep \"${QUOTED}\")" \
-            "(winner-undo)" \
-            "(switch-to-buffer \"*grep*\")"
+        local ARGS
+        read -d\0 ARGS < <(
+            while [ $# -gt 0 ]; do
+                cat <<EOF
+                  "$1"
+EOF
+                shift
+            done
+        )
+
+        ${EDITOR} --eval "(ff/grep ${ARGS})"
     }
 fi
 

@@ -934,8 +934,9 @@ If an emacs server is already running, it is restarted."
       (server-start)
       (setenv "EMACS_SERVER" server-name))))
 
-;; *** Source environment
+;; *** Bash commands
 
+;; Helper for the E-source shell function
 (defun ff/source (filename)
   "Update environment variables from a shell source file.
 
@@ -964,6 +965,22 @@ in `process-environment'."
           (message "%s" (prin1-to-string `(setenv ,var ,value)))
           (setenv var value)))))
   (message "Sourcing environment from `%s'... done." filename))
+
+;; Helper for the E-grep shell function
+(defun ff/grep (&rest args)
+  (let* ((quote-arg
+          (lambda (arg)
+            (format " \"%s\"" arg)))
+         (grep-command
+          (-reduce-from 'concat
+                        "grep -nH"
+                        (-map quote-arg
+                              args)))
+         (grep-buffer
+          (save-window-excursion
+            (grep grep-command))))
+    (winner-undo)
+    (switch-to-buffer grep-buffer)))
 
 ;; *** Terminal
 
