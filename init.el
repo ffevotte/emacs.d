@@ -381,19 +381,6 @@ With two universal arguments, switch the buffer in another window."
      (defun-when-installed ido-ubiquitous ff/enable-ido-ubiquitous ()
        (ido-ubiquitous-mode 1)))))
 
-;; find recent files using C-x C-r
-(defvar recentf-list)
-(global-set-key
- (kbd "C-x C-r")
- (defun ido-recentf-open ()
-   "Use `ido-completing-read' to \\[find-file] a recent file"
-   (interactive)
-   (recentf-mode 1)
-   (if (find-file (ido-completing-read "Find recent file: " recentf-list))
-       (message "Opening file...")
-     (message "Aborting"))))
-
-
 ;; *** helm
 
 (use-package helm
@@ -405,6 +392,17 @@ With two universal arguments, switch the buffer in another window."
     (custom-set-key (kbd "C-x C-r") 'helm-recentf)
     (custom-set-key (kbd "C-x M-x") 'helm-M-x)
     (custom-set-key (kbd "C-x C-i") 'helm-imenu)))
+
+(use-package helm-files
+  :defer t
+
+  :config
+  (progn
+    (assq-replace 'candidates
+                  (lambda ()
+                    (--remove (string= it sync-recentf-marker)
+                              recentf-list))
+                  'helm-source-recentf)))
 
 ;; *** smex
 
@@ -449,6 +447,17 @@ With two universal arguments, switch the buffer in another window."
   :idle-priority 10
   :idle (with-timer "Enabling recentf"
           (recentf-mode 1))
+
+  :init
+  (progn
+    (defun ff/ido-recentf-open ()
+      "Use `ido-completing-read' to \\[find-file] a recent file"
+      (interactive)
+      (recentf-mode 1)
+      (if (find-file (ido-completing-read "Find recent file: "
+                                          (--remove (string= it sync-recentf-marker) recentf-list)))
+          (message "Opening file...")
+        (message "Aborting"))))
 
   :config
   (progn
