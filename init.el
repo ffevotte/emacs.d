@@ -1,3 +1,7 @@
+;;; init.el --- Initialization file
+;;; Commentary:
+;;; Code:
+
 ;; * Utilities
 
 ;; This section contains base utilities upon which the rest builds
@@ -9,18 +13,21 @@
                                 (buffer-file-name))))
 
 (defun ff/emacsd (name)
-  "Path to a subdirectory of `user-emacs-directory'"
+  "Path to a file named NAME in `user-emacs-directory'."
   (expand-file-name (concat user-emacs-directory name)))
 
 ;; *** Configuration files
 
 (defun ff/load-configuration (name)
+  "Load the configuration for package NAME.
+This configuration is located in a file named `setup-NAME.el`
+under `user-emacs-directory'."
   (load-file (ff/emacsd (concat "setup-" name ".el"))))
 
 ;; *** Persistency files
 
 (defun ff/variable-file (name)
-  "Path to a variable file of given NAME
+  "Path to a variable file of given NAME.
 Variable files are located in the \"var\" subdirectory of `user-emacs-directory'"
   (expand-file-name (concat user-emacs-directory "var/" name)))
 
@@ -49,8 +56,8 @@ This is more or less equivalent to:
     BODY)
 
 except that PACKAGE is `require'd lazily when the function is
-invoked. If it can be correctly loaded, BODY is
-executed. Otherwise, a warning message is displayed."
+invoked.  If it can be correctly loaded, BODY is
+executed.  Otherwise, a warning message is displayed."
   (declare (indent 3))
   `(progn
      (lexical-let ((installed? (cl-gensym "installed")))
@@ -93,6 +100,9 @@ The associative list is modified in place."
       (push (cons key value) alist))))
 
 (defmacro with-timer (title &rest forms)
+  "Run the given FORMS, counting the elapsed time.
+A message including the given TITLE and the corresponding elapsed
+time is displayed."
   (declare (indent 1))
   (let ((nowvar (make-symbol "now"))
         (body   `(progn ,@forms)))
@@ -114,9 +124,15 @@ The associative list is modified in place."
   :global t
   :init-value t
   :keymap (make-sparse-keymap))
+
 (defun custom-set-key (key command)
+  "Bind KEY to COMMAND in `custom-bindings-mode'."
   (define-key custom-bindings-mode-map key command))
+
 (defun promote-minor-mode-map (mode)
+  "Make sure MODE appears first in `minor-mode-map-alist'.
+This ensures no key bindings defined in MODE can be shadowed by
+another minor-mode."
   (if (not (eq (car (car minor-mode-map-alist)) mode))
       (let ((mykeys (assq mode minor-mode-map-alist)))
         (assq-delete-all mode minor-mode-map-alist)
@@ -128,7 +144,7 @@ The associative list is modified in place."
 ;; (http://stackoverflow.com/a/17310748/1225607)
 (use-package repeat)
 (defun make-repeatable-command (cmd)
-  "Returns a new command that is a repeatable version of CMD.
+  "Return a new command that is a repeatable version of CMD.
 The new command is named CMD-repeat.  CMD should be a quoted
 command.
 
@@ -137,8 +153,8 @@ repeat it with just the final key.  For example:
 
   (global-set-key (kbd \"C-c a\") (make-repeatable-command 'foo))
 
-will create a new command called foo-repeat.  Typing C-c a will
-just invoke foo.  Typing C-c a a a will invoke foo three times,
+will create a new command called foo-repeat.  Typing `C-c a' will
+just invoke foo.  Typing `C-c a a a' will invoke foo three times,
 and so on."
   (let ((repeatable-command (intern (concat (symbol-name cmd) "/repeat"))))
     (fset repeatable-command
@@ -149,19 +165,6 @@ and so on."
              (setq last-repeatable-command ',cmd)
              (repeat nil)))
     repeatable-command))
-
-
-;; ** Hooks
-
-(defun ff/add-hooks (hooks functions)
-  "Add each function in FUNCTIONS to all hooks in HOOKS.
-
-Example:
-  (ff/add-hooks (list 'myhook1 'myhook2)
-                (list 'myfunction1 'myfunction2)) "
-  (dolist (function functions)
-    (dolist (hook hooks)
-      (add-hook hook function))))
 
 
 ;; * General settings
@@ -270,7 +273,7 @@ Example:
 ;; Adapted from Magnar Sveen:
 ;;   http://whattheemacsd.com/buffer-defuns.el-02.html
 (defun ff/rotate-windows (count)
-  "Rotate your windows"
+  "Perform COUNT circular permutations of the windows."
   (interactive "p")
   (let* ((non-dedicated-windows (-remove 'window-dedicated-p (window-list)))
          (num-windows (length non-dedicated-windows))
@@ -296,6 +299,8 @@ Example:
                (setq i next-i)))))))
 
 (defun ff/rotate-windows-backwards (count)
+  "Perform COUNT circular permutations of the windows.
+Rotation is done in the opposite order as `ff/rotate-windows'."
   (interactive "p")
   (ff/rotate-windows (- count)))
 
@@ -310,7 +315,7 @@ Example:
 (defun ff/find-file (&optional argp)
   "Use prefix argument to select where to find a file.
 
-Without prefix argument, visit the file in the current window.
+Without prefix argument ARGP, visit the file in the current window.
 With a universal prefix arg, display the file in another window.
 With two universal arguments, visit the file in another window."
   (interactive "p")
@@ -325,7 +330,7 @@ With two universal arguments, visit the file in another window."
 (defun ff/switch-to-buffer (&optional argp)
   "Use prefix argument to select where to switch to buffer.
 
-Without prefix argument, switch the buffer in the current window.
+Without prefix argument ARGP, switch the buffer in the current window.
 With a universal prefix, display the buffer in another window.
 With two universal arguments, switch the buffer in another window."
   (interactive "p")
@@ -552,6 +557,16 @@ With two universal arguments, switch the buffer in another window."
 
 ;; Move between pages or section headers with M-pgUp / M-pgDn
 (defun ff/move-by-heading-or-page (move-heading move-page choose default-pos)
+  "Move point by heading or page.
+
+Headings are defined by `outline-minor-mode'. MOVE-HEADING should
+be a function which moves point to the next/previous heading.
+
+Pages are separated by . MOVE-PAGE should be a function which
+moves point to the next/previous page.
+
+Choose the closest location using the CHOOSE function, and move
+to it (or to DEFAULT-POS if no heading nor page is found.)"
   (goto-char (funcall choose
                       (if (and (boundp 'outline-minor-mode)
                                outline-minor-mode)
@@ -606,11 +621,11 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;; Set mark before scrolling
 (defadvice scroll-up (before set-mark activate)
-  "Set the mark before scrolling"
+  "Set the mark before scrolling."
   (push-mark))
 
 (defadvice scroll-down (before set-mark activate)
-  "Set the mark before scrolling"
+  "Set the mark before scrolling."
   (push-mark))
 
 ;; *** Multiple cursors
@@ -713,8 +728,15 @@ point reaches the beginning or end of the buffer, stop there."
 ;; *** Abbreviations
 
 (use-package abbrev
-  :config (quietly-read-abbrev-file))
-(defun ff/enable-abbrev () (abbrev-mode 1))
+  :defer t
+
+  :init
+  (defun ff/enable-abbrev ()
+    "Turn `abbrev-mode' on."
+    (abbrev-mode 1))
+
+  :config
+  (quietly-read-abbrev-file))
 
 ;; *** Snippets
 
@@ -739,17 +761,17 @@ point reaches the beginning or end of the buffer, stop there."
 ;; *** Manipulate file names
 
 (custom-set-key (kbd "C-c f") 'ff/insert-file-name)
-(defun ff/insert-file-name (filename &optional args)
+(defun ff/insert-file-name (filename &optional argp)
   "Insert name of file FILENAME into buffer after point.
 
-  Prefixed with \\[universal-argument], expand the file name to
-  its fully canocalized path.  See `expand-file-name'.
+With a prefix argument ARGP, expand the file name to its fully
+canonicalized path.  See `expand-file-name'.
 
-  The default with no prefix is to use the relative path to file
-  name from current directory, `default-directory'.  See
-  `file-relative-name'."
+The default with no prefix is to use the relative path to file
+name from current directory, `default-directory'.  See
+`file-relative-name'."
   (interactive "fInsert file name: \nP")
-  (cond ((eq nil args)
+  (cond ((eq nil argp)
          (insert (file-relative-name filename)))
         (t
          (insert filename))))
@@ -813,13 +835,13 @@ point reaches the beginning or end of the buffer, stop there."
 ;; *** Highlight current line
 
 (defun ff/highlight-line ()
-  "Turn on and setup hl-line-mode"
+  "Turn on `hl-line-mode'."
   (hl-line-mode 1))
 
 ;; *** Truncate long lines
 
 (defun ff/truncate-lines ()
-  "Truncate long lines"
+  "Truncate long lines."
   (toggle-truncate-lines 1))
 
 ;; *** Fill & unfill paragraphs
@@ -855,7 +877,7 @@ not contain hard line breaks any more."
             (add-hook 'visual-line-mode-hook 'ff/activate-adaptive-wrap-prefix-mode)))
 
 (defun ff/no-auto-fill ()
-  "Disable `auto-fill-mode' when `visual-line-mode' is active"
+  "Disable `auto-fill-mode' when `visual-line-mode' is active."
   (if visual-line-mode
       (auto-fill-mode -1)))
 (add-hook 'visual-line-mode-hook 'ff/no-auto-fill)
@@ -913,7 +935,11 @@ If an emacs server is already running, it is restarted."
 ;; *** Source environment
 
 (defun ff/source (filename)
-  "Update environment variables from a shell source file."
+  "Update environment variables from a shell source file.
+
+Source shell script FILENAME, recording any change made to the
+environment.  These changes are then applied to Emacs' environment
+in `process-environment'."
   (interactive "fSource file: ")
 
   (message "Sourcing environment from `%s'..." filename)
@@ -1051,7 +1077,7 @@ C-u C-u:       create new terminal and choose program"
 ;; *** Auto-revert version-controlled files
 
 (defadvice vc-find-file-hook (after ff/auto-revert-mode-for-vc activate)
-  "Activate `auto-revert-mode' for vc-controlled files"
+  "Activate `auto-revert-mode' for vc-controlled files."
   (when vc-mode (auto-revert-mode 1)))
 
 ;; *** Git
@@ -1374,7 +1400,7 @@ newly inserted character replaces them."
 ;; *** TODO keywords
 
 (defun ff/setup-todo-keywords ()
-  "Highlight keywords like FIXME or TODO"
+  "Highlight keywords like FIXME or TODO."
   (font-lock-add-keywords
    nil '(("\\<\\(FIXME\\|TODO\\|FIX\\|HACK\\|REFACTOR\\|NOCOMMIT\\)\\>"
           1 font-lock-warning-face t))))
@@ -1457,11 +1483,12 @@ newly inserted character replaces them."
 
 ;; *** Inline evaluation
 
-(defun eval-and-replace (value)
-  "Evaluate the sexp at point and replace it with its value"
-  (interactive (list (eval-last-sexp nil)))
-  (kill-sexp -1)
-  (insert (format "%S" value)))
+(defun ff/eval-and-replace ()
+  "Evaluate the sexp at point and replace it with its value."
+  (interactive)
+  (let ((value (eval-last-sexp nil)))
+    (kill-sexp -1)
+    (insert (format "%S" value))))
 
 (custom-set-key
  (kbd "C-x C-e")
@@ -1470,7 +1497,7 @@ newly inserted character replaces them."
 With a prefix argument, replace the sexp by its evaluation."
    (interactive "P")
    (if argp
-       (call-interactively 'eval-and-replace)
+       (call-interactively 'ff/eval-and-replace)
      (call-interactively 'eval-last-sexp))))
 
 ;; *** Auto-compile
@@ -1577,3 +1604,6 @@ turned on."
                                   (string-match "\\." (concat fullhostname ".domain"))
                                   (- (match-end 0) 1)))))
   (load (concat "host-" hostname) 'noerror))
+
+(provide 'init)
+;;; init.el ends here
