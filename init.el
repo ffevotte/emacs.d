@@ -1183,7 +1183,7 @@ C-u C-u:       create new terminal and choose program"
   :config
   (progn
     (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-    (add-hook 'LaTeX-mode-hook 'yas-minor-mode-on)
+    (add-hook 'LaTeX-mode-hook 'ff/enable-yasnippet)
 
     (add-hook 'LaTeX-mode-hook
               (defun ff/enable-latex-math-mode () (LaTeX-math-mode 1)))
@@ -1524,7 +1524,7 @@ With a prefix argument, replace the sexp by its evaluation."
 
 ;; *** Enable yasnippet
 
-(add-hook 'c-mode-common-hook 'yas-minor-mode-on)
+(add-hook 'c-mode-common-hook 'ff/enable-yasnippet)
 
 ;; *** Switch between header and implementation files
 
