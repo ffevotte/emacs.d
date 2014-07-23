@@ -97,7 +97,8 @@ The associative list is modified in place."
   (let ((cell (assq key (symbol-value alist))))
     (if cell
 	(setcdr cell value)
-      (push (cons key value) alist))))
+      (set alist (cons (cons key value)
+                       (symbol-value alist))))))
 
 (defmacro with-timer (title &rest forms)
   "Run the given FORMS, counting the elapsed time.
