@@ -41,6 +41,7 @@
 
 (depends-on "desktop+"
             :git "https://github.com/ffevotte/desktop-plus.git"
+            :branch "dev"
             :files ("desktop+.el"))
 
 ;; Local Variables:
