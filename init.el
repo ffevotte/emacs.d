@@ -114,6 +114,13 @@ time is displayed."
                 (float-time (time-subtract (current-time) ,nowvar))))
            (message "%s... done (%.3fs)" ,title elapsed))))))
 
+(defmacro when-let (name cond &rest body)
+  "If COND is non-nil, let-bind it to NAME and do BODY."
+  (declare (indent 2))
+  `(let ((,name ,cond))
+     (when ,name
+       ,@body)))
+
 ;; ** Key bindings
 
 ;; *** Custom global key bindings
@@ -188,6 +195,9 @@ and so on."
 ;; Startup
 (setq initial-scratch-message "")           ;; Empty scratch buffer
 (setq initial-major-mode 'fundamental-mode) ;;   ... in fundamental-mode
+(when-let scratch (get-buffer "*scratch*")
+  (with-current-buffer scratch
+    (funcall initial-major-mode)))
 (setq inhibit-splash-screen t)              ;; No fancy splash screen
 
 ;; Show line and column numbers
