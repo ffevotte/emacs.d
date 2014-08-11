@@ -1204,6 +1204,21 @@ C-u C-u:       create new terminal and choose program"
   "Turn `flyspell-mode' on."
   (flyspell-mode 1))
 
+;; ** Org
+
+(use-package org
+  :defer t
+
+  :config
+  (progn
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((emacs-lisp . t)
+       (C . t)
+       (python . t)
+       (maxima . t)
+       (gnuplot . t)))))
+
 
 ;; ** LaTeX
 
