@@ -8,13 +8,15 @@
 
 ;; ** Filesystem hierarchy
 
+(setq user-init-file (or load-file-name
+                         (buffer-file-name)))
 (setq user-emacs-directory (file-name-directory
-                            (or load-file-name
-                                (buffer-file-name))))
+                            user-init-file))
 
 (defun ff/emacsd (name)
   "Path to a file named NAME in `user-emacs-directory'."
   (expand-file-name (concat user-emacs-directory name)))
+
 
 ;; *** Configuration files
 
