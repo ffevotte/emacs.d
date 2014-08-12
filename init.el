@@ -1220,6 +1220,15 @@ C-u C-u:       create new terminal and choose program"
        (gnuplot . t)))))
 
 
+;; ** GMail
+
+(use-package gmail-message-mode
+  :defer t
+
+  :init
+  (add-to-list 'auto-mode-alist
+               '("[\\\\/]itsalltext[\\\\/]mail\\.google\\..*\\.md\\'" . gmail-message-mode)))
+
 ;; ** LaTeX
 
 ;; *** Global configuration
