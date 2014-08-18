@@ -213,6 +213,7 @@ and so on."
 (setq-default indicate-buffer-boundaries 'left) ;; Fringe
 (setq-default indicate-empty-lines t)
 
+
 ;; *** GUI Theme
 
 (when (window-system)
@@ -235,6 +236,22 @@ and so on."
   ;; Font
   (assq-set 'font-backend "xft"                         'default-frame-alist)
   (assq-set 'font         "Bitstream Vera Sans Mono-9"  'default-frame-alist))
+
+
+;; *** Mode line
+
+(use-package smart-mode-line
+  :config
+  (progn
+    (setq mode-line-position nil)
+    (sml/setup)))
+
+(defmacro rename-modeline (package-name mode new-name)
+  `(eval-after-load ,package-name
+     '(defadvice ,mode (after rename-modeline activate)
+        (setq mode-name ,new-name))))
+(rename-modeline "lisp-mode" emacs-lisp-mode "EL")
+
 
 ;; ** Windows management
 
@@ -745,6 +762,8 @@ point reaches the beginning or end of the buffer, stop there."
 (use-package abbrev
   :defer t
 
+  :diminish abbrev-mode
+
   :init
   (defun ff/enable-abbrev ()
     "Turn `abbrev-mode' on."
@@ -758,6 +777,8 @@ point reaches the beginning or end of the buffer, stop there."
 (use-package yasnippet
   :defer t
 
+  :diminish (yas-minor-mode . " Y")
+
   :config
   (progn
     (setq yas-snippet-dirs `(,(ff/emacsd "snippets")))
@@ -769,9 +790,12 @@ point reaches the beginning or end of the buffer, stop there."
 ;; *** Auto completion
 
 (use-package auto-complete-config
-  :init    (progn
-             (setq ac-comphist-file (ff/variable-file "ac-comphist.dat"))
-             (ac-config-default)))
+  :diminish (auto-complete-mode . " ⏦")
+
+  :init
+  (progn
+    (setq ac-comphist-file (ff/variable-file "ac-comphist.dat"))
+    (ac-config-default)))
 
 ;; *** Manipulate file names
 
@@ -806,13 +830,14 @@ name from current directory, `default-directory'.  See
 
 (use-package autopair
   :defer t
-  :diminish autopair-mode
+  :diminish (autopair-mode . " ⒜")
 
   :idle-priority 2
   :idle (with-timer "Enabling autopair"
           (funcall
            (defun-when-installed autopair ff/enable-autopair ()
              (autopair-global-mode)))))
+
 
 ;; ** Whitespace handling
 
@@ -824,7 +849,7 @@ name from current directory, `default-directory'.  See
 
 (define-minor-mode auto-dtw-mode
   "Automatically delete trailing whitespace."
-  :lighter    " dtw"
+  :lighter    " ˽"
   :init-value nil
   (setq show-trailing-whitespace auto-dtw-mode))
 
@@ -885,17 +910,25 @@ not contain hard line breaks any more."
 (setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
 
 (use-package adaptive-wrap
-  :config (progn
-            (defun ff/activate-adaptive-wrap-prefix-mode ()
-              "Toggle `visual-line-mode' and `adaptive-wrap-prefix-mode' simultaneously."
-              (adaptive-wrap-prefix-mode (if visual-line-mode 1 -1)))
-            (add-hook 'visual-line-mode-hook 'ff/activate-adaptive-wrap-prefix-mode)))
+  :defer t
+
+  :config
+  (progn
+    (defun ff/activate-adaptive-wrap-prefix-mode ()
+      "Toggle `visual-line-mode' and `adaptive-wrap-prefix-mode' simultaneously."
+      (adaptive-wrap-prefix-mode (if visual-line-mode 1 -1)))
+    (add-hook 'visual-line-mode-hook 'ff/activate-adaptive-wrap-prefix-mode)
+
+    (diminish 'adaptive-wrap-prefix-mode)))
 
 (defun ff/no-auto-fill ()
   "Disable `auto-fill-mode' when `visual-line-mode' is active."
   (if visual-line-mode
       (auto-fill-mode -1)))
 (add-hook 'visual-line-mode-hook 'ff/no-auto-fill)
+
+(diminish 'auto-fill-function " ¶")
+(diminish 'visual-line-mode   " §")
 
 ;; ** Special characters
 
@@ -1152,6 +1185,11 @@ C-u C-u:       create new terminal and choose program"
   "Activate `auto-revert-mode' for vc-controlled files."
   (when vc-mode (auto-revert-mode 1)))
 
+(use-package autorevert
+  :defer t
+  :config (diminish 'auto-revert-mode " ↻"))
+
+
 ;; *** Git
 
 (use-package magit
@@ -1159,7 +1197,10 @@ C-u C-u:       create new terminal and choose program"
 
   :init
   (progn
-    (custom-set-key (kbd "C-c v") 'magit-status)))
+    (custom-set-key (kbd "C-c v") 'magit-status))
+
+  :config
+  (magit-auto-revert-mode -1))
 
 ;; ** Various tools
 
@@ -1225,8 +1266,10 @@ C-u C-u:       create new terminal and choose program"
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 
 ;; *** Spell check
+
 (use-package flyspell
   :defer  t
+  :diminish (flyspell-mode . " 🛪")
 
   :config
   (progn
@@ -1510,7 +1553,7 @@ newly inserted character replaces them."
 
 (use-package outline
   :defer t
-  :diminish outline-minor-mode
+  :diminish (outline-minor-mode . " 🖹")
 
   :init
   (progn
@@ -1545,6 +1588,7 @@ newly inserted character replaces them."
 
 (use-package hideshow
   :defer t
+  :diminish (hs-minor-mode . " ℏ")
 
   :init
   (progn
