@@ -1000,7 +1000,8 @@ in `process-environment'."
   (message "Sourcing environment from `%s'..." filename)
   (with-temp-buffer
 
-    (shell-command (format "diff -u <(true; export) <(source %s; export)" filename) '(4))
+    (shell-command (format "diff -u <(true; export) <(source %s; export)" filename)
+                   (current-buffer))
 
     (let ((envvar-re "declare -x \\([^=]+\\)=\\(.*\\)$"))
       ;; Remove environment variables
