@@ -33,6 +33,10 @@ under `user-emacs-directory'."
 Variable files are located in the \"var\" subdirectory of `user-emacs-directory'"
   (expand-file-name (concat user-emacs-directory "var/" name)))
 
+(setq custom-file (ff/variable-file "custom.el"))
+(load custom-file 'noerror)
+
+
 ;; ** Packages management
 
 ;; *** Dependencies
@@ -463,10 +467,6 @@ With two universal arguments, switch the buffer in another window."
 (setq url-configuration-directory (ff/variable-file "url/"))
 (setq auto-save-list-file-prefix  (ff/variable-file "auto-save-list/"))
 (setq tramp-persistency-file-name (ff/variable-file "tramp"))
-
-;; Custom
-(setq custom-file (ff/variable-file "custom.el"))
-(load custom-file 'noerror)
 
 
 ;; *** Sessions
