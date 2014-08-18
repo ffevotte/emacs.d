@@ -1297,10 +1297,11 @@ C-u C-u:       create new terminal and choose program"
     (org-babel-do-load-languages
      'org-babel-load-languages
      '((emacs-lisp . t)
-       (C . t)
-       (python . t)
-       (maxima . t)
-       (gnuplot . t)))))
+       (C          . t)
+       (python     . t)
+       (maxima     . t)
+       (gnuplot    . t)
+       (sh         . t)))))
 
 
 ;; ** GMail
