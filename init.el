@@ -897,6 +897,45 @@ not contain hard line breaks any more."
       (auto-fill-mode -1)))
 (add-hook 'visual-line-mode-hook 'ff/no-auto-fill)
 
+;; ** Special characters
+
+;; *** Fall-back font for unicode characters
+
+(use-package unicode-fonts
+  :init (unicode-fonts-setup))
+
+
+;; *** Easily insert unicode
+
+(defun helm-insert-char ()
+  (interactive)
+  (helm :prompt "Character: "
+        :sources '((name . "Characters")
+                   (init . (lambda ()
+                             (with-current-buffer (helm-candidate-buffer 'global)
+                               (erase-buffer)
+                               (mapc (lambda (char)
+                                       (insert-char (cdr char))
+                                       (insert " ")
+                                       (insert (car char))
+                                       (newline))
+                                     (ucs-names)))))
+                   (candidates-in-buffer)
+                   (action . (("insert character"
+                               . (lambda (candidate)
+                                   (print candidate)
+                                   (insert (substring candidate 0 1))))
+                              ("insert name"
+                               . (lambda (candidate)
+                                   (insert (substring candidate 2))))
+                              ("insert code"
+                               . (lambda (candidate)
+                                   (let* ((name (substring candidate 2))
+                                          (code (cdr (assoc name ucs-names))))
+                                     (insert (format "%d" code))))))))))
+(custom-set-key (kbd "C-x 8 RET") 'helm-insert-char)
+
+
 
 ;; * Interaction with external tools
 
