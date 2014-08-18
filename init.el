@@ -1497,7 +1497,9 @@ newly inserted character replaces them."
 
 ;; * Programming
 
-;; ** Compilation
+;; ** Common features for programming modes
+
+;; *** Compilation
 
 (use-package compile
   :defer t
@@ -1529,7 +1531,65 @@ newly inserted character replaces them."
     (multi-compile "compile7" :key (kbd "<f7>"))
     (multi-compile "compile8" :key (kbd "<f8>"))))
 
-;; ** Common features for programming modes
+
+;; *** Flycheck
+
+(use-package flycheck
+  :defer    t
+  :diminish flycheck-mode
+
+  :config
+  (progn
+    (defun ff/flycheck-next-error ()
+      (interactive)
+      (condition-case nil
+          (flycheck-next-error)
+        (user-error (flycheck-next-error nil 'reset))))
+
+    (define-key flycheck-mode-map [remap flycheck-next-error] 'ff/flycheck-next-error)
+
+    (defun flycheck-mode-line-status-verbose (&optional status)
+      "Get a text describing STATUS for use in the mode line.
+
+STATUS defaults to `flycheck-last-status-change' if omitted or
+nil."
+      (let ((text (pcase (or status flycheck-last-status-change)
+                    (`not-checked "not checked")
+                    (`no-checker "no checker")
+                    (`running "running")
+                    (`errored "error")
+                    (`finished
+                     (if flycheck-current-errors
+                         (let ((error-counts (flycheck-count-errors
+                                              flycheck-current-errors)))
+                           (format "%s errors / %s warnings"
+                                   (or (cdr (assq 'error error-counts)) 0)
+                                   (or (cdr (assq 'warning error-counts)) 0)))
+                       ""))
+                    (`interrupted "interrupted")
+                    (`suspicious "suspicious"))))
+        (concat "FlyCheck: " text)))
+
+    (setq flycheck-mode-line
+          '(:eval
+            (propertize (flycheck-mode-line-status-text)
+                        'mouse-face 'mode-line-highlight
+
+                        'help-echo (concat (flycheck-mode-line-status-verbose) "\n\n"
+                                           "mouse-1: go to next error\n"
+                                           "mouse-2: select checker\n"
+                                           "mouse-3: go to previous error\n")
+
+                        'local-map
+                        (let ((map (make-sparse-keymap)))
+                          (define-key map [mode-line mouse-1] 'ff/flycheck-next-error)
+                          (define-key map [mode-line mouse-2] 'flycheck-select-checker)
+                          (define-key map [mode-line mouse-3] 'flycheck-previous-error)
+                          map))))
+
+    (add-to-list 'mode-line-misc-info
+                 '(flycheck-mode ("" flycheck-mode-line " ")))))
+
 
 ;; *** Executable scripts
 
