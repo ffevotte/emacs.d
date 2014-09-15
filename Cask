@@ -9,6 +9,7 @@
 (depends-on "bookmark+")
 (depends-on "browse-kill-ring")
 (depends-on "expand-region")
+(depends-on "git-gutter-fringe")
 (depends-on "ggtags")
 (depends-on "gnuplot")
 (depends-on "helm")
@@ -44,6 +45,10 @@
             :git "https://github.com/ffevotte/desktop-plus.git"
             :branch "dev"
             :files ("desktop+.el"))
+
+(depends-on "temporary-mode"
+            :git "https://github.com/ffevotte/temporary-mode.git"
+            :files ("temporary-mode.el"))
 
 ;; Local Variables:
 ;;   mode: emacs-lisp;

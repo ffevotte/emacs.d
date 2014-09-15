@@ -181,6 +181,11 @@ and so on."
     repeatable-command))
 
 
+;; *** Temporary modes
+
+(use-package temporary-mode)
+
+
 ;; * General settings
 
 ;; This section contains everything which is not directly related to text
@@ -214,9 +219,12 @@ and so on."
 (setq-default frame-title-format (list "%b - Emacs"))
 
 ;; Fringes
-(setq-default indicate-buffer-boundaries 'left) ;; Fringe
-(setq-default indicate-empty-lines t)
+(setq-default indicate-buffer-boundaries 'left)
 
+;; Margins
+(let ((m-w 1))
+  (setq-default left-margin-width  m-w
+                right-margin-width m-w))
 
 ;; *** GUI Theme
 
@@ -236,6 +244,10 @@ and so on."
 	      (set-face-attribute 'term-color-cyan    nil :foreground "#c17d11")
 	      (set-face-attribute 'term-color-white   nil :foreground "#babdb6")
               (set-face-attribute 'term-color-black   nil :background "#262b2c")))
+
+  (custom-set-faces
+   '(fringe ((t (:background "#1f2324")))))
+
 
   ;; Font
   (assq-set 'font-backend "xft"                         'default-frame-alist)
@@ -1201,6 +1213,33 @@ C-u C-u:       create new terminal and choose program"
 
   :config
   (magit-auto-revert-mode -1))
+
+
+(use-package git-gutter
+  :diminish (git-gutter-mode . " ±")
+
+  :init
+  (progn
+    (define-key ff/toggle-map "g" 'git-gutter-mode))
+
+  :config
+  (progn
+    (use-package git-gutter-fringe)
+
+    (define-temporary-mode git-nav-mode
+      "Navigate between git hunks in the buffer."
+      :lighter " ±⮁"
+      :install  ("C-c g" . custom-bindings-mode-map)
+      :bindings (("n" . git-gutter:next-hunk)
+                 ("p" . git-gutter:previous-hunk)
+                 ("j" . git-gutter:next-hunk)
+                 ("k" . git-gutter:previous-hunk)
+                 ("s" . git-gutter:stage-hunk)
+                 ("r" . git-gutter:revert-hunk)
+                 ("v" . git-gutter:popup-hunk)
+                 ("R" . git-gutter:set-start-revision))
+      :body (when git-nav-mode
+              (git-gutter-mode 1)))))
 
 ;; ** Various tools
 
