@@ -495,6 +495,7 @@ With two universal arguments, switch the buffer in another window."
     (add-to-list 'desktop+/special-buffer-modes 'term-mode)
     (add-to-list 'desktop+/special-buffer-modes 'compilation-mode)))
 
+
 ;; *** Recent files
 
 (use-package recentf
@@ -802,7 +803,7 @@ point reaches the beginning or end of the buffer, stop there."
 ;; *** Auto completion
 
 (use-package auto-complete-config
-  :diminish (auto-complete-mode . " ⏦")
+  :diminish (auto-complete-mode . " ⤳")
 
   :init
   (progn
@@ -947,7 +948,10 @@ not contain hard line breaks any more."
 ;; *** Fall-back font for unicode characters
 
 (use-package unicode-fonts
-  :init (unicode-fonts-setup))
+  :idle-priority 10
+  :idle
+  (with-timer "Setup unicode-fonts"
+    (unicode-fonts-setup)))
 
 
 ;; *** Easily insert unicode
@@ -1199,7 +1203,7 @@ C-u C-u:       create new terminal and choose program"
 
 (use-package autorevert
   :defer t
-  :config (diminish 'auto-revert-mode " ↻"))
+  :diminish (auto-revert-mode . " ↻"))
 
 
 ;; *** Git
