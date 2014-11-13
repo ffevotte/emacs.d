@@ -1,11 +1,11 @@
-if ! which cask >/dev/null; then
-    EMACS_USER_DIR="$(readlink -f $(dirname ${BASH_SOURCE[0]}))"
-    CASK_ROOT="${EMACS_USER_DIR}/packages/cask"
-    export PATH="${CASK_ROOT}/bin:${PATH}"
+if [ -z "$EMACS_USER_DIR" ]; then
+    export EMACS_USER_DIR="$(readlink -f $(dirname ${BASH_SOURCE[0]}))"
+    export PATH="${EMACS_USER_DIR}/bin:${PATH}"
+    export PATH="${EMACS_USER_DIR}/packages/cask/bin:${PATH}"
 fi
 
 if [ -z "${EMACS_SERVER}" ]; then
-    export EDITOR="emacsclient -s server -c -a vim"
+    export EDITOR="emacsclient-main"
 else
     export EDITOR="emacsclient -s ${EMACS_SERVER}"
 
