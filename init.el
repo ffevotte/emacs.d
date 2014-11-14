@@ -1630,7 +1630,41 @@ sub/superscript for the token at point."
     (multi-compile "compile5" :key (kbd "<f5>"))
     (multi-compile "compile6" :key (kbd "<f6>"))
     (multi-compile "compile7" :key (kbd "<f7>"))
-    (multi-compile "compile8" :key (kbd "<f8>"))))
+    (multi-compile "compile8" :key (kbd "<f8>"))
+
+    (defun list-compilation-buffers ()
+      (interactive)
+      (with-current-buffer (get-buffer-create "*compilation-buffers*")
+        (erase-buffer)
+        (setq truncate-lines t)
+        (cl-labels ((s-truncate-left
+                     (len s)
+                     (let ((truncated (if (> (string-width s) len)
+                                          (s-concat "..." (s-right (- len 3) s))
+                                        s)))
+                       (s-pad-right len " " truncated))))
+          (mapc (lambda (buffer)
+                  (when (with-current-buffer buffer (derived-mode-p 'compilation-mode))
+                    (let ((name    (with-current-buffer buffer (buffer-name)))
+                          (command (with-current-buffer buffer compilation-arguments))
+                          (dir     (with-current-buffer buffer compilation-directory)))
+                      (condition-case nil
+                          (progn
+                            (insert (s-truncate-left 20 name) "  ")
+                            (insert (s-truncate-left 30 dir) "  ")
+                            (insert (car command)))
+                        (error t))
+                      (newline))))
+                (buffer-list))
+          (sort-lines nil (point-min) (point-max))
+          (goto-char (point-min))
+          (insert (format "%-20s  " "NAME")
+                  (format "%-30s  " "DIRECTORY")
+                  "COMMAND")
+          (newline)))
+      (display-buffer "*compilation-buffers*"))
+
+    (define-key ff/run-map "c" #'list-compilation-buffers)))
 
 
 ;; *** Flycheck
