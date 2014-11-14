@@ -1548,6 +1548,39 @@ newly inserted character replaces them."
                    1))                                                       ;; Type (warning)
     (add-to-list 'compilation-error-regexp-alist 'latex-warning)))
 
+;; *** Aggressive sub/super-scripts
+
+(defun TeX-aggressive-sub-super-script (arg)
+  "Insert typed character ARG times and possibly a sub/super-script.
+Sub/super-script insertion is done only in a (La)TeX math mode region.
+The inserted sub/super-script is copied from the last occurence of a
+sub/superscript for the token at point."
+  (interactive "p")
+  (self-insert-command arg)
+  (when (texmathp)
+    (let ((sub-super-script
+           (save-excursion
+             (let ((current-token (let ((end (point)))
+                                    (backward-sexp 1)
+                                    (buffer-substring-no-properties (point) end))))
+               (when (search-backward current-token nil t)
+                 (search-forward current-token)
+                 (let ((begin (point)))
+                   (forward-sexp 1)
+                   (buffer-substring-no-properties begin (point))))))))
+      (when sub-super-script
+        (set-mark (point))
+        (insert sub-super-script)))))
+
+(define-minor-mode TeX-aggressive-sub-super-script-mode
+  "Aggressively complete sub and superscripts in (La)TeX math mode."
+  :lighter " ^"
+  :init-value nil
+  :keymap (let ((map (make-sparse-keymap)))
+            (define-key map (kbd "_") #'TeX-aggressive-sub-super-script)
+            (define-key map (kbd "^") #'TeX-aggressive-sub-super-script)
+            map))
+
 ;; ** Markdown
 
 (use-package markdown-mode
