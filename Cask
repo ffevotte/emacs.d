@@ -13,6 +13,7 @@
 (depends-on "ggtags")
 (depends-on "git-gutter-fringe")
 (depends-on "gnuplot")
+(depends-on "guide-key")
 (depends-on "helm")
 (depends-on "htmlize")
 (depends-on "ido-ubiquitous")

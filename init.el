@@ -469,12 +469,29 @@ With two universal arguments, switch the buffer in another window."
              (custom-set-key (kbd "M-x") 'smex)
              (smex-initialize)))
 
-;; *** Toggle key map
+;; *** Guide-key
+
+(use-package guide-key
+  :diminish guide-key-mode
+  :config
+  (progn
+    (setq guide-key/guide-key-sequence
+          '("C-x r"   ;; rectangles, registers and bookmarks
+            "C-x 8"   ;; special characters
+            "C-x RET" ;; coding system
+            ))
+    (guide-key-mode 1)))
+
+
+;; *** "Toggle" and "Run" key maps
+
+;; **** Toggle
 
 ;; http://endlessparentheses.com/the-toggle-map-and-wizardry.html
 ;; http://irreal.org/blog/?p=2830
 (define-prefix-command        'ff/toggle-map)
 (custom-set-key (kbd "C-c t") 'ff/toggle-map)
+(add-to-list 'guide-key/guide-key-sequence "C-c t")
 
 (define-key ff/toggle-map "e" #'emacs-lisp-mode)
 (define-key ff/toggle-map "o" #'org-mode)
@@ -483,12 +500,14 @@ With two universal arguments, switch the buffer in another window."
 (define-key ff/toggle-map "v" #'visual-line-mode)
 (define-key ff/toggle-map "d" #'toggle-debug-on-error)
 
-;; *** Run key map
+;; **** Run
 
 ;; http://endlessparentheses.com/launcher-keymap-for-standalone-features.html
 (define-prefix-command        'ff/run-map)
 (custom-set-key (kbd "C-c r") 'ff/run-map)
 (custom-set-key (kbd "M-r")   'ff/run-map)
+(add-to-list 'guide-key/guide-key-sequence "C-c r")
+(add-to-list 'guide-key/guide-key-sequence "M-r")
 
 (define-key ff/run-map "f" #'find-dired)
 (define-key ff/run-map "g" #'rgrep)
@@ -1396,7 +1415,11 @@ C-u C-u:       create new terminal and choose program"
               (defun ff/enable-latex-math-mode () (LaTeX-math-mode 1)))
 
     (add-hook 'LaTeX-mode-hook
-              (defun ff/enable-TeX-PDF-mode () (TeX-PDF-mode 1)))))
+              (defun ff/enable-TeX-PDF-mode () (TeX-PDF-mode 1)))
+
+    (add-hook 'LaTeX-mode-hook
+              (defun ff/guide-key-LaTeX ()
+                (guide-key/add-local-guide-key-sequence "`")))))
 
 ;; *** Abbreviations
 
