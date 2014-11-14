@@ -1126,7 +1126,7 @@ in `process-environment'."
            (term-send-raw-string ,string))))
     (ff/term-send-raw "C-<right>"     "\e[1;5C")
     (ff/term-send-raw "C-<left>"      "\e[1;5D")
-    (ff/term-send-raw "C-<backspace>" "\C-w")
+    (ff/term-send-raw "C-<backspace>" "\e\d")
 
     ;; Automatically yank the active region and go to the end of buffer
     ;; on line->char mode switch
@@ -1438,7 +1438,7 @@ newly inserted character replaces them."
           (forward-line 1)
           (let ((beg (point)))
             (search-forward "\\end{tabular}")
-            (forward-line -1)
+            (backward-char)
             (align-regexp beg (point) "\\(\\s-*\\)&" 1 1 t)))))
 
     (defun ff/tex-replace-macro (macro body)
