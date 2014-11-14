@@ -469,7 +469,32 @@ With two universal arguments, switch the buffer in another window."
              (custom-set-key (kbd "M-x") 'smex)
              (smex-initialize)))
 
+;; *** Toggle key map
 
+;; http://endlessparentheses.com/the-toggle-map-and-wizardry.html
+;; http://irreal.org/blog/?p=2830
+(define-prefix-command        'ff/toggle-map)
+(custom-set-key (kbd "C-c t") 'ff/toggle-map)
+
+(define-key ff/toggle-map "e" #'emacs-lisp-mode)
+(define-key ff/toggle-map "o" #'org-mode)
+
+(define-key ff/toggle-map "l" #'linum-mode)
+(define-key ff/toggle-map "v" #'visual-line-mode)
+(define-key ff/toggle-map "d" #'toggle-debug-on-error)
+
+;; *** Run key map
+
+;; http://endlessparentheses.com/launcher-keymap-for-standalone-features.html
+(define-prefix-command        'ff/run-map)
+(custom-set-key (kbd "C-c r") 'ff/run-map)
+(custom-set-key (kbd "M-r")   'ff/run-map)
+
+(define-key ff/run-map "f" #'find-dired)
+(define-key ff/run-map "g" #'rgrep)
+(define-key ff/run-map "G" #'lgrep)
+(define-key ff/run-map "m" #'man)
+(define-key ff/run-map "C" #'clone-indirect-buffer)
 
 
 ;; ** Persistency
@@ -983,7 +1008,6 @@ not contain hard line breaks any more."
                                           (code (cdr (assoc name ucs-names))))
                                      (insert (format "%d" code))))))))))
 (custom-set-key (kbd "C-x 8 RET") 'helm-insert-char)
-
 
 
 ;; * Interaction with external tools
