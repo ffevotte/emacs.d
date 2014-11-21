@@ -2,6 +2,7 @@
 (source melpa)
 
 (depends-on "adaptive-wrap")
+(depends-on "aggressive-indent")
 (depends-on "auctex")
 (depends-on "auto-compile")
 (depends-on "auto-complete")

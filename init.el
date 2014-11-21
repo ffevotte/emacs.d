@@ -1836,6 +1836,16 @@ nil."
     (define-key hs-minor-mode-map (kbd "M-<up>")    'hs-hide-all)
     (define-key hs-minor-mode-map (kbd "M-<down>")  'ff/hs-show)))
 
+;; *** Aggressive indentation
+
+(use-package aggressive-indent
+  :defer t
+  :diminish (aggressive-indent-mode . " ⭾")
+
+  :init
+  (progn
+    (add-hook 'prog-mode-hook #'aggressive-indent-mode)))
+
 
 ;; ** LISP
 
