@@ -1299,7 +1299,7 @@ C-u C-u:       create new terminal and choose program"
 
   :config
   (progn
-    (setq a2ps-command  (ff/emacsd "bin/a2ps"))
+    (setq a2ps-command  "a2ps-view")
     (setq a2ps-switches '("-l" "100"))
     (add-hook 'a2ps-filter-functions
               (defun ff/a2ps-insert-page-breaks ()
