@@ -93,19 +93,6 @@ executed.  Otherwise, a warning message is displayed."
 
 ;; ** Lisp utilities
 
-(defun assq-set (key value alist)
-  "Associate VALUE to KEY in ALIST.
-
-If KEY is already present in ALIST, its associated value is
-updated to VALUE; otherwise, (KEY . VALUE) is inserted in ALIST.
-
-The associative list is modified in place."
-  (let ((cell (assq key (symbol-value alist))))
-    (if cell
-	(setcdr cell value)
-      (set alist (cons (cons key value)
-                       (symbol-value alist))))))
-
 (defmacro with-timer (title &rest forms)
   "Run the given FORMS, counting the elapsed time.
 A message including the given TITLE and the corresponding elapsed
@@ -250,8 +237,8 @@ and so on."
 
 
   ;; Font
-  (assq-set 'font-backend "xft"                         'default-frame-alist)
-  (assq-set 'font         "Bitstream Vera Sans Mono-9"  'default-frame-alist))
+  (push '(font-backend . "xft")                default-frame-alist)
+  (push '(font . "Bitstream Vera Sans Mono-9") default-frame-alist))
 
 
 ;; *** Mode line
@@ -456,11 +443,11 @@ With two universal arguments, switch the buffer in another window."
 
   :config
   (progn
-    (assq-set 'candidates
-              (lambda ()
-                (--remove (string= it sync-recentf-marker)
-                          recentf-list))
-              'helm-source-recentf)))
+    (push `(candidates
+            . ,(lambda ()
+                 (--remove (string= it sync-recentf-marker)
+                           recentf-list)))
+          helm-source-recentf)))
 
 ;; *** smex
 
@@ -1888,7 +1875,7 @@ With a prefix argument, replace the sexp by its evaluation."
             (c-add-style "my-c++-style"
                          '("gnu"
                            (c-offsets-alist . ((innamespace . [0])))))
-            (assq-set 'c++-mode "my-c++-style" 'c-default-style)))
+            (push '(c++-mode . "my-c++-style") c-default-style)))
 
 ;; *** Enable yasnippet
 
