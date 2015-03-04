@@ -466,6 +466,7 @@ With two universal arguments, switch the buffer in another window."
           '("C-x r"   ;; rectangles, registers and bookmarks
             "C-x 8"   ;; special characters
             "C-x RET" ;; coding system
+            "C-x C-k" ;; keyboard macros
             ))
     (guide-key-mode 1)))
 
