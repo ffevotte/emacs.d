@@ -168,9 +168,7 @@ and so on."
     repeatable-command))
 
 
-;; *** Temporary modes
 
-(use-package temporary-mode)
 
 
 ;; * General settings
@@ -339,6 +337,58 @@ Rotation is done in the opposite order as `ff/rotate-windows'."
 
 (custom-set-key (kbd "H-<left>")  'ff/rotate-windows)
 (custom-set-key (kbd "H-<right>") 'ff/rotate-windows-backwards)
+
+;; *** Hydra to wrap all this
+
+(custom-set-key
+ (kbd "œ")
+ (defhydra windows-hydra (:color amaranth)
+   "
+Resize windows ^^^^     Switch to  ^^    Window configuration
+---------------^^^^     -----------^^    --------------------
+^    _<kp-8>_     ^     _b_uffer         _0_: delete window
+_<kp-4>_ ✜ _<kp-6>_     _f_ile           _1_: delete others
+^    _<kp-5>_     ^     _r_ecent file    _2_: split above/below
+^    ^      ^     ^     _B_ookmark       _3_: split left-right
+_=_: balance^     ^     ^ ^              _u_ndo
+
+"
+   ;; Move
+   ("S-<left>"  windmove-left  nil)
+   ("S-<right>" windmove-right nil)
+   ("S-<up>"    windmove-up    nil)
+   ("S-<down>"  windmove-down  nil)
+   ("SPC"       other-window   nil)
+   ;; Rotate windows
+   ("H-<left>"  ff/rotate-windows           nil)
+   ("H-<right>" ff/rotate-windows-backwards nil)
+   ;; Resize windows
+   ("<kp-4>" shrink-window-horizontally  nil)
+   ("<kp-6>" enlarge-window-horizontally nil)
+   ("<kp-8>" shrink-window               nil)
+   ("<kp-5>" enlarge-window              nil)
+   ("="      balance-windows             nil)
+   ;; Change configuration
+   ("<kp-0>" delete-window        nil)
+   ("0"      delete-window        nil)
+   ("à"      delete-window        nil)
+   ("<kp-1>" delete-other-windows nil)
+   ("1"      delete-other-windows nil)
+   ("&"      delete-other-windows nil)
+   ("<kp-2>" split-window-below   nil)
+   ("2"      split-window-below   nil)
+   ("é"      split-window-below   nil)
+   ("<kp-3>" split-window-right   nil)
+   ("3"      split-window-right   nil)
+   ("\""     split-window-right   nil)
+   ("u"      winner-undo          nil)
+   ;; Switch buffers / files
+   ("b" ido-switch-buffer nil)
+   ("f" ido-find-file     nil)
+   ("r" helm-recentf      nil)
+   ("B" bookmark-jump     nil)
+   ;; Quit
+   ("q" nil "quit" :color blue)))
 
 ;; ** Buffers management
 
@@ -1275,20 +1325,42 @@ C-u C-u:       create new terminal and choose program"
   (progn
     (use-package git-gutter-fringe)
 
-    (define-temporary-mode git-nav-mode
-      "Navigate between git hunks in the buffer."
-      :lighter " ±⮁"
-      :install  ("C-c g" . custom-bindings-mode-map)
-      :bindings (("n" . git-gutter:next-hunk)
-                 ("p" . git-gutter:previous-hunk)
-                 ("j" . git-gutter:next-hunk)
-                 ("k" . git-gutter:previous-hunk)
-                 ("s" . git-gutter:stage-hunk)
-                 ("r" . git-gutter:revert-hunk)
-                 ("v" . git-gutter:popup-hunk)
-                 ("R" . git-gutter:set-start-revision))
-      :body (when git-nav-mode
-              (git-gutter-mode 1)))))
+    (custom-set-key
+     (kbd "C-c g")
+     (defhydra git-gutter-hydra
+       (:pre
+        (progn (git-gutter-mode 1)
+               (display-buffer (get-buffer-create "*git-gutter:diff*")))
+        :post
+        (winner-undo))
+
+       "
+Git gutter:
+  _j_: next hunk        _s_tage hunk     _q_uit
+  _k_: previous hunk    _r_evert hunk    _Q_uit and deactivate git-gutter
+  ^ ^                   _p_opup hunk
+  _h_: first hunk
+  _l_: last hunk        set start _R_evision
+"
+       ("j" git-gutter:next-hunk                  nil)
+       ("k" git-gutter:previous-hunk              nil)
+       ("<home>" (progn (goto-char (point-min))
+                        (git-gutter:next-hunk 1)) nil)
+       ("h" (progn (goto-char (point-min))
+                   (git-gutter:next-hunk 1))      nil)
+       ("<end>" (progn (goto-char (point-min))
+               (git-gutter:previous-hunk 1))      nil)
+       ("l" (progn (goto-char (point-min))
+               (git-gutter:previous-hunk 1))      nil)
+       ("s" git-gutter:stage-hunk                 nil)
+       ("r" git-gutter:revert-hunk                nil)
+       ("p" git-gutter:popup-hunk                 nil)
+       ("R" git-gutter:set-start-revision         nil)
+       ("q" nil nil :color blue)
+       ("Q" (progn (git-gutter-mode -1)
+                   (sit-for 0.1)
+                   (git-gutter:clear))
+        nil :color blue)))))
 
 ;; ** Various tools
 
@@ -1630,14 +1702,23 @@ sub/superscript for the token at point."
 (use-package compile
   :defer t
 
-  :init
-  (progn
-    (let ((next-error (make-repeatable-command 'next-error)))
-      (global-set-key (kbd "C-x `") next-error)
-      (global-set-key (kbd "C-x è") next-error)))
-
   :config
   (progn
+    (defhydra next-error-hydra
+      (custom-bindings-mode-map "C-x")
+      "
+Compilation errors:
+_j_: next error        _h_: first error    _q_uit
+_k_: previous error    _l_: last error
+"
+      ("`" next-error     nil)
+      ("è" next-error     nil)
+      ("j" next-error     nil :bind nil)
+      ("k" previous-error nil :bind nil)
+      ("h" first-error    nil :bind nil)
+      ("l" last-error     nil :bind nil)
+      ("q" nil            nil :color blue))
+
     ;; scroll compilation buffer until first error
     (setq compilation-scroll-output 'first-error)
 
