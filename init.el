@@ -1016,6 +1016,20 @@ not contain hard line breaks any more."
                                      (insert (format "%d" code))))))))))
 (custom-set-key (kbd "C-x 8 RET") 'helm-insert-char)
 
+(eval-after-load 'iso-transl
+  '(mapc (lambda (cell)
+           (let* ((key       (car cell))
+                  (char-name (cdr cell))
+                  (char      (cdr (assoc char-name (ucs-names)))))
+             (define-key iso-transl-ctl-x-8-map
+               (kbd key)
+               (vector char))))
+         '(("<right>"   . "RIGHTWARDS ARROW")
+           ("<left>"    . "LEFTWARDS ARROW")
+           ("<up>"      . "UPWARDS ARROW")
+           ("<down>"    . "DOWNWARDS ARROW")
+           ("S-<right>" . "RIGHTWARDS DOUBLE ARROW"))))
+
 
 ;; * Interaction with external tools
 
