@@ -416,17 +416,34 @@ With two universal arguments, switch the buffer in another window."
     (setq ido-auto-merge-work-directories-length -1)
     (setq ido-create-new-buffer                  'always)
     (setq ido-use-filename-at-point              'guess)
-    (setq ido-default-buffer-method              'selected-window)))
+    (setq ido-default-buffer-method              'selected-window)
+
+    ;; from http://oremacs.com/2015/01/09/ido-find-file-tilde/
+    (defvar ff/ido-shortcuts nil)
+
+    (defconst ff/ido--shortcuts
+      (mapcar
+       (lambda (x)
+         (destructuring-bind (shortcut . dir) x
+           (cons shortcut
+                 `(lambda ()
+                    (interactive)
+                    (ido-set-current-directory ,dir)
+                    (setq ido-exit 'refresh)
+                    (exit-minibuffer)))))
+       ff/ido-shortcuts))
+
+    (defun ff/ido-setup-hook ()
+      (mapc
+       (lambda (x)
+         (define-key ido-file-dir-completion-map (car x) (cdr x)))
+       ff/ido--shortcuts))
+
+    (add-hook 'ido-setup-hook #'ff/ido-setup-hook)))
 
 (use-package ido-ubiquitous
-  :defer t
-
-  :idle-priority 1
-  :idle
-  (with-timer "Enabling ido-ubiquitous"
-    (funcall
-     (defun-when-installed ido-ubiquitous ff/enable-ido-ubiquitous ()
-       (ido-ubiquitous-mode 1)))))
+  :config
+  (ido-ubiquitous-mode 1))
 
 ;; *** helm
 

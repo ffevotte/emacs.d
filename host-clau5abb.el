@@ -10,3 +10,9 @@
 ;; * Frequently used ssh hosts
 (setq ssh-term-hosts '("ivanoe1.noe.edf.fr"
                        "ivanoe2.noe.edf.fr"))
+
+
+;; * Frequently used paths
+(setq ff/ido-shortcuts
+      '(("#" . "/scratch/H55056/")
+        ("@" . "/netdata/H55056/")))
