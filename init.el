@@ -880,13 +880,14 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;; *** Auto completion
 
-(use-package auto-complete-config
-  :diminish (auto-complete-mode . " ⤳")
+(use-package company
+  :defer t
+  :diminish (company-mode . " c⇢")
 
-  :init
-  (progn
-    (setq ac-comphist-file (ff/variable-file "ac-comphist.dat"))
-    (ac-config-default)))
+  :idle-priority 1
+  :idle
+  (with-timer "Enabling company"
+    (global-company-mode 1)))
 
 ;; *** Manipulate file names
 
