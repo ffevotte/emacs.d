@@ -13,13 +13,6 @@
 
 ;; ** Packages management
 
-;; *** Dependencies
-
-(with-timer "Loading and initializing Cask"
-  (add-to-list 'load-path (ff/emacsd "packages/cask"))
-  (require 'cask)
-  (cask-initialize))
-
 ;; *** Configuration
 
 (add-to-list 'load-path (ff/emacsd "packages/use-package"))
@@ -66,6 +59,32 @@ executed.  Otherwise, a warning message is displayed."
     (2 font-lock-constant-face)
     (4 font-lock-function-name-face))))
 
+;; *** Dependencies
+
+(use-package cask
+  :defer t
+
+  :init
+  (progn
+    (defun ff/cask-initialize ()
+      (interactive)
+      (unless (featurep 'cask)
+        (with-timer "Fully initializing cask"
+          (require 'cask)
+          (cask-initialize))))
+
+    (condition-case nil
+        (with-timer "Loading quick cask initialization file"
+          (load cask-init-file nil t))
+      (error
+       (warn "Incorrect cask initialization file: `%s'" cask-init-file)
+       (add-to-list 'load-path (ff/emacsd "packages/cask"))
+       (ff/cask-initialize)
+       (start-process "fast-cask" "*fask-cask*" "update-cask"))))
+
+  :idle-priority 2
+  :idle
+  (ff/cask-initialize))
 
 ;; ** Key bindings
 

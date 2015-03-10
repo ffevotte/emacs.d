@@ -1,0 +1,56 @@
+#!/bin/bash
+":"; exec emacs24 --script "$0" "$@"
+
+(let ((time-beg (current-time)))
+
+  (load
+   (concat (file-name-directory (or load-file-name (buffer-file-name))) "../base.el")
+   nil t)
+
+  ;; Remember current `load-path' and let cask modify it
+  (setq my/load-path-old load-path)
+  (add-to-list 'load-path (concat user-emacs-directory "/packages/cask"))
+  (require 'cask)
+  (cask-initialize)
+
+  ;; Find the list of directories added to `load-path'
+  (require 'dash)
+  (setq my/load-path-add
+        (--remove
+         (-contains? my/load-path-old it)
+         load-path))
+  (message "List of package paths:")
+  (--map (message "  %s" it) my/load-path-add)
+
+  ;; Find the list of autoloads
+  (setq my/autoloads
+        (--remove
+         (string= "" it)
+         (with-temp-buffer
+           (mapc (lambda (dir)
+                   (call-process "find" nil t nil
+                                 dir "-name" "*-autoloads.el"))
+                 my/load-path-add)
+           (s-split "\n" (buffer-string)))))
+  (message "\nList of autoload files:")
+  (--map (message "  %s" it) my/autoloads)
+
+  ;; Write the cask initialization file
+  (with-temp-file cask-init-file
+    (pp `(mapc (lambda (dir)
+                 (add-to-list 'load-path dir))
+               ',my/load-path-add)
+        (current-buffer))
+
+    (pp `(mapc (lambda (file)
+                 (load file nil t))
+               ',my/autoloads)
+        (current-buffer)))
+
+  (message "\nUpdated cask initialization file `%s' in %.3fs."
+           cask-init-file
+           (float-time (time-subtract (current-time) time-beg))))
+
+;; Local Variables:
+;;  mode: emacs-lisp
+;; End:
