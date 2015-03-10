@@ -25,7 +25,6 @@
 (depends-on "multiple-cursors")
 (depends-on "naquadah-theme")
 (depends-on "org")
-(depends-on "outshine")
 (depends-on "rainbow-mode")
 (depends-on "smart-mode-line")
 (depends-on "smex")

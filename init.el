@@ -1869,38 +1869,55 @@ nil."
 
 ;; *** Outline
 
-(use-package outline
+(use-package org
   :defer t
-  :diminish (outline-minor-mode . " 🖹")
+  :diminish (orgstruct-mode . " 🖹")
 
   :init
-  (progn
-    (add-hook 'prog-mode-hook 'outline-minor-mode))
+  (add-hook 'prog-mode-hook #'turn-on-orgstruct)
 
   :config
-  (use-package outshine
-    :config
-    (progn
-      ;; Always use modern style for Emacs Lisp
-      (defun outshine-modern-header-style-in-elisp-p () t)
+  (progn
+    ;; Highlight outline
+    (defun ff/orgstruct-setup ()
+      (setq orgstruct-heading-prefix-regexp
+            (cond ((derived-mode-p 'emacs-lisp-mode)
+                   ";; ")
+                  (t
+                   (concat comment-start "[[:space:]]*"))))
+      (dotimes (i 8)
+        (font-lock-add-keywords
+         nil
+         `((,(format "^%s\\(\\*\\{%d\\} .*\\)"
+                     orgstruct-heading-prefix-regexp
+                     (1+ i))
+            1 ',(intern (format "outline-%d" (1+ i))) t)))))
+    (add-hook 'orgstruct-mode-hook #'ff/orgstruct-setup)
 
-      ;; Activate outshine
-      (add-hook 'outline-minor-mode-hook
-                'outshine-hook-function)
-
-      ;; Use S-<tab> to cycle buffer visibility
-      (define-key outline-minor-mode-map
-        (kbd "<backtab>") 'outshine-cycle-buffer)
-      (define-key outline-mode-map
-        (kbd "<backtab>") 'outshine-cycle-buffer)
-
-      ;; Unwanted key bindings
-      (mapc (lambda (key)
-              (define-key outline-minor-mode-map key nil))
-            (list (kbd "L")
-                  (kbd "J")
-                  (kbd "M-<down>")
-                  (kbd "M-<up>"))))))
+    ;; Globally cycle visibility
+    (defun ff/orgstruct-global-cycle ()
+      "Cycle the global headings visibility, even when outside structure.
+This function is similar to `orgstruct-hijacker-org-shifttab-1',
+except it never falls back to default bindings."
+      (interactive)
+      ;; This part is copied from `orgstruct-make-binding'
+      (org-run-like-in-org-mode
+       (lambda ()
+         (interactive)
+         (let* ((org-heading-regexp
+                 (concat "^"
+                         orgstruct-heading-prefix-regexp
+                         "\\(\\*+\\)\\(?: +\\(.*?\\)\\)?[		]*$"))
+                (org-outline-regexp
+                 (concat orgstruct-heading-prefix-regexp "\\*+ "))
+                (org-outline-regexp-bol
+                 (concat "^" org-outline-regexp))
+                (outline-regexp org-outline-regexp)
+                (outline-heading-end-regexp "\n")
+                (outline-level 'org-outline-level)
+                (outline-heading-alist))
+           (call-interactively #'org-global-cycle)))))
+    (define-key orgstruct-mode-map (kbd "S-<iso-lefttab>") #'ff/orgstruct-global-cycle)))
 
 ;; *** Hide-show mode
 
