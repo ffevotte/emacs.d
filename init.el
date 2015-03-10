@@ -249,6 +249,9 @@ and so on."
 
 ;; Navigate through window layouts with C-c <arrows>
 (winner-mode 1)
+(custom-set-key
+ (kbd "C-c <left>")
+ (make-repeatable-command #'winner-undo))
 
 ;; *** Resize windows
 
