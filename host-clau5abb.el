@@ -16,3 +16,7 @@
 (setq ff/ido-shortcuts
       '(("#" . "/scratch/H55056/")
         ("@" . "/netdata/H55056/")))
+
+
+;; * Local paths
+(add-to-list 'load-path "/home/H55056/.localDebian/usr/share/emacs/site-lisp/maxima/")

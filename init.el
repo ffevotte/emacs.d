@@ -2053,6 +2053,14 @@ turned on."
   :mode        ("\\.m\\'" . octave-mode)
   :interpreter ("octave"  . octave-mode))
 
+;; ** Maxima
+
+(use-package maxima
+  :mode   ("\\.mac\\'" . maxima-mode)
+  :config
+  (progn
+    (require 'imaxima)))
+
 ;; * Postamble
 
 ;; Ensure `custom-bindings-mode' has precendence
