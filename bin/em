@@ -1,3 +1,3 @@
 #!/bin/bash
 
-exec emacs24 -r -Q --load "${EMACS_USER_DIR}/init.el" $*
+exec emacs24 -r -Q --load "${EMACS_USER_DIR}/init.el" "$@"
