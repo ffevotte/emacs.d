@@ -1069,17 +1069,15 @@ not contain hard line breaks any more."
 
 ;; *** Fall-back font for unicode characters
 
-(use-package unicode-fonts
-  :idle-priority 10
-  :idle
-  (with-timer "Setup unicode-fonts"
-    (unicode-fonts-setup)))
-
+;; Symbola font from http://users.teilar.gr/~g1951d/
+(set-fontset-font "fontset-default" nil
+                  (font-spec :size 13 :name "Symbola"))
 
 ;; *** Easily insert unicode
 
 (defun helm-insert-char ()
   (interactive)
+  (require 'helm-match-plugin)
   (helm :prompt "Character: "
         :sources '((name . "Characters")
                    (init . (lambda ()
