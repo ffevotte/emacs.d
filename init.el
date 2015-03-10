@@ -920,14 +920,54 @@ name from current directory, `default-directory'.  See
 ;; *** Automatically pair braces and quotes
 
 (use-package autopair
-  :defer t
-  :diminish (autopair-mode . " ⒜")
+  :diminish (autopair-mode . " 🄐")
 
-  :idle-priority 2
-  :idle (with-timer "Enabling autopair"
-          (funcall
-           (defun-when-installed autopair ff/enable-autopair ()
-             (autopair-global-mode)))))
+  :config
+  (progn
+    (autopair-global-mode 1)
+    (defun ff/disable-autopair ()
+      (autopair-mode -1))
+    (add-hook 'autopair-mode-hook (lambda ()
+                                    (when autopair-mode
+                                      (disable-paredit-mode))))))
+
+(use-package paredit
+  :defer t
+  :diminish (paredit-mode . " 🄟")
+  :commands disable-paredit-mode
+
+  :init
+  (progn
+    (add-hook 'paredit-mode-hook (lambda ()
+                                   (when paredit-mode
+                                     (ff/disable-autopair)))))
+
+  :config
+  (progn
+    ;; Create a new paredit keymap
+    (setq ff/paredit-mode-map
+          (let ((map (make-sparse-keymap)))
+            (set-keymap-parent map paredit-mode-map)
+            map))
+    ;; Replace the default one
+    (setq minor-mode-map-alist
+          (cons (cons 'paredit-mode ff/paredit-mode-map)
+                (assq-delete-all 'paredit-mode minor-mode-map-alist)))
+    ;; Remove all default bindings involving arrow keys
+    (mapc (lambda (arrow)
+            (mapc (lambda (mod)
+                    (define-key ff/paredit-mode-map (kbd (concat mod arrow)) nil))
+                  '("M-" "C-" "S-" "M-C-" "ESC C-")))
+          '("<left>" "<right>" "<up>" "<down>"))
+    ;; Add our own
+    (define-key ff/paredit-mode-map (kbd "ESC C-<right>") #'paredit-forward)
+    (define-key ff/paredit-mode-map (kbd "ESC C-<left>")  #'paredit-backward)
+    (define-key ff/paredit-mode-map (kbd "ESC C-<up>")    #'paredit-backward-up)
+    (define-key ff/paredit-mode-map (kbd "ESC C-<down>")  #'paredit-forward-down)
+    (define-key ff/paredit-mode-map (kbd "s-<right>")     #'paredit-forward-slurp-sexp)
+    (define-key ff/paredit-mode-map (kbd "s-<left>")      #'paredit-forward-barf-sexp)
+    (define-key ff/paredit-mode-map (kbd "s-<up>")        #'paredit-splice-sexp-killing-backward)
+    (define-key ff/paredit-mode-map (kbd "s-<down>")      #'paredit-splice-sexp-killing-forward)))
 
 
 ;; ** Whitespace handling
@@ -1944,6 +1984,8 @@ except it never falls back to default bindings."
 
 
 ;; ** LISP
+
+(add-hook 'emacs-lisp-mode-hook #'enable-paredit-mode)
 
 ;; *** Inline evaluation
 
