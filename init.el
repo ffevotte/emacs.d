@@ -123,6 +123,16 @@ and so on."
 
 
 
+;; *** Local rc files
+
+(let* ((fullhostname (system-name))
+       (hostname     (substring fullhostname 0
+                                (progn
+                                  (string-match "\\." (concat fullhostname ".domain"))
+                                  (- (match-end 0) 1)))))
+  (load (concat user-emacs-directory "host-" hostname) 'noerror))
+
+
 ;; * General settings
 
 ;; This section contains everything which is not directly related to text
@@ -2050,14 +2060,6 @@ turned on."
 
 ;; Don't display messages for idle use-package forms
 (setq use-package-verbose nil)
-
-;; ** Load local rc file
-(let* ((fullhostname (system-name))
-       (hostname     (substring fullhostname 0
-                                (progn
-                                  (string-match "\\." (concat fullhostname ".domain"))
-                                  (- (match-end 0) 1)))))
-  (load (concat "host-" hostname) 'noerror))
 
 (provide 'init)
 ;;; init.el ends here
