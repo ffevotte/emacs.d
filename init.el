@@ -816,6 +816,23 @@ point reaches the beginning or end of the buffer, stop there."
 ;; Call `occur' from isearch
 (define-key isearch-mode-map (kbd "C-o") 'isearch-occur)
 
+(use-package helm-swoop
+  :defer t
+
+  :init
+  (progn
+    (custom-set-key (kbd "M-i") 'helm-swoop)
+    (define-key isearch-mode-map (kbd "C-i") 'helm-swoop-from-isearch))
+
+  :config
+  (progn
+    ;; Move up and down like isearch
+    (define-key helm-swoop-map (kbd "C-r") 'helm-previous-line)
+    (define-key helm-swoop-map (kbd "C-s") 'helm-next-line)
+    (define-key helm-multi-swoop-map (kbd "C-r") 'helm-previous-line)
+    (define-key helm-multi-swoop-map (kbd "C-s") 'helm-next-line)))
+
+
 ;; *** Shuffle text
 
 (custom-set-key
