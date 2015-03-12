@@ -907,7 +907,7 @@ name from current directory, `default-directory'.  See
         (t
          (insert filename))))
 
-(custom-set-key (kbd "C-c d") 'ff/copy-file-name)
+(custom-set-key (kbd "C-c F") 'ff/copy-file-name)
 (defun ff/copy-file-name ()
   "Copy the current buffer file name to the clipboard."
   (interactive)
@@ -1983,6 +1983,15 @@ except it never falls back to default bindings."
   (progn
     (add-hook 'prog-mode-hook #'aggressive-indent-mode)))
 
+;; *** Debugging snippets
+
+(defvar ff/insert-debug-alist ())
+(defun ff/insert-debug ()
+  (interactive)
+  (let-when cell (assq major-mode ff/insert-debug-alist)
+    (funcall (cdr cell))))
+(custom-set-key (kbd "C-c d") #'ff/insert-debug)
+
 
 ;; ** LISP
 
@@ -2029,9 +2038,24 @@ With a prefix argument, replace the sexp by its evaluation."
                            (c-offsets-alist . ((innamespace . [0])))))
             (push '(c++-mode . "my-c++-style") c-default-style)))
 
-;; *** Enable yasnippet
+;; *** Snippets
 
 (add-hook 'c-mode-common-hook 'ff/enable-yasnippet)
+
+(push
+ `(c++-mode . ,(lambda ()
+                 (let ((var
+                        (if (use-region-p)
+                            (buffer-substring-no-properties (point) (mark))
+                          (substring-no-properties (thing-at-point 'symbol)))))
+                   (save-excursion
+                     (back-to-indentation)
+                     (forward-char 1)
+                     (c-beginning-of-statement 1)
+                     (open-line 1)
+                     (insert (format "std::cerr << \"%s = \" << %s << std::endl;" var var)))
+                   (c-indent-line))))
+ ff/insert-debug-alist)
 
 ;; *** Switch between header and implementation files
 
