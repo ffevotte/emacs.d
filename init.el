@@ -1518,6 +1518,20 @@ Git gutter:
 (use-package latex
   :defer t
 
+  :init
+  (progn
+    ;; Personal LaTeX math symbols
+    ;;   These must be defined before `latex.el` is loaded.
+    ;;   Otherwise, `LaTeX-math-initialize' must be called to update the list.
+    (setq LaTeX-math-list
+          '(("v l"       "ell"        nil nil)
+            ("<"         "leqslant"   nil nil)
+            (">"         "geqslant"   nil nil)
+            ("<right>"   "rightarrow" nil nil)
+            ("<left>"    "leftarrow"  nil nil)
+            ("S-<right>" "Rightarrow" nil nil)
+            ("="         "simeq"      nil nil))))
+
   :config
   (progn
     (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
@@ -1531,7 +1545,8 @@ Git gutter:
 
     (add-hook 'LaTeX-mode-hook
               (defun ff/guide-key-LaTeX ()
-                (guide-key/add-local-guide-key-sequence "`")))))
+                (guide-key/add-local-guide-key-sequence "`")
+                (guide-key/add-local-guide-key-sequence "` v")))))
 
 ;; *** Abbreviations
 
