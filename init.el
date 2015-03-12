@@ -15,9 +15,10 @@
 
 ;; *** Dependencies
 
-(add-to-list 'load-path (ff/emacsd "packages/cask"))
-(require 'cask)
-(cask-initialize)
+(with-timer "Loading and initializing Cask"
+  (add-to-list 'load-path (ff/emacsd "packages/cask"))
+  (require 'cask)
+  (cask-initialize))
 
 ;; *** Configuration
 
@@ -137,6 +138,11 @@ and so on."
 
 ;; This section contains everything which is not directly related to text
 ;; editing.
+
+;; Customization file
+(setq custom-file (ff/variable-file "custom.el"))
+(with-timer "Loading custom file"
+  (load custom-file 'noerror 'nomessage))
 
 ;; don't suspend emacs on C-z (but C-x C-z still works)
 (global-set-key (kbd "C-z") nil)
@@ -566,8 +572,9 @@ With two universal arguments, switch the buffer in another window."
   :defer  t
 
   :idle-priority 10
-  :idle (with-timer "Enabling recentf"
-          (recentf-mode 1))
+  :idle
+  (with-timer "Enabling recentf"
+    (recentf-mode 1))
 
   :init
   (progn
@@ -2011,6 +2018,7 @@ except it never falls back to default bindings."
 
 ;; ** LISP
 
+(add-hook 'emacs-lisp-mode-hook #'eldoc-mode)
 (add-hook 'emacs-lisp-mode-hook #'enable-paredit-mode)
 
 ;; *** Inline evaluation
@@ -2132,7 +2140,7 @@ turned on."
 
 ;; ** Octave / Matlab
 
-(use-package octave-mod
+(use-package octave
   :mode        ("\\.m\\'" . octave-mode)
   :interpreter ("octave"  . octave-mode))
 
