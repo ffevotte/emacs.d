@@ -330,9 +330,13 @@ _=_: balance^     ^     ^ ^              _u_ndo
 "
    ;; Move
    ("S-<left>"  windmove-left  nil)
+   ("<left>"    windmove-left  nil)
    ("S-<right>" windmove-right nil)
+   ("<right>"   windmove-right nil)
    ("S-<up>"    windmove-up    nil)
+   ("<up>"      windmove-up    nil)
    ("S-<down>"  windmove-down  nil)
+   ("<down>"    windmove-down  nil)
    ("SPC"       other-window   nil)
    ;; Rotate windows
    ("H-<left>"  ff/rotate-windows           nil)
