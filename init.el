@@ -311,8 +311,12 @@ Rotation is done in the opposite order as `ff/rotate-windows'."
 
 ;; *** Hydra to wrap all this
 
+(defvar ff/key² (kbd "²")
+  "Key in the leftmost position of the number row.
+Labeled `²' in French keyboards layouts.")
+
 (custom-set-key
- (kbd "œ")
+ ff/key²
  (defhydra windows-hydra (:color amaranth)
    "
 Resize windows ^^^^     Switch to  ^^    Window configuration
