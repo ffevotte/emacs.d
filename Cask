@@ -16,6 +16,7 @@
 (depends-on "gnuplot")
 (depends-on "guide-key")
 (depends-on "helm")
+(depends-on "helm-swoop")
 (depends-on "htmlize")
 (depends-on "ido-ubiquitous")
 (depends-on "isend-mode")
@@ -50,10 +51,6 @@
             :git "https://github.com/ffevotte/desktop-plus.git"
             :branch "dev"
             :files ("desktop+.el"))
-
-(depends-on "temporary-mode"
-            :git "https://github.com/ffevotte/temporary-mode.git"
-            :files ("temporary-mode.el"))
 
 ;; Local Variables:
 ;;   mode: emacs-lisp;
