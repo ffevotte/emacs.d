@@ -988,6 +988,18 @@ name from current directory, `default-directory'.  See
     (define-key ff/paredit-mode-map (kbd "s-<up>")        #'paredit-splice-sexp-killing-backward)
     (define-key ff/paredit-mode-map (kbd "s-<down>")      #'paredit-splice-sexp-killing-forward)))
 
+;; *** Increment numbers at point
+
+;; This is useful as a complement / replacement of keyboard macro counters.
+;; from http://www.danielehrman.com/blog/2014/5/25/11-must-haves-for-every-power-programmer
+(defun ff/increment-number-at-point (&optional count)
+  (interactive "p")
+  (setq count (or count 1))
+  (skip-chars-backward "0-9")
+  (when (looking-at "[0-9]+")
+    (replace-match (number-to-string (+ count (string-to-number (match-string 0)))))))
+(custom-set-key (kbd "C-c +") (make-repeatable-command #'ff/increment-number-at-point))
+
 
 ;; ** Whitespace handling
 
