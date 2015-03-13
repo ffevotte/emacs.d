@@ -870,6 +870,25 @@ point reaches the beginning or end of the buffer, stop there."
    (forward-line -1)
    (indent-according-to-mode)))
 
+(custom-set-key
+ (kbd "ESC C-S-<up>")
+ (defun ff/duplicate-line-up ()
+   "Duplicate the current line upwards."
+   (interactive)
+   (ff/duplicate-line-down)
+   (forward-line -1)))
+
+(custom-set-key
+ (kbd "ESC C-S-<down>")
+ (defun ff/duplicate-line-down ()
+   "Duplicate the current line downwards."
+   (interactive)
+   (let ((line (buffer-substring (line-beginning-position) (line-end-position))))
+     (forward-line 0)
+     (insert line)
+     (open-line 1)
+     (forward-line 1))))
+
 ;; *** Handle capitalization
 
 (custom-set-key
