@@ -997,7 +997,13 @@ name from current directory, `default-directory'.  See
   (progn
     (add-hook 'paredit-mode-hook (lambda ()
                                    (when paredit-mode
-                                     (ff/disable-autopair)))))
+                                     (ff/disable-autopair))))
+
+    (defhydra sexp-hydra (custom-bindings-mode-map "ESC")
+      ("C-<right>" paredit-forward)
+      ("C-<left>"  paredit-backward)
+      ("C-<up>"    paredit-backward-up)
+      ("C-<down>"  paredit-forward-down)))
 
   :config
   (progn
@@ -1017,10 +1023,6 @@ name from current directory, `default-directory'.  See
                   '("M-" "C-" "S-" "M-C-" "ESC C-")))
           '("<left>" "<right>" "<up>" "<down>"))
     ;; Add our own
-    (define-key ff/paredit-mode-map (kbd "ESC C-<right>") #'paredit-forward)
-    (define-key ff/paredit-mode-map (kbd "ESC C-<left>")  #'paredit-backward)
-    (define-key ff/paredit-mode-map (kbd "ESC C-<up>")    #'paredit-backward-up)
-    (define-key ff/paredit-mode-map (kbd "ESC C-<down>")  #'paredit-forward-down)
     (define-key ff/paredit-mode-map (kbd "s-<right>")     #'paredit-forward-slurp-sexp)
     (define-key ff/paredit-mode-map (kbd "s-<left>")      #'paredit-forward-barf-sexp)
     (define-key ff/paredit-mode-map (kbd "s-<up>")        #'paredit-splice-sexp-killing-backward)
