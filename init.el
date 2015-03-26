@@ -2078,8 +2078,16 @@ except it never falls back to default bindings."
 
 ;; ** LISP
 
-(add-hook 'emacs-lisp-mode-hook #'eldoc-mode)
 (add-hook 'emacs-lisp-mode-hook #'enable-paredit-mode)
+
+;; *** Eldoc
+
+(use-package eldoc
+  :defer t
+  :diminish eldoc-mode
+
+  :init
+  (add-hook 'emacs-lisp-mode-hook #'eldoc-mode))
 
 ;; *** Inline evaluation
 
