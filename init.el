@@ -2185,7 +2185,7 @@ turned on."
 (use-package info
   :defer  t
   :config (use-package pydoc-info
-            :init (add-to-list 'Info-default-directory-list
+            :init (add-to-list 'Info-additional-directory-list
                                (ff/emacsd "share/info"))))
 
 
