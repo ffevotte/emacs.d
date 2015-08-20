@@ -6,6 +6,24 @@ ifndef INTERACTIVE
   OPTS := $(OPTS) --batch
 endif
 
+# * Submodules management
+
+all: packages/stamp
+packages/stamp:
+	git submodule init
+	git submodule update
+	touch $@
+
+update:
+	@# Fetch upstream; track master by default
+	git submodule foreach 'git fetch --all --prune; git checkout master;'
+
+	@# Exceptions here:
+	cd packages/desktop+; git checkout dev
+
+	@# Fast-forward
+	git submodule foreach 'git merge --ff-only'
+
 
 # * Symbola font
 
@@ -45,19 +63,6 @@ pydoc-distclean:
 all: yasnippet
 yasnippet:
 	$(EMACS) $(OPTS) --eval '(yas-recompile-all)'
-
-
-# * Update external submodules
-
-update:
-	@# Fetch upstream; track master by default
-	git submodule foreach 'git fetch --all --prune; git checkout master;'
-
-	@# Exceptions here:
-	cd packages/desktop+; git checkout dev
-
-	@# Fast-forward
-	git submodule foreach 'git merge --ff-only'
 
 
 # * Check

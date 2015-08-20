@@ -1,5 +1,6 @@
 *.elc
 *~
 elpa
+packages/stamp
 share/info
 snippets/*/.yas-compiled-snippets.el
