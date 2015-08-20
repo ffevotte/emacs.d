@@ -315,7 +315,7 @@ and so on."
     (let ((overlay
            (make-overlay (point) (point))))
       (overlay-put overlay 'before-string
-                   (propertize "▮"
+                   (propertize "x"
                                'face (list :foreground "red"
                                            :height 5.0)
                                'display '(raise -0.15)))
@@ -1241,8 +1241,31 @@ name from current directory, `default-directory'.  See
 
 (progn-safe "Font for unicode characters"
   ;; Symbola font from http://users.teilar.gr/~g1951d/
-  (set-fontset-font "fontset-default" nil
-                    (font-spec :size 13 :name "Symbola")))
+  ;;
+  ;; More documentation on `set-fontset-font':
+  ;;   http://www.emacswiki.org/emacs/FontSets#toc1
+  ;;
+  (mapc (lambda (range)
+          (set-fontset-font "fontset-default" range
+                            (font-spec :size 13 :name "Symbola")))
+        (list
+         ;; Default choice for all unknown chars
+         nil
+
+         ;; Explicit font for unicode blocks:
+         ;;   (http://en.wikipedia.org/wiki/Unicode_block)
+         ;;
+         ;; - block "Letterlike Symbols"
+         (cons (decode-char 'ucs #x2100)
+               (decode-char 'ucs #x214F))
+
+         ;; - blocks "Arrows" to "Miscellaneous Symbols and Arrows"
+         (cons (decode-char 'ucs #x2190)
+               (decode-char 'ucs #x2BFF))
+
+         ;; - blocks "Mahjong Tiles" to "Supplemental Symbols and Pictographs"
+         (cons (decode-char 'ucs #x1F000)
+               (decode-char 'ucs #x1F9FF)))))
 
 ;; *** Easily insert unicode
 
