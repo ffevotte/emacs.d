@@ -749,7 +749,6 @@ With two universal arguments, switch the buffer in another window."
 
 (progn-safe "Editing key bindings"
   (custom-set-key (kbd "M-g")   'goto-line) ;; better keybinding for goto-line
-  (custom-set-key (kbd "C-h a") 'apropos)   ;; search everything, not just commands
   (custom-set-key (kbd "C-x g") 'revert-buffer)
   (custom-set-key (kbd "C-c q") (make-repeatable-command 'join-line)))
 
@@ -2143,7 +2142,7 @@ nil."
 (add-hook 'emacs-lisp-mode-hook #'enable-paredit-mode)
 (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
 
-;; *** Eldoc
+;; *** Documentation
 
 (use-package eldoc
   :defer t
@@ -2151,6 +2150,32 @@ nil."
 
   :init
   (add-hook 'emacs-lisp-mode-hook #'eldoc-mode))
+
+(use-package helm-elisp
+  :defer   t
+  :defines helm-def-source--emacs-functions
+
+  :init
+  (custom-set-key (kbd "C-h a") 'helm-apropos)
+
+  (custom-set-key
+   (kbd "C-h f")
+   (defun ff/helm-describe-function ()
+     ""
+     (interactive)
+     (let ((helm-apropos-function-list
+            '(helm-def-source--emacs-commands
+              helm-def-source--emacs-functions)))
+       (call-interactively #'helm-apropos))))
+
+  (custom-set-key
+   (kbd "C-h v")
+   (defun ff/helm-describe-variable ()
+     ""
+     (interactive)
+     (let ((helm-apropos-function-list
+            '(helm-def-source--emacs-variables)))
+       (call-interactively #'helm-apropos)))))
 
 ;; *** Inline evaluation
 
