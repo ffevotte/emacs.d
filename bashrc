@@ -1,7 +1,6 @@
 if [ -z "$EMACS_USER_DIR" ]; then
     export EMACS_USER_DIR="$(readlink -f $(dirname ${BASH_SOURCE[0]}))"
     export PATH="${EMACS_USER_DIR}/bin:${PATH}"
-    export PATH="${EMACS_USER_DIR}/packages/cask/bin:${PATH}"
 fi
 
 if [ -z "${EMACS_SERVER}" ]; then

@@ -1,3 +1,4 @@
 #!/bin/bash
 
-exec emacs24 -r -Q --load "${EMACS_USER_DIR}/init.el" "$@"
+export EMACS_USER_DIR=$(readlink -f $(dirname "${BASH_SOURCE[0]}")/..)
+exec emacs -r -Q --load "${EMACS_USER_DIR}/init.el" "$@"

@@ -1,63 +1,19 @@
 all:
 
-EMACS = emacs -q --load "init.el"
+EMACS = emacs
+OPTS  = -Q --load "init.el"
 ifndef INTERACTIVE
-  EMACS := $(EMACS) --batch
+  OPTS := $(OPTS) --batch
 endif
 
-# * Directories
 
-all: directories
-directories:
-	mkdir -p var
-	mkdir -p var/desktops
+# * Symbola font
 
+all: $(HOME)/.fonts/Symbola.ttf
 
-# * Byte-compilation
-
-all: byte-compile
-byte-compile: bc-packages bc-emacsd
-
-PKG_INSTALL_DIR = share/elisp
-PKG_DIR_LOCK    = chmod -R a-w $(PKG_INSTALL_DIR)
-PKG_DIR_UNLOCK  = chmod -R u+w $(PKG_INSTALL_DIR)
-
-bc-packages:
-	mkdir -p $(PKG_INSTALL_DIR)
-	$(PKG_DIR_UNLOCK)
-
-	@echo "Installing packages"
-	rsync -av                                     \
-	  -f '- *tests.el'                            \
-	  -f '- *test.el'                             \
-	  -f '- features/support/*'                   \
-	  -f '- *-pkg.el'                             \
-	  -f 'P *.elc' -f '+ */' -f '+ *.el' -f '- *' \
-	  --prune-empty-dirs --delete-excluded        \
-	  packages/ $(PKG_INSTALL_DIR)/
-
-	@echo Byte-compiling packages
-	$(EMACS) \
-	  --eval '(byte-recompile-directory "$(PKG_INSTALL_DIR)" 0)'
-
-	$(PKG_DIR_LOCK)
-
-bc-emacsd:
-	$(EMACS) \
-	  --load "bin/byte-compile.el"    \
-	  --eval '(byte-recompile-directory-non-recursive "./")'
-
-clean: bc-clean
-bc-clean:
-	$(PKG_DIR_UNLOCK)
-	find $(PKG_INSTALL_DIR) -name '*.elc' -delete
-	$(PKG_DIR_LOCK)
-
-	$(RM) *.elc
-
-distclean: bc-distclean
-bc-distclean:
-	$(RM) $(PKG_INSTALL_DIR)
+$(HOME)/.fonts/Symbola.ttf: share/fonts/Symbola.ttf
+	cp share/fonts/*.ttf $(HOME)/.fonts
+	fc-cache
 
 
 # * pydoc-info
@@ -88,8 +44,26 @@ pydoc-distclean:
 
 all: yasnippet
 yasnippet:
-	$(EMACS) --eval '(yas-recompile-all)'
+	$(EMACS) $(OPTS) --eval '(yas-recompile-all)'
 
+
+# * Update external submodules
+
+update:
+	@# Fetch upstream; track master by default
+	git submodule foreach 'git fetch --all --prune; git checkout master;'
+
+	@# Exceptions here:
+	cd packages/desktop+; git checkout dev
+
+	@# Fast-forward
+	git submodule foreach 'git merge --ff-only'
+
+
+# * Check
+
+check:
+	$(EMACS) --eval '(toggle-debug-on-error)' $(OPTS)
 
 
 # * Postamble
