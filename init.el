@@ -1359,7 +1359,7 @@ in `process-environment'."
     (with-temp-buffer
       (shell-command (format "diff -u <(true; export) <(source %s; export)" filename)
                      (current-buffer))
-
+      (goto-char (point-min))
       (let ((envvar-re "declare -x \\([^=]+\\)=\\(.*\\)$"))
         ;; Remove environment variables
         (while (search-forward-regexp (concat "^-" envvar-re) nil t)
