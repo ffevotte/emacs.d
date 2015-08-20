@@ -31,6 +31,8 @@ time is displayed."
            (message "%s...%s (%.3fs)" ,title (if ,errorvar "ERROR" "done") elapsed))))))
 
 (defmacro progn-safe (title &rest forms)
+  "Run the given FORMS, gracefully demoting errors to warnings.
+A TITLE is used to identify the block in the logs."
   (declare (indent 1))
   (let ((errvar (make-symbol "err")))
     `(condition-case-unless-debug ,errvar
@@ -44,6 +46,7 @@ time is displayed."
           :error))))))
 
 (defmacro with-timer-safe (title &rest forms)
+  "Fault-tolerant version of `with-timer'."
   (declare (indent 1))
   `(progn-safe ,title
      (with-timer ,title
