@@ -10,7 +10,7 @@ else
 
     function E () {
         local CMD
-        read -d\0 CMD <<EOF
+        read -d '' CMD <<EOF
           (find-file "$1")
 EOF
         ${EDITOR} --eval "${CMD}"
@@ -18,7 +18,7 @@ EOF
 
     function E-source () {
         local CMD
-        read -d\0 CMD <<EOF
+        read -d '' CMD <<EOF
           (ff/source "$1")
 EOF
         ${EDITOR} --eval "${CMD}"
@@ -32,7 +32,7 @@ EOF
         fi
 
         local CMD
-        read -d\0 CMD <<EOF
+        read -d '' CMD <<EOF
           (man "${PAGE}")
 EOF
         ${EDITOR} --eval "${CMD}"
@@ -40,7 +40,7 @@ EOF
 
     function E-info () {
         local CMD
-        read -d\0 CMD <<EOF
+        read -d '' CMD <<EOF
           (info "$1")
 EOF
         ${EDITOR} --eval "${CMD}"
@@ -48,7 +48,7 @@ EOF
 
     function E-grep () {
         local ARGS
-        read -d\0 ARGS < <(
+        read -d '' ARGS < <(
             while [ $# -gt 0 ]; do
                 cat <<EOF
                   "$1"
