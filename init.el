@@ -1085,12 +1085,6 @@ name from current directory, `default-directory'.  See
   :init
   (defun ff/disable-paredit-mode ())
 
-  (defhydra sexp-hydra (custom-bindings-mode-map "ESC")
-    ("C-<right>" paredit-forward)
-    ("C-<left>"  paredit-backward)
-    ("C-<up>"    paredit-backward-up)
-    ("C-<down>"  paredit-forward-down))
-
   :config
   (defun ff/disable-paredit-mode ()
     (paredit-mode -1))
@@ -1119,6 +1113,27 @@ name from current directory, `default-directory'.  See
   (define-key ff/paredit-mode-map (kbd "s-<left>")  #'paredit-forward-barf-sexp)
   (define-key ff/paredit-mode-map (kbd "s-<up>")    #'paredit-splice-sexp-killing-backward)
   (define-key ff/paredit-mode-map (kbd "s-<down>")  #'paredit-splice-sexp-killing-forward))
+
+(progn-safe "Move by sexp"
+  (defmacro ff/paredit-or-fallback (paredit-command fallback-command)
+    (let ((fn-sym (intern (format "paredit-or-%s" (symbol-name fallback-command)))))
+      `(defun ,fn-sym ()
+         (interactive)
+         (call-interactively (if (bound-and-true-p paredit-mode)
+                                 #',paredit-command
+                               #',fallback-command)))))
+  (ff/paredit-or-fallback paredit-forward      forward-sexp)
+  (ff/paredit-or-fallback paredit-backward     backward-sexp)
+  (ff/paredit-or-fallback paredit-backward-up  backward-up-list)
+  (ff/paredit-or-fallback paredit-forward-down down-list)
+
+  (defhydra sexp-hydra (custom-bindings-mode-map "ESC")
+    "Move by S-expression"
+    ("C-<right>" paredit-or-forward-sexp)
+    ("C-<left>"  paredit-or-backward-sexp)
+    ("C-<up>"    paredit-or-backward-up-list)
+    ("C-<down>"  paredit-or-down-list)))
+
 
 ;; *** Increment numbers at point
 
