@@ -888,8 +888,33 @@ See `insert-register'."
 
 ;; *** Search
 
+;; **** Isearch
+
 (progn-safe "Call `occur' from isearch"
   (define-key isearch-mode-map (kbd "C-o") 'isearch-occur))
+
+(progn-safe "Better backspace during isearch"
+  ;; from Drew Adams     (http://emacs.stackexchange.com/q/10359/221)
+  ;;      John Mastro    (https://gist.github.com/johnmastro/508fb22a2b4e1ce754e0)
+  ;;      Artur Malabara (http://endlessparentheses.com/better-backspace-during-isearch.html)
+  (define-key isearch-mode-map [remap isearch-delete-char] #'isearch-delete-something)
+  (defun isearch-delete-something ()
+    "Delete non-matching text or the last character."
+    (interactive)
+    (if (= 0 (length isearch-string))
+        (ding)
+      (setq isearch-string
+            (substring isearch-string
+                       0
+                       (or (isearch-fail-pos) (1- (length isearch-string)))))
+      (setq isearch-message
+            (mapconcat #'isearch-text-char-description isearch-string "")))
+    (if isearch-other-end (goto-char isearch-other-end))
+    (isearch-search)
+    (isearch-push-state)
+    (isearch-update)))
+
+;; **** Helm swoop
 
 (use-package helm-swoop
   :ensure t
