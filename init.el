@@ -829,6 +829,22 @@ point reaches the beginning or end of the buffer, stop there."
   :config
   (browse-kill-ring-default-keybindings))
 
+(progn-safe "Invert `insert-register's default behaviour:"
+  (custom-set-key [remap insert-register] #'ff/insert-register)
+
+  ;; insert before point by default, after point if a prefix arg is given.
+  (defun ff/insert-register (&optional arg)
+    "Insert contents of a register.
+
+Normally puts mark before and point after the inserted text.
+If ARG is non-nil (i.e. when called with a prefix argument), puts point
+before and mark after.
+
+See `insert-register'."
+    (interactive "P")
+    (let ((current-prefix-arg (not arg)))
+      (call-interactively #'insert-register))))
+
 ;; *** Undo
 
 (progn-safe "Undo in regions"
