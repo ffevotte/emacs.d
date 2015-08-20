@@ -1911,6 +1911,25 @@ sub/superscript for the token at point."
 
 ;; ** Common features for programming modes
 
+;; *** Which function mode
+
+;; From Sebastian Wiesner (https://github.com/lunaryorn/.emacs.d/blob/94ff67258d/init.el#L347-L358)
+(use-package which-func
+  :defer t
+  :init
+  (defun ff/turn-on-which-func ()
+    (which-function-mode 1))
+  (add-hook 'prog-mode-hook #'ff/turn-on-which-func)
+
+  :config
+  (let ((wf-format (assq 'which-func-mode mode-line-misc-info)))
+    (setq which-func-unknown "???"
+          which-func-format  `((:propertize (" ➤ " which-func-current)
+                                            face which-func))
+          header-line-format wf-format))
+  (setq mode-line-misc-info
+        (assq-delete-all 'which-func-mode mode-line-misc-info)))
+
 ;; *** Compilation
 
 (use-package compile
