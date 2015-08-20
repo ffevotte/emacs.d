@@ -2201,6 +2201,24 @@ nil."
 (add-hook 'emacs-lisp-mode-hook #'enable-paredit-mode)
 (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
 
+;; *** Imenu for top-level forms
+
+;; from Jordon Biondo (https://gist.github.com/jordonbiondo/6385874a70420b05de18)
+;; via  Jon Snader    (http://irreal.org/blog/?p=3979)
+(use-package imenu
+  :config
+  (defun ff/imenu-top-level ()
+    (add-to-list 'imenu-generic-expression
+                 '("Used Packages"
+                   "\\(^\\s-*(use-package +\\)\\(\\_<.+\\_>\\)" 2))
+    (add-to-list 'imenu-generic-expression
+                 '("Safe blocks"
+                   "\\(^\\s-*(progn-safe +\\)\\(\".+\"\\)" 2))
+    (add-to-list 'imenu-generic-expression
+                 '("Safe blocks"
+                   "\\(^\\s-*(with-timer-safe +\\)\\(\".+\"\\)" 2)))
+  (add-hook 'emacs-lisp-mode-hook #'ff/imenu-top-level))
+
 ;; *** Documentation
 
 (use-package eldoc
