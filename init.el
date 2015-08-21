@@ -52,6 +52,13 @@ A TITLE is used to identify the block in the logs."
      (with-timer ,title
        ,@forms)))
 
+(progn-safe "Highlighting for startup times"
+  (font-lock-add-keywords
+   'messages-buffer-mode
+   '(("([[:digit:]]+.[[:digit:]]+s)" 0 font-lock-constant-face t)))
+  (with-current-buffer "*Messages*"
+    (font-lock-fontify-buffer)))
+
 ;; *** Filesystem hierarchy
 
 (setq user-init-file (or load-file-name
@@ -108,6 +115,7 @@ Variable files are located in the \"var\" subdirectory of `user-emacs-directory'
         '(("melpa" . "http://melpa.milkbox.net/packages/")
           ("gnu"   . "http://elpa.gnu.org/packages/")))
   (package-initialize))
+
 
 ;; ** Base tools
 
@@ -2431,7 +2439,7 @@ turned on."
 ;; * Postamble
 
 (progn-safe "End of startup"
-  (message "Emacs finished loading: %.3fs."
+  (message "Emacs finished loading (%.3fs)."
            (float-time (time-subtract (current-time) ff/emacs-start-time))))
 
 (provide 'init)
