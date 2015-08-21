@@ -2000,12 +2000,15 @@ _k_: previous error    _l_: last error
 (use-package multi-compile
   :defer 2
   :load-path (lambda () (ff/emacsd "packages/multi-compile"))
+  :commands list-compilation-buffers
+
   :config
   (multi-compile "compile5" :key (kbd "<f5>"))
   (multi-compile "compile6" :key (kbd "<f6>"))
   (multi-compile "compile7" :key (kbd "<f7>"))
   (multi-compile "compile8" :key (kbd "<f8>"))
 
+  (require 's)
   (defun list-compilation-buffers ()
     (interactive)
     (with-current-buffer (get-buffer-create "*compilation-buffers*")
@@ -2022,7 +2025,7 @@ _k_: previous error    _l_: last error
                   (let ((name    (with-current-buffer buffer (buffer-name)))
                         (command (with-current-buffer buffer compilation-arguments))
                         (dir     (with-current-buffer buffer compilation-directory)))
-                    (condition-case nil
+                    (condition-case-unless-debug nil
                         (progn
                           (insert (s-truncate-left 20 name) "  ")
                           (insert (s-truncate-left 30 dir) "  ")
