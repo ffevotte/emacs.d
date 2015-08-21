@@ -629,7 +629,7 @@ With two universal arguments, switch the buffer in another window."
   (define-key ff/run-map "f" #'find-dired)
   (define-key ff/run-map "g" #'rgrep)
   (define-key ff/run-map "G" #'lgrep)
-  (define-key ff/run-map "m" #'man)
+  (define-key ff/run-map "m" #'woman)
   (define-key ff/run-map "C" #'clone-indirect-buffer))
 
 
