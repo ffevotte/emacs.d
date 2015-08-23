@@ -663,8 +663,7 @@ With two universal arguments, switch the buffer in another window."
   (setq desktop-base-dir (ff/variable-file "desktops/")
         desktop-save t)
 
-  (add-to-list 'desktop+/special-buffer-modes 'term-mode)
-  (add-to-list 'desktop+/special-buffer-modes 'compilation-mode))
+  (desktop+/special-buffer-handlers))
 
 
 ;; *** Recent files
