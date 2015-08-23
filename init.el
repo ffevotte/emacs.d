@@ -323,10 +323,10 @@ and so on."
     (let ((overlay
            (make-overlay (point) (point))))
       (overlay-put overlay 'before-string
-                   (propertize "x"
+                   (propertize "*"
                                'face (list :foreground "red"
-                                           :height 5.0)
-                               'display '(raise -0.15)))
+                                           :height 7.0)
+                               'display '(raise -0.40)))
       (sit-for 1)
       (delete-overlay overlay)))
 
