@@ -10,19 +10,14 @@ endif
 
 all: packages/stamp
 packages/stamp:
-	git submodule init
-	git submodule update
+	git submodule update --init
 	touch $@
 
-update:
-	@# Fetch upstream; track master by default
-	git submodule foreach 'git fetch --all --prune; git checkout master;'
+package-update:
+	git submodule update
 
-	@# Exceptions here:
-	cd packages/desktop+; git checkout dev
-
-	@# Fast-forward
-	git submodule foreach 'git merge --ff-only'
+package-upgrade:
+	git submodule update --remote
 
 
 # * Symbola font

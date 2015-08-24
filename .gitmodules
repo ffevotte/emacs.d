@@ -4,6 +4,7 @@
 [submodule "packages/desktop+"]
 	path = packages/desktop+
 	url = https://github.com/ffevotte/desktop-plus.git
+	branch = dev
 [submodule "packages/a2ps-multibyte"]
 	path = packages/a2ps-multibyte
 	url = https://github.com/ffevotte/a2ps-multibyte.el.git
