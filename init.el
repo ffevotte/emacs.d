@@ -1637,6 +1637,24 @@ C-u C-u:       create new terminal and choose program"
 
   :init
   (define-key ff/toggle-map "g" #'git-gutter-mode)
+
+  (defun ff/gg-first ()
+    (interactive)
+    (goto-char (point-min))
+    (git-gutter:next-hunk 1))
+
+  (defun ff/gg-last ()
+    (interactive)
+    (goto-char (point-max))
+    (git-gutter:previous-hunk 1))
+
+  (defun ff/gg-stage ()
+    (interactive)
+    (letf (((symbol-function 'yes-or-no-p)
+            (lambda (msg) t)))
+      (git-gutter:stage-hunk)
+      (git-gutter:next-hunk 1)))
+
   (custom-set-key
    (kbd "C-c g")
    (defhydra git-gutter-hydra
@@ -1657,20 +1675,16 @@ Git gutter:
   _h_: first hunk
   _l_: last hunk        set start _R_evision
 "
-     ("j" git-gutter:next-hunk                  nil)
-     ("k" git-gutter:previous-hunk              nil)
-     ("<home>" (progn (goto-char (point-min))
-                      (git-gutter:next-hunk 1)) nil)
-     ("h" (progn (goto-char (point-min))
-                 (git-gutter:next-hunk 1))      nil)
-     ("<end>" (progn (goto-char (point-min))
-                     (git-gutter:previous-hunk 1))      nil)
-     ("l" (progn (goto-char (point-min))
-                 (git-gutter:previous-hunk 1))      nil)
-     ("s" git-gutter:stage-hunk                 nil)
-     ("r" git-gutter:revert-hunk                nil)
-     ("p" git-gutter:popup-hunk                 nil)
-     ("R" git-gutter:set-start-revision         nil)
+     ("j" git-gutter:next-hunk          nil)
+     ("k" git-gutter:previous-hunk      nil)
+     ("<home>" ff/gg-first              nil)
+     ("h" ff/gg-first                   nil)
+     ("<end>" ff/gg-last                nil)
+     ("l" ff/gg-last                    nil)
+     ("s" ff/gg-stage                   nil)
+     ("r" git-gutter:revert-hunk        nil)
+     ("p" git-gutter:popup-hunk         nil)
+     ("R" git-gutter:set-start-revision nil)
      ("q" nil nil :color blue)
      ("Q" (progn (git-gutter-mode -1)
                  (sit-for 1)
