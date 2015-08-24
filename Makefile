@@ -20,6 +20,12 @@ package-upgrade:
 	git submodule update --remote
 
 
+# * ELPA cache
+
+elpa-update:
+	$(EMACS) --eval '(setq ff/updating-elpa-cache t)' $(OPTS)
+
+
 # * Symbola font
 
 all: $(HOME)/.fonts/Symbola.ttf
