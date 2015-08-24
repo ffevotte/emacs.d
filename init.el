@@ -28,7 +28,7 @@ time is displayed."
        (unwind-protect ,body
          (let ((elapsed
                 (float-time (time-subtract (current-time) ,nowvar))))
-           (message "%s...%s (%.3fs)" ,title (if ,errorvar "ERROR" "done") elapsed))))))
+           (message "%s...%s (%.3fs)" ,title (if ,errorvar "FAILED" "done") elapsed))))))
 
 (defmacro progn-safe (title &rest forms)
   "Run the given FORMS, gracefully demoting errors to warnings.
@@ -40,6 +40,7 @@ A TITLE is used to identify the block in the logs."
            ,@forms)
        (error
         (ignore
+         (message "%s: FAILED" ,title)
          (display-warning
           'progn-safe
           (format "%s: %s" ,title ,errvar)
@@ -52,10 +53,13 @@ A TITLE is used to identify the block in the logs."
      (with-timer ,title
        ,@forms)))
 
-(progn-safe "Highlighting for startup times"
+(progn-safe "Highlighting in *Messages* buffer (startup times & errors)"
   (font-lock-add-keywords
    'messages-buffer-mode
    '(("([[:digit:]]+.[[:digit:]]+s)" 0 font-lock-constant-face t)))
+  (font-lock-add-keywords
+   'messages-buffer-mode
+   '(("FAILED" 0 font-lock-warning-face t)))
   (with-current-buffer "*Messages*"
     (font-lock-fontify-buffer)))
 
@@ -104,6 +108,14 @@ Variable files are located in the \"var\" subdirectory of `user-emacs-directory'
      'use-package-handler/:config :before
      (lambda (name keyword arg rest state)
        (plist-put state :deferred nil)))))
+
+(progn-safe "Highlighting in *Messages* buffer (use-package)"
+  (font-lock-add-keywords
+   'messages-buffer-mode
+   '(("Could not load .*" 0 font-lock-warning-face t)))
+  (with-current-buffer "*Messages*"
+    (font-lock-fontify-buffer)))
+
 
 ;; *** Dependencies
 
