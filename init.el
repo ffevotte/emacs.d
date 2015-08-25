@@ -854,8 +854,8 @@ With two universal arguments, switch the buffer in another window."
   (custom-set-key (kbd "H-M-l") #'forward-word))
 
 (progn-safe "Move between pages with M-pgUp / M-pgDn"
-  (custom-set-key (kbd "M-<next>")   #'forward-page)
-  (custom-set-key (kbd "M-<prior>")  #'backward-page))
+  (global-set-key (kbd "M-<next>")   #'forward-page)
+  (global-set-key (kbd "M-<prior>")  #'backward-page))
 
 (progn-safe "Move to BOL or indentation"
   (defun ff/move-beginning-of-line (arg)
