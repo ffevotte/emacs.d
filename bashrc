@@ -3,6 +3,10 @@ if [ -z "$EMACS_USER_DIR" ]; then
     export PATH="${EMACS_USER_DIR}/bin:${PATH}"
 fi
 
+function em-desktop () {
+  em --eval '(desktop-load "'"$1"'")'
+}
+
 if [ -z "${EMACS_SERVER}" ]; then
     export EDITOR="emacsclient-main"
 else
