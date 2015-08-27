@@ -203,6 +203,49 @@ Variable files are located in the \"var\" subdirectory of `user-emacs-directory'
 
 ;; *** Key bindings
 
+(defun list-known-bindings (key &optional no-load)
+  (interactive "kList known bindings for key: \nP")
+  (when (and (not no-load)
+             (yes-or-no-p (concat "Try to load every known library"
+                                  " (this might take some resources)?")))
+    (let ((nfeatures 0))
+      (while (not (= nfeatures (length features)))
+        (setq nfeatures (length features))
+        (message "%d features loaded" nfeatures)
+        (mapatoms (lambda (sym)
+                    (when (and (boundp sym)
+                               (autoloadp (symbol-function sym)))
+                      (autoload-do-load (symbol-function sym))))))))
+  (with-current-buffer (get-buffer-create "*known bindings*")
+    (help-mode)
+    (let ((buffer-read-only nil))
+      (erase-buffer)
+      (insert
+       (format "Known bindings for key: %s\n\n" (key-description key))
+       (format "%-40s %s" "Map" "Binding\n")
+       (s-repeat 40 "-") " " (s-repeat 30 "-") "\n")
+      (mapatoms (lambda (sym)
+                  (when (or (eq sym 'global-map)
+                            (and (boundp sym)
+                                 (symbol-value sym)
+                                 (s-ends-with-p "-mode-map" (symbol-name sym))
+                                 (keymapp (symbol-value sym))))
+                    (let ((binding (lookup-key (symbol-value sym) key t)))
+                      (when (and binding
+                                 (not (numberp binding)))
+                        (insert (format "%-40s `%s'\n"
+                                        (format "`%s'" sym)
+                                        (if (keymapp binding)
+                                            "KEYMAP"
+                                          binding)))))))))
+    (let ((help-xref-following t))
+      (setq help-xref-stack         nil
+            help-xref-forward-stack nil)
+      (help-make-xrefs)
+      (help-setup-xref (cons 'list-known-bindings (list key t)) t))
+    (goto-char (point-min))
+    (display-buffer (current-buffer))))
+
 ;; **** Custom global key bindings
 
 ;; Inspired from http://stackoverflow.com/q/683425
