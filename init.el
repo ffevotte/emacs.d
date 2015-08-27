@@ -792,10 +792,18 @@ With two universal arguments, switch the buffer in another window."
   :defer 2
 
   :config
-  (recentf-mode 1)
   (setq recentf-max-saved-items 1000)
   (setq recentf-auto-cleanup    60)
   (setq recentf-save-file (ff/variable-file "recentf"))
+  (recentf-mode 1)
+
+  ;; Add files already opened from the command-line to the recentf list
+  ;; (this is only be necessary because of the deferred loading)
+  (mapc (lambda (buffer)
+          (when (buffer-file-name buffer)
+            (recentf-push (buffer-file-name buffer))))
+        (buffer-list))
+
   (require 'sync-recentf))
 
 (use-package sync-recentf
