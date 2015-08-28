@@ -1555,10 +1555,40 @@ in `process-environment'."
 ;; *** Terminal
 
 (use-package term
-  :defer  t
+  :commands ff/term-cycle-or-create
+
+  :init
+  (custom-set-key (kbd "<f2>") #'ff/term-cycle-or-create)
 
   :config
   (setq term-buffer-maximum-size 100000)
+
+  (defun ff/term-cycle-or-create (&optional force-create)
+    (interactive
+     (cond
+      ((null current-prefix-arg)
+       nil)
+      ((equal current-prefix-arg '(4))
+       '(t))
+      (t
+       (list (read-file-name "Run program: " "/bin" "bash")))))
+    (let ((term-buffers
+           (--sort
+            (string< (buffer-name it) (buffer-name other))
+            (--filter (eq 'term-mode (with-current-buffer it major-mode))
+                      (buffer-list)))))
+      (cond
+       ((or (null term-buffers)
+            force-create)
+        (ansi-term (if (stringp force-create)
+                       force-create
+                     "/bin/bash")
+                   "terminal"))
+       ((eq 'term-mode major-mode)
+        (let ((index (--find-index (eq it (current-buffer)) term-buffers)))
+          (switch-to-buffer (nth (mod (1+ index) (length term-buffers)) term-buffers))))
+       (t
+        (switch-to-buffer (first term-buffers))))))
 
   (defmacro ff/term-send-raw (binding string)
     `(define-key term-raw-map (kbd ,binding)
@@ -1569,6 +1599,7 @@ in `process-environment'."
   (ff/term-send-raw "C-<right>"     "\e[1;5C")
   (ff/term-send-raw "C-<left>"      "\e[1;5D")
   (ff/term-send-raw "C-<backspace>" "\e\d")
+  (define-key term-raw-map (kbd "C-u") nil)
 
   ;; Automatically yank the active region and go to the end of buffer
   ;; on line->char mode switch
@@ -1582,60 +1613,19 @@ in `process-environment'."
       (goto-char (point-max))
       (yank))
     (term-char-mode)
-    (term-send-right)))
+    (term-send-right))
 
-(use-package multi-term
-  :ensure t
-  :defer  t
-
-  :init
-  (custom-set-key (kbd "<f2>")   'ff/multi-term)
-  (custom-set-key (kbd "C-<f2>") 'multi-term-dedicated-toggle)
-
-  (defun ff/multi-term (argp)
-    "Open a new terminal or cycle among existing ones.
-
-No prefix arg: cycle among terminals (open one if none exist)
-C-u:           create new terminal
-C-u C-u:       create new terminal and choose program"
-    (interactive "P")
-    (cond ((equal argp '(4))
-           (let ((current-prefix-arg nil))
-             (multi-term)))
-          ((equal argp '(16))
-           (let ((current-prefix-arg '(4)))
-             (multi-term)))
-          (t
-           (call-interactively 'multi-term-next))))
-
-  :config
-  (setq multi-term-dedicated-select-after-open-p t)
-  (setq term-bind-key-alist nil)
-
-  (defun ff/multi-term-bind (key fun)
-    (setq term-bind-key-alist
-          (delq (assoc key term-bind-key-alist)
-                term-bind-key-alist))
-    (when fun
-      (add-to-list 'term-bind-key-alist (cons key fun))))
-
-  (defmacro ff/multi-term-raw (key)
-    `(ff/multi-term-bind
-      ,key
-      (lambda ()
-        ,(format "Send raw %s" key)
-        (interactive)
-        (term-send-raw-string (kbd ,key)))))
-
-  (ff/multi-term-bind "C-c C-j" 'term-line-mode)
-  (ff/multi-term-bind "C-c C-u" 'universal-argument)
-  (ff/multi-term-bind "C-c C-c" 'term-interrupt-subjob)
-  (ff/multi-term-bind "C-c C-e" 'term-send-esc)
-  (ff/multi-term-raw  "C-z")
-  (ff/multi-term-raw  "C-u")
-  (ff/multi-term-raw  "C-k")
-  (ff/multi-term-raw  "C-y")
-  (ff/multi-term-raw  "C-x ~"))
+  ;; Easily kill the buffer by pressing RET when the process is killed
+  (defun ff/term-handle-exit--close-buffer (&rest args)
+    (when (null (get-buffer-process (current-buffer)))
+      (insert "Press <RET> to kill the buffer.")
+      (use-local-map (let ((map (make-sparse-keymap)))
+                       (define-key map (kbd "RET")
+                         (lambda ()
+                           (interactive)
+                           (kill-buffer (current-buffer))))
+                       map))))
+  (advice-add 'term-handle-exit :after #'ff/term-handle-exit--close-buffer))
 
 ;; *** Isend
 
