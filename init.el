@@ -196,9 +196,10 @@ Variable files are located in the \"var\" subdirectory of `user-emacs-directory'
 
 ;; ** Base tools
 
-(use-package htmlize
-  :ensure t
-  :defer  t)
+(use-package htmlize :ensure t :defer t)
+(use-package f       :ensure t :defer t)
+(use-package dash    :ensure t :defer t)
+(use-package s       :ensure t :defer t)
 
 
 ;; *** Key bindings
