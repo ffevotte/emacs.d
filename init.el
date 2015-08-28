@@ -443,6 +443,7 @@ and so on."
     (interactive)
     (let ((overlay
            (make-overlay (point) (point))))
+      (overlay-put overlay 'window (selected-window))
       (overlay-put overlay 'before-string
                    (propertize "*"
                                'face (list :foreground "red"
