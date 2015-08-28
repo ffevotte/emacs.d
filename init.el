@@ -2075,6 +2075,13 @@ sub/superscript for the token at point."
 
 ;; ** Common features for programming modes
 
+;; *** Switch between header and implementation files
+
+(use-package find-file
+  :defer t
+  :init
+  (custom-set-key (kbd "C-c o") 'ff-find-other-file))
+
 ;; *** Which function mode
 
 ;; From Sebastian Wiesner (https://github.com/lunaryorn/.emacs.d/blob/94ff67258d/init.el#L347-L358)
@@ -2489,14 +2496,6 @@ With a prefix argument, replace the sexp by its evaluation."
               (insert (format "std::cerr << \"%s = \" << %s << std::endl;" var var)))
             (c-indent-line))))
    ff/insert-debug-alist))
-
-;; *** Switch between header and implementation files
-
-(use-package cc-mode
-  :defer t
-  :config
-  (define-key c-mode-map   (kbd "C-c o") 'ff-find-other-file)
-  (define-key c++-mode-map (kbd "C-c o") 'ff-find-other-file))
 
 ;; *** Index sources with GNU/global
 
