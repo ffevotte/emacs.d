@@ -780,16 +780,26 @@ With two universal arguments, switch the buffer in another window."
 ;; *** Sessions
 
 (use-package desktop+
-  :load-path (lambda () (ff/emacsd "packages/desktop+"))
-  :commands  (desktop-load
-              desktop-create)
+  :ensure t
+  :commands (desktop+-load desktop+-create)
+
+  :init
+  (define-key ff/run-map (kbd "d")
+    (defhydra desktop+-hydra (:exit t)
+      "
+Manage sessions:
+  _l_: load session         _L_: load autonamed session
+  _c_: create session       _C_: create autonamed session
+"
+      ("l" #'desktop+-load nil)
+      ("L" #'desktop+-load-auto nil)
+      ("c" #'desktop+-create nil)
+      ("C" #'desktop+-create-auto nil)))
 
   :config
   (ido-ubiquitous-mode 1)
-  (setq desktop-base-dir (ff/variable-file "desktops/")
-        desktop-save t)
-
-  (desktop+/special-buffer-handlers))
+  (setq desktop+-base-dir (ff/variable-file "desktops/")
+        desktop-save t))
 
 
 ;; *** Recent files
