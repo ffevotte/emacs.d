@@ -187,7 +187,7 @@ Variable files are located in the \"var\" subdirectory of `user-emacs-directory'
           (load ff/elpa-cache-file)
           (unless package--initialized
             (error "Package.el left uninitialized"))
-          (run-with-idle-timer 5 nil #'ff/package-initialize)
+          (run-with-idle-timer 1 nil #'ff/package-initialize)
           (message "Trying fast ELPA setup...done"))
       (error
        (message "Trying fast ELPA setup...FAILED")
