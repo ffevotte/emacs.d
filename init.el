@@ -221,10 +221,6 @@ Variable files are located in the \"var\" subdirectory of `user-emacs-directory'
     (help-mode)
     (let ((buffer-read-only nil))
       (erase-buffer)
-      (insert
-       (format "Known bindings for key: %s\n\n" (key-description key))
-       (format "%-40s %s" "Map" "Binding\n")
-       (s-repeat 40 "-") " " (s-repeat 30 "-") "\n")
       (mapatoms (lambda (sym)
                   (when (or (eq sym 'global-map)
                             (and (boundp sym)
@@ -238,7 +234,13 @@ Variable files are located in the \"var\" subdirectory of `user-emacs-directory'
                                         (format "`%s'" sym)
                                         (if (keymapp binding)
                                             "KEYMAP"
-                                          binding)))))))))
+                                          binding))))))))
+      (sort-lines nil (point-min) (point-max))
+      (goto-char (point-min))
+      (insert
+       (format "Known bindings for key: %s\n\n" (key-description key))
+       (format "%-40s %s" "Map" "Binding\n")
+       (s-repeat 40 "-") " " (s-repeat 30 "-") "\n"))
     (let ((help-xref-following t))
       (setq help-xref-stack         nil
             help-xref-forward-stack nil)
@@ -307,9 +309,45 @@ and so on."
       repeatable-command)))
 
 
-;; **** Hydra
+;; **** Commands dispatching
+
 (use-package hydra
   :ensure t)
+
+(progn-safe "Dispatching commands (alternatives)"
+
+  (eval-when-compile
+    (require 's))
+
+  (defmacro define-alternatives (name docstring &rest body)
+    `(prog1
+         (defun ,name (&optional argp)
+           ,(apply
+             'concat
+             (s-chop-suffixes
+              '(":" " ")
+              (let ((lines (s-lines docstring)))
+                (if (string= "" (first lines))
+                    (second lines)
+                  (first lines))))
+             " (with alternatives).\n\n"
+             (format "When called without argument, call `%s'.\n\n"
+                     (second (first body)))
+             "Otherwise (if ARGP is set), offer a choice between the following commands:\n"
+             (mapcar (lambda (cmd)
+                       (format "- `%s'\n"
+                               (s-truncate 30 (format "%s" (second cmd)))))
+                     body))
+           (interactive "P")
+           (if (null argp)
+               (call-interactively #',(second (first body)))
+             (call-interactively (get ',name :alternate-hydra))))
+       (put ',name :alternate-hydra
+            (defhydra ,(intern (format "%s--hydra" name))
+              (:exit t)
+              ,docstring
+              ,@body)))))
+
 
 
 ;; *** Local rc files
@@ -615,35 +653,33 @@ _=_: balance^     ^     ^ ^              _u_ndo
 ;; *** Find-file and switch-to-buffer in other window
 
 (progn-safe "Prefix argument for find-file & the like"
-  (custom-set-key (kbd "C-x C-f") 'ff/find-file)
-  (defun ff/find-file (&optional argp)
-    "Use prefix argument to select where to find a file.
+  (custom-set-key
+   (kbd "C-x C-f")
+   (define-alternatives ff/find-file
+     "
+Open file:
+  _c_urrent window    other _w_indow    _l_iterally
+  _d_isplay           other _f_rame     _r_ead only
+"
+     ("c" find-file              nil)
+     ("d" ido-display-file       nil)
+     ("w" find-file-other-window nil)
+     ("f" find-file-other-frame  nil)
+     ("l" find-file-literally    nil)
+     ("r" find-file-read-only    nil)))
 
-Without prefix argument ARGP, visit the file in the current window.
-With a universal prefix arg, display the file in another window.
-With two universal arguments, visit the file in another window."
-    (interactive "p")
-    (cond ((eq argp 1)
-           (call-interactively 'find-file))
-          ((eq argp 4)
-           (call-interactively 'ido-display-file))
-          ((eq argp 16)
-           (call-interactively 'find-file-other-window))))
-
-  (custom-set-key (kbd "C-x b") 'ff/switch-to-buffer)
-  (defun ff/switch-to-buffer (&optional argp)
-    "Use prefix argument to select where to switch to buffer.
-
-Without prefix argument ARGP, switch the buffer in the current window.
-With a universal prefix, display the buffer in another window.
-With two universal arguments, switch the buffer in another window."
-    (interactive "p")
-    (cond ((eq argp 1)
-           (call-interactively 'switch-to-buffer))
-          ((eq argp 4)
-           (call-interactively 'display-buffer))
-          (t
-           (call-interactively 'switch-to-buffer-other-window)))))
+  (custom-set-key
+   (kbd "C-x b")
+   (define-alternatives ff/switch-to-buffer
+     "
+Switch to buffer:
+  _c_urrent window    other _w_indow
+  _d_isplay           other _f_rame
+"
+     ("c" switch-to-buffer nil)
+     ("d" display-buffer   nil)
+     ("w" switch-to-buffer-other-window nil)
+     ("f" switch-to-buffer-other-frame  nil))))
 
 ;; *** Uniquify buffer names
 
