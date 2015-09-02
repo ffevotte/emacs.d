@@ -820,6 +820,7 @@ Switch to buffer:
   :commands (desktop+-load desktop+-create)
 
   :init
+  (setq desktop+-base-dir (ff/variable-file "desktops/"))
   (define-key ff/run-map (kbd "d")
     (defhydra desktop+-hydra (:exit t)
       "
@@ -833,9 +834,7 @@ Manage sessions:
       ("C" #'desktop+-create-auto nil)))
 
   :config
-  (ido-ubiquitous-mode 1)
-  (setq desktop+-base-dir (ff/variable-file "desktops/")
-        desktop-save t))
+  (ido-ubiquitous-mode 1))
 
 
 ;; *** Recent files
