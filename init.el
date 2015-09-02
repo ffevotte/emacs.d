@@ -485,6 +485,7 @@ and so on."
 ;; Navigate through window layouts with C-c <arrows>
 (use-package winner
   :defer 2
+  :commands winner-undo
   :config
   (winner-mode 1)
   (custom-set-key
@@ -693,18 +694,21 @@ With two universal arguments, switch the buffer in another window."
 
 (use-package helm
   :ensure t
-  :defer t
+  :commands (helm-mini helm-recentf helm-M-x helm-imenu)
   :init
   (custom-set-key (kbd "C-x C-h") 'helm-mini)
   (custom-set-key (kbd "C-x C-r") 'helm-recentf)
   (custom-set-key (kbd "C-x M-x") 'helm-M-x)
-  (custom-set-key (kbd "C-x C-i") 'helm-imenu))
+  (custom-set-key (kbd "C-x C-i") 'helm-imenu)
+
+  :config
+  (require 'helm-files))
 
 ;; *** smex
 
 (use-package smex
   :ensure t
-  :defer  t
+  :commands smex
   :init
   (custom-set-key (kbd "M-x") 'smex)
 
@@ -952,7 +956,10 @@ point reaches the beginning or end of the buffer, stop there."
 
 (use-package multiple-cursors
   :ensure t
-  :defer  t
+  :commands (mc/mark-next-like-this
+             mc/mark-previous-like-this
+             mc/mark-all-like-this
+             set-rectangular-region-anchor)
 
   :init
   (setq mc/list-file (ff/variable-file "mc-lists.el"))
@@ -967,7 +974,7 @@ point reaches the beginning or end of the buffer, stop there."
 
 (use-package expand-region
   :ensure t
-  :defer  t
+  :commands er/expand-region
   :init
   (custom-set-key (kbd "C-x SPC") 'er/expand-region))
 
@@ -1055,7 +1062,7 @@ See `insert-register'."
 
 (use-package helm-swoop
   :ensure t
-  :defer  t
+  :commands (helm-swoop helm-swoop-from-isearch)
 
   :init
   (custom-set-key (kbd "M-i") 'helm-swoop)
@@ -1563,6 +1570,7 @@ in `process-environment'."
   :config
   (setq term-buffer-maximum-size 100000)
 
+  (require 'dash)
   (defun ff/term-cycle-or-create (&optional force-create)
     (interactive
      (cond
@@ -1639,7 +1647,7 @@ in `process-environment'."
 ;; ** Filesystem
 
 (use-package dired
-  :defer  t
+  :commands dired-jump
   :init
   (custom-set-key (kbd "C-x C-j") #'dired-jump)
 
@@ -1665,7 +1673,7 @@ in `process-environment'."
 
 (use-package magit
   :ensure t
-  :defer  t
+  :commands magit-status
 
   :init
   (custom-set-key (kbd "C-c v") #'magit-status))
@@ -1675,7 +1683,7 @@ in `process-environment'."
   :defer  t)
 
 (use-package git-gutter
-  :defer    t
+  :commands git-gutter-mode
   :diminish (git-gutter-mode . " ±")
 
   :init
@@ -2078,7 +2086,7 @@ sub/superscript for the token at point."
 ;; *** Switch between header and implementation files
 
 (use-package find-file
-  :defer t
+  :commands ff-find-other-file
   :init
   (custom-set-key (kbd "C-c o") 'ff-find-other-file))
 
@@ -2355,7 +2363,7 @@ nil."
 
 (use-package aggressive-indent
   :ensure   t
-  :defer    t
+  :commands aggressive-indent-mode
   :diminish (aggressive-indent-mode . " ⭾"))
 
 ;; *** Debugging snippets
@@ -2403,7 +2411,7 @@ nil."
   (add-hook 'emacs-lisp-mode-hook #'eldoc-mode))
 
 (use-package helm-elisp
-  :defer   t
+  :commands helm-apropos
   :defines helm-def-source--emacs-functions
 
   :init
