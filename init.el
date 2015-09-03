@@ -2196,10 +2196,10 @@ _k_: previous error    _l_: last error
   :commands list-compilation-buffers
 
   :config
-  (multi-compile "compile5" :key (kbd "<f5>"))
-  (multi-compile "compile6" :key (kbd "<f6>"))
-  (multi-compile "compile7" :key (kbd "<f7>"))
-  (multi-compile "compile8" :key (kbd "<f8>"))
+  (custom-set-key (kbd "<f5>") (multi-compile compile5))
+  (custom-set-key (kbd "<f6>") (multi-compile compile6))
+  (custom-set-key (kbd "<f7>") (multi-compile compile7))
+  (custom-set-key (kbd "<f8>") (multi-compile compile8))
 
   (require 's)
   (defun list-compilation-buffers ()
