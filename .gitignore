@@ -1,5 +1,6 @@
 *.elc
 *~
+.cask
 elpa
 packages/stamp
 share/info
