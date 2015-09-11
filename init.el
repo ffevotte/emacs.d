@@ -319,7 +319,8 @@ and so on."
   (eval-when-compile
     (require 's))
 
-  (defmacro define-alternatives (name docstring &rest body)
+  (defmacro ff/define-alternatives (name docstring &rest body)
+    (declare (indent defun))
     `(prog1
          (defun ,name (&optional argp)
            ,(apply
@@ -650,12 +651,19 @@ _=_: balance^     ^     ^ ^              _u_ndo
 
 ;; ** Buffers management
 
+;; *** Scratch buffers
+
+(use-package scratch
+  :load-path (lambda () (ff/emacsd "packages/scratch"))
+  :diminish  (scratch-mode " #"))
+
+
 ;; *** Find-file and switch-to-buffer in other window
 
 (progn-safe "Prefix argument for find-file & the like"
   (custom-set-key
    (kbd "C-x C-f")
-   (define-alternatives ff/find-file
+   (ff/define-alternatives ff/find-file
      "
 Open file:
   _c_urrent window    other _w_indow    _l_iterally
@@ -670,16 +678,20 @@ Open file:
 
   (custom-set-key
    (kbd "C-x b")
-   (define-alternatives ff/switch-to-buffer
+   (ff/define-alternatives ff/switch-to-buffer
      "
 Switch to buffer:
-  _c_urrent window    other _w_indow
-  _d_isplay           other _f_rame
+  _c_urrent window    other _w_indow    _s_cratch buffer
+  _d_isplay           other _f_rame     _S_cratch buffer (named)
 "
-     ("c" switch-to-buffer nil)
-     ("d" display-buffer   nil)
+     ("c" scratch-switch-to-buffer      nil)
+     ("d" display-buffer                nil)
      ("w" switch-to-buffer-other-window nil)
-     ("f" switch-to-buffer-other-frame  nil))))
+     ("f" switch-to-buffer-other-frame  nil)
+     ("S" scratch-create                nil)
+     ("s" (let ((current-prefix-arg nil))
+            (call-interactively #'scratch-create))
+      nil))))
 
 ;; *** Uniquify buffer names
 

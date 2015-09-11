@@ -16,3 +16,6 @@
 [submodule "packages/cask"]
 	path = packages/cask
 	url = https://github.com/cask/cask.git
+[submodule "packages/scratch"]
+	path = packages/scratch
+	url = https://github.com/ffevotte/scratch.el.git
