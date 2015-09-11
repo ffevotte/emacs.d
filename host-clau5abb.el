@@ -20,3 +20,24 @@
 
 ;; * Local paths
 (add-to-list 'load-path "/home/H55056/.localDebian/usr/share/emacs/site-lisp/maxima/")
+
+
+;; * Specific compilation regexps for Cocagne
+(use-package compile
+  :defer t
+  :config
+  (add-to-list 'compilation-error-regexp-alist 'cocagne-error)
+  (add-to-list 'compilation-error-regexp-alist-alist
+               '(cocagne-error
+                 "Test .*: \\([^ ]*\\) .****\\(Failed\\)"
+                 (1 "Tests/%s.dir/") nil nil
+                 2 1
+                 (2 compilation-error-face)))
+
+  (add-to-list 'compilation-error-regexp-alist 'cocagne-success)
+  (add-to-list 'compilation-error-regexp-alist-alist
+               '(cocagne-success
+                 "Test .*: \\([^ ]*\\) .*\\(Passed\\)"
+                 (1 "Tests/%s.dir/") nil nil
+                 0 1
+                 (2 compilation-info-face))))
