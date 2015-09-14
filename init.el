@@ -83,7 +83,7 @@ A TITLE is used to identify the block in the logs."
   "Load the configuration for package NAME.
 This configuration is located in a file named `setup-NAME.el`
 under `user-emacs-directory'."
-  (load-file (ff/emacsd (concat "setup-" name ".el"))))
+  (load-file (ff/emacsd (concat "elisp/setup-" name ".el"))))
 
 ;; **** Persistency files
 
@@ -359,7 +359,7 @@ and so on."
                                   (progn
                                     (string-match "\\." (concat fullhostname ".domain"))
                                     (- (match-end 0) 1)))))
-    (load (concat user-emacs-directory "host-" hostname) 'noerror)))
+    (load (concat user-emacs-directory "elisp/host-" hostname) 'noerror)))
 
 
 ;; * General settings

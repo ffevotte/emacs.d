@@ -24,9 +24,9 @@ Files are more or less grouped in the following way:
 
 - Sources:
     - `init.el`: top-level file, containing mostly everything;
-    - `setup-*.el`: if the configuration of a package takes more than a few lines, it is put in a
+    - `elisp/setup-*.el`: if the configuration of a package takes more than a few lines, it is put in a
       dedicated file;
-    - `host-*.el`: host-specific settings, loaded at the beginning of startup.
+    - `elisp/host-*.el`: host-specific settings, loaded at the beginning of startup.
 
 - Variable files: all files used for local persistency, which should not be versioned and shared among machines (recent file list, desktops, ...)
     - `var/*`: 
