@@ -10,6 +10,10 @@
 
 ;; ** Minimal base
 
+;; Avoid Garbage Collections (they're slow, and RAM is cheap nowadays)
+(set 'gc-cons-threshold 50000000)
+
+
 ;; *** Lisp utilities
 
 (defmacro with-timer (title &rest forms)
@@ -2640,8 +2644,9 @@ turned on."
 ;; * Postamble
 
 (progn-safe "End of startup"
-  (message "Emacs finished loading (%.3fs)."
-           (float-time (time-subtract (current-time) ff/emacs-start-time))))
+  (message "Emacs finished loading (%.3fs) (%d GCs)."
+           (float-time (time-subtract (current-time) ff/emacs-start-time))
+           gcs-done))
 
 (provide 'init)
 ;;; init.el ends here
