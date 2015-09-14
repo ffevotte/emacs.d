@@ -1207,6 +1207,7 @@ the word (default `capitalize-word' behaviour)"
     (abbrev-mode 1))
 
   :config
+  (setq abbrev-file-name (ff/variable-file "abbrev_defs"))
   (quietly-read-abbrev-file))
 
 ;; *** Snippets
