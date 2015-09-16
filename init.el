@@ -11,7 +11,12 @@
 ;; ** Minimal base
 
 ;; Avoid Garbage Collections (they're slow, and RAM is cheap nowadays)
-(set 'gc-cons-threshold 50000000)
+(setq gc-cons-threshold 50000000)
+
+(add-hook 'emacs-startup-hook 'ff/set-gc-threshold)
+(defun ff/set-gc-threshold ()
+  "Set `gc-cons-threshold' back to its default value."
+  (setq gc-cons-threshold 800000))
 
 
 ;; *** Lisp utilities
@@ -2643,7 +2648,10 @@ turned on."
 
 ;; * Postamble
 
+
 (progn-safe "End of startup"
+  (run-hooks 'emacs-startup-hook)
+
   (message "Emacs finished loading (%.3fs) (%d GCs)."
            (float-time (time-subtract (current-time) ff/emacs-start-time))
            gcs-done))
