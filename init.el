@@ -740,7 +740,13 @@ Switch to buffer:
   (setq ido-auto-merge-work-directories-length -1)
   (setq ido-create-new-buffer                  'always)
   (setq ido-use-filename-at-point              'guess)
-  (setq ido-default-buffer-method              'selected-window))
+  (setq ido-default-buffer-method              'selected-window)
+
+  (add-hook 'ido-make-buffer-list-hook 'ff/ido-stars-end)
+  (defun ff/ido-stars-end ()
+    "Sort ido candidates to put \"starred\" buffers at the end."
+    (ido-to-end (--filter (s-starts-with-p "*" it)
+                          ido-temp-list))))
 
 (use-package ido-ubiquitous
   :ensure t
