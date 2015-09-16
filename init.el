@@ -788,24 +788,16 @@ Switch to buffer:
   :config
   (smex-initialize))
 
-;; *** Guide-key
+;; *** Which-key
 
-(use-package guide-key
+(use-package which-key
   :ensure   t
   :defer    5
-  :commands guide-key/add-local-guide-key-sequence
-  :diminish guide-key-mode
-
-  :init
-  (setq guide-key/guide-key-sequence
-        '("C-x r"   ;; rectangles, registers and bookmarks
-          "C-x 8"   ;; special characters
-          "C-x RET" ;; coding system
-          "C-x C-k" ;; keyboard macros
-          ))
+  :diminish which-key-mode
 
   :config
-  (guide-key-mode 1))
+  (which-key-setup-side-window-right-bottom)
+  (which-key-mode 1))
 
 
 ;; *** "Toggle" and "Run" key maps
@@ -815,7 +807,6 @@ Switch to buffer:
   ;;   http://endlessparentheses.com/the-toggle-map-and-wizardry.html
   (define-prefix-command        'ff/toggle-map)
   (custom-set-key (kbd "C-c t") 'ff/toggle-map)
-  (add-to-list 'guide-key/guide-key-sequence "C-c t")
 
   (define-key ff/toggle-map "e" #'emacs-lisp-mode)
   (define-key ff/toggle-map "o" #'org-mode)
@@ -830,8 +821,6 @@ Switch to buffer:
   (define-prefix-command        'ff/run-map)
   (custom-set-key (kbd "C-c r") 'ff/run-map)
   (custom-set-key (kbd "M-r")   'ff/run-map)
-  (add-to-list 'guide-key/guide-key-sequence "C-c r")
-  (add-to-list 'guide-key/guide-key-sequence "M-r")
 
   (define-key ff/run-map "f" #'find-dired)
   (define-key ff/run-map "g" #'rgrep)
@@ -1961,12 +1950,7 @@ Git gutter:
             (defun ff/enable-latex-math-mode () (LaTeX-math-mode 1)))
 
   (add-hook 'LaTeX-mode-hook
-            (defun ff/enable-TeX-PDF-mode () (TeX-PDF-mode 1)))
-
-  (add-hook 'LaTeX-mode-hook
-            (defun ff/guide-key-LaTeX ()
-              (guide-key/add-local-guide-key-sequence "`")
-              (guide-key/add-local-guide-key-sequence "` v"))))
+            (defun ff/enable-TeX-PDF-mode () (TeX-PDF-mode 1))))
 
 ;; *** Math symbols
 
