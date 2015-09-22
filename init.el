@@ -46,6 +46,7 @@ A TITLE is used to identify the block in the logs."
   (let ((errvar (make-symbol "err")))
     `(condition-case-unless-debug ,errvar
          (progn
+           ,(when debug-on-error (list 'message "%s..." title))
            ,@forms)
        (error
         (ignore
