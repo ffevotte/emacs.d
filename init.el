@@ -1401,6 +1401,22 @@ name from current directory, `default-directory'.  See
         (delete-trailing-whitespace)
         (insert ws)))))
 
+;; *** Alignment in columns
+
+(progn-safe "Align text in columns"
+  (defun ff/align-repeat ()
+    (interactive)
+    (align-regexp
+     (region-beginning) (region-end)             ; region
+     (concat "\\(\\s-*\\)"                       ; regexp
+             (read-string "Align at pattern: ")) ;
+     1                                           ; group
+     align-default-spacing                       ; spacing
+     t                                           ; repeat
+     ))
+
+  (define-key ff/run-map (kbd "a") #'ff/align-repeat))
+
 ;; ** Lines handling
 
 ;; *** Highlight current line
