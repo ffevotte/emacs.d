@@ -28,11 +28,12 @@ elpa-update:
 
 # * Symbola font
 
-all: $(HOME)/.fonts/Symbola.ttf
+all: install-fonts
+install-fonts: $(HOME)/.fonts/Symbola.ttf
 
 $(HOME)/.fonts/Symbola.ttf: share/fonts/Symbola.ttf
-	cp share/fonts/*.ttf $(HOME)/.fonts
-	fc-cache
+	diff $(HOME)/.fonts/Symbola.ttf share/fonts/Symbola.ttf \
+	|| (cp share/fonts/*.ttf $(HOME)/.fonts; fc-cache)
 
 
 # * pydoc-info
@@ -68,8 +69,11 @@ yasnippet:
 
 # * Check
 
-check:
+check: all
 	$(EMACS) --eval '(toggle-debug-on-error)' $(OPTS)
+
+full-check:
+	./tests/check
 
 
 # * Postamble

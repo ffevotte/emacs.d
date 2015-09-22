@@ -139,8 +139,11 @@ Variable files are located in the \"var\" subdirectory of `user-emacs-directory'
         '(("melpa" . "http://melpa.milkbox.net/packages/")
           ("gnu"   . "http://elpa.gnu.org/packages/"))))
 
-(if ff/updating-elpa-cache
-    (with-timer "Updating ELPA cache"
+(with-timer-safe "Configuring ELPA"
+  (cond
+   (ff/updating-elpa-cache
+    (progn
+      (message "Update ELPA cache")
       ;; Update ELPA cache -- this is left unprotected as it is always run in
       ;; another process and we want errors to be reported
       (package-initialize)
@@ -155,52 +158,59 @@ Variable files are located in the \"var\" subdirectory of `user-emacs-directory'
                     `(add-to-list 'load-path ,dir))
                   load-path))
          (current-buffer))
-        (write-file ff/elpa-cache-file)))
+        (write-file ff/elpa-cache-file))))
 
-  (with-timer-safe "Configuring ELPA"
-    ;; Try loading the cache for faster startup
-    (defun ff/package-initialize ()
-      (with-timer "Fully initializing ELPA"
-        (package-initialize))
+   (noninteractive
+    (progn
+      (message "Full ELPA initialization")
+      (package-initialize)))
 
-      (message "Starting ELPA cache update...")
-      (setq ff/updating-elpa-cache (current-time))
-      (let ((default-directory user-emacs-directory))
-        (set-process-sentinel
-         (start-process "elpa-cache" "*elpa-cache*"
-                        "make" "elpa-update")
-         (lambda (process event)
-           (message "Starting ELPA cache update...%s"
-                    (cond ((process-live-p process)
-                           (format " live process received event `%s'" event))
-                          ((eq 'signal (process-status process))
-                           (format " process killed (%d)" (process-exit-status process)))
-                          ((eq 'exit (process-status process))
-                           (if (= 0 (process-exit-status process))
-                               (format "complete (%.3fs)"
-                                       (float-time (time-subtract (current-time)
-                                                                  ff/updating-elpa-cache)))
-                             (display-warning
-                              'ff/package-initialize
-                              (format
-                               "failed to update ELPA cache; see buffer `%s' for details"
-                               (process-buffer process))
-                              :error)
-                             (format "FAILED (%d)" (process-exit-status process))))
-                          (t
-                           (format " process received event `%s'" event))))))))
+   (t
+    (progn
+      ;; Try loading the cache for faster startup
+      (defun ff/package-initialize ()
+        (with-timer "Fully initializing ELPA"
+          (package-initialize))
 
-    (condition-case nil
-        (progn
-          (message "Trying fast ELPA setup...")
-          (load ff/elpa-cache-file)
-          (unless package--initialized
-            (error "Package.el left uninitialized"))
-          (run-with-idle-timer 1 nil #'ff/package-initialize)
-          (message "Trying fast ELPA setup...done"))
-      (error
-       (message "Trying fast ELPA setup...FAILED")
-       (ff/package-initialize)))))
+        (message "Starting ELPA cache update...")
+        (setq ff/updating-elpa-cache (current-time))
+        (let ((default-directory user-emacs-directory))
+          (set-process-sentinel
+           (start-process "elpa-cache" "*elpa-cache*"
+                          "make" "elpa-update")
+           (lambda (process event)
+             (message "Starting ELPA cache update...%s"
+                      (cond ((process-live-p process)
+                             (format " live process received event `%s'" event))
+                            ((eq 'signal (process-status process))
+                             (format " process killed (%d)" (process-exit-status process)))
+                            ((eq 'exit (process-status process))
+                             (if (= 0 (process-exit-status process))
+                                 (format "complete (%.3fs)"
+                                         (float-time (time-subtract
+                                                      (current-time)
+                                                      ff/updating-elpa-cache)))
+                               (display-warning
+                                'ff/package-initialize
+                                (format
+                                 "failed to update ELPA cache; see buffer `%s' for details"
+                                 (process-buffer process))
+                                :error)
+                               (format "FAILED (%d)" (process-exit-status process))))
+                            (t
+                             (format " process received event `%s'" event))))))))
+
+      (condition-case nil
+          (progn
+            (message "Trying fast ELPA setup...")
+            (load ff/elpa-cache-file)
+            (unless package--initialized
+              (error "Package.el left uninitialized"))
+            (run-with-idle-timer 1 nil #'ff/package-initialize)
+            (message "Trying fast ELPA setup...done"))
+        (error
+         (message "Trying fast ELPA setup...FAILED")
+         (ff/package-initialize)))))))
 
 
 ;; ** Base tools

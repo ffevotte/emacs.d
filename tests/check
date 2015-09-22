@@ -1,0 +1,12 @@
+#!/bin/bash
+
+TESTDIR=$(mktemp -d)
+EMACSD=${PWD}
+
+(  cd ${TESTDIR}
+   git clone ${EMACSD} emacs.d
+   cd emacs.d
+   make check
+)
+
+rm -rf ${TESTDIR}
