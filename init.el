@@ -403,7 +403,7 @@ and so on."
   ;; Bare UI
   (menu-bar-mode   -1)
   (tool-bar-mode   -1)
-  (scroll-bar-mode -1)
+  (when (display-graphic-p) (scroll-bar-mode -1))
 
   ;; Startup
   (setq initial-scratch-message "")          ;; Empty scratch buffer
@@ -434,7 +434,7 @@ and so on."
 ;; Tango color theme
 (use-package naquadah-theme
   :ensure t
-  :if window-system
+  :if (display-graphic-p)
 
   :config
   (load-theme 'naquadah t)
@@ -1466,33 +1466,34 @@ name from current directory, `default-directory'.  See
 
 ;; *** Fall-back font for unicode characters
 
-(progn-safe "Font for unicode characters"
-  ;; Symbola font from http://users.teilar.gr/~g1951d/
-  ;;
-  ;; More documentation on `set-fontset-font':
-  ;;   http://www.emacswiki.org/emacs/FontSets#toc1
-  ;;
-  (mapc (lambda (range)
-          (set-fontset-font "fontset-default" range
-                            (font-spec :size 13 :name "Symbola")))
-        (list
-         ;; Default choice for all unknown chars
-         nil
+(when (display-graphic-p)
+  (progn-safe "Font for unicode characters"
+    ;; Symbola font from http://users.teilar.gr/~g1951d/
+    ;;
+    ;; More documentation on `set-fontset-font':
+    ;;   http://www.emacswiki.org/emacs/FontSets#toc1
+    ;;
+    (mapc (lambda (range)
+            (set-fontset-font "fontset-default" range
+                              (font-spec :size 13 :name "Symbola")))
+          (list
+           ;; Default choice for all unknown chars
+           nil
 
-         ;; Explicit font for unicode blocks:
-         ;;   (http://en.wikipedia.org/wiki/Unicode_block)
-         ;;
-         ;; - block "Letterlike Symbols"
-         (cons (decode-char 'ucs #x2100)
-               (decode-char 'ucs #x214F))
+           ;; Explicit font for unicode blocks:
+           ;;   (http://en.wikipedia.org/wiki/Unicode_block)
+           ;;
+           ;; - block "Letterlike Symbols"
+           (cons (decode-char 'ucs #x2100)
+                 (decode-char 'ucs #x214F))
 
-         ;; - blocks "Arrows" to "Miscellaneous Symbols and Arrows"
-         (cons (decode-char 'ucs #x2190)
-               (decode-char 'ucs #x2BFF))
+           ;; - blocks "Arrows" to "Miscellaneous Symbols and Arrows"
+           (cons (decode-char 'ucs #x2190)
+                 (decode-char 'ucs #x2BFF))
 
-         ;; - blocks "Mahjong Tiles" to "Supplemental Symbols and Pictographs"
-         (cons (decode-char 'ucs #x1F000)
-               (decode-char 'ucs #x1F9FF)))))
+           ;; - blocks "Mahjong Tiles" to "Supplemental Symbols and Pictographs"
+           (cons (decode-char 'ucs #x1F000)
+                 (decode-char 'ucs #x1F9FF))))))
 
 ;; *** Easily insert unicode
 
@@ -1762,6 +1763,7 @@ in `process-environment'."
   (custom-set-key (kbd "C-c v") #'magit-status))
 
 (use-package git-gutter-fringe
+  :if (display-graphic-p)
   :ensure t
   :defer  t)
 
@@ -1826,7 +1828,8 @@ Git gutter:
       nil :color blue)))
 
   :config
-  (require 'git-gutter-fringe))
+  (when (display-graphic-p)
+    (require 'git-gutter-fringe)))
 
 ;; ** Various tools
 
