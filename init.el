@@ -2,7 +2,7 @@
 ;;; Commentary:
 ;;; Code:
 
-(setq ff/emacs-start-time (current-time))
+(defvar ff/emacs-start-time (current-time))
 
 ;; * Utilities
 
@@ -80,9 +80,10 @@ A TITLE is used to identify the block in the logs."
 (setq user-emacs-directory (file-name-directory
                             user-init-file))
 
-(defun ff/emacsd (name)
-  "Path to a file named NAME in `user-emacs-directory'."
-  (expand-file-name (concat user-emacs-directory name)))
+(eval-and-compile
+  (defun ff/emacsd (name)
+    "Path to a file named NAME in `user-emacs-directory'."
+    (expand-file-name (concat user-emacs-directory name))))
 
 (add-to-list 'load-path (ff/emacsd "lisp"))
 
@@ -141,6 +142,38 @@ Variable files are located in the \"var\" subdirectory of `user-emacs-directory'
           ("gnu"   . "http://elpa.gnu.org/packages/"))))
 
 (with-timer-safe "Configuring ELPA"
+  (defun ff/package-initialize ()
+    (with-timer "Fully initializing ELPA"
+      (package-initialize))
+
+    (message "Starting ELPA cache update...")
+    (setq ff/updating-elpa-cache (current-time))
+    (let ((default-directory user-emacs-directory))
+      (set-process-sentinel
+       (start-process "elpa-cache" "*elpa-cache*"
+                      "make" "elpa-update")
+       (lambda (process event)
+         (message "Starting ELPA cache update...%s"
+                  (cond ((process-live-p process)
+                         (format " live process received event `%s'" event))
+                        ((eq 'signal (process-status process))
+                         (format " process killed (%d)" (process-exit-status process)))
+                        ((eq 'exit (process-status process))
+                         (if (= 0 (process-exit-status process))
+                             (format "complete (%.3fs)"
+                                     (float-time (time-subtract
+                                                  (current-time)
+                                                  ff/updating-elpa-cache)))
+                           (display-warning
+                            'ff/package-initialize
+                            (format
+                             "failed to update ELPA cache; see buffer `%s' for details"
+                             (process-buffer process))
+                            :error)
+                           (format "FAILED (%d)" (process-exit-status process))))
+                        (t
+                         (format " process received event `%s'" event))))))))
+
   (cond
    (ff/updating-elpa-cache
     (progn
@@ -167,51 +200,18 @@ Variable files are located in the \"var\" subdirectory of `user-emacs-directory'
       (package-initialize)))
 
    (t
-    (progn
-      ;; Try loading the cache for faster startup
-      (defun ff/package-initialize ()
-        (with-timer "Fully initializing ELPA"
-          (package-initialize))
-
-        (message "Starting ELPA cache update...")
-        (setq ff/updating-elpa-cache (current-time))
-        (let ((default-directory user-emacs-directory))
-          (set-process-sentinel
-           (start-process "elpa-cache" "*elpa-cache*"
-                          "make" "elpa-update")
-           (lambda (process event)
-             (message "Starting ELPA cache update...%s"
-                      (cond ((process-live-p process)
-                             (format " live process received event `%s'" event))
-                            ((eq 'signal (process-status process))
-                             (format " process killed (%d)" (process-exit-status process)))
-                            ((eq 'exit (process-status process))
-                             (if (= 0 (process-exit-status process))
-                                 (format "complete (%.3fs)"
-                                         (float-time (time-subtract
-                                                      (current-time)
-                                                      ff/updating-elpa-cache)))
-                               (display-warning
-                                'ff/package-initialize
-                                (format
-                                 "failed to update ELPA cache; see buffer `%s' for details"
-                                 (process-buffer process))
-                                :error)
-                               (format "FAILED (%d)" (process-exit-status process))))
-                            (t
-                             (format " process received event `%s'" event))))))))
-
-      (condition-case nil
-          (progn
-            (message "Trying fast ELPA setup...")
-            (load ff/elpa-cache-file)
-            (unless package--initialized
-              (error "Package.el left uninitialized"))
-            (run-with-idle-timer 1 nil #'ff/package-initialize)
-            (message "Trying fast ELPA setup...done"))
-        (error
-         (message "Trying fast ELPA setup...FAILED")
-         (ff/package-initialize)))))))
+    ;; Try loading the cache for faster startup
+    (condition-case nil
+        (progn
+          (message "Trying fast ELPA setup...")
+          (load ff/elpa-cache-file)
+          (unless package--initialized
+            (error "Package.el left uninitialized"))
+          (run-with-idle-timer 1 nil #'ff/package-initialize)
+          (message "Trying fast ELPA setup...done"))
+      (error
+       (message "Trying fast ELPA setup...FAILED")
+       (ff/package-initialize))))))
 
 
 ;; ** Base tools
@@ -224,6 +224,7 @@ Variable files are located in the \"var\" subdirectory of `user-emacs-directory'
 
 ;; *** Key bindings
 
+(eval-when-compile (require 'help-mode))
 (defun list-known-bindings (key &optional no-load)
   (interactive "kList known bindings for key: \nP")
   (when (and (not no-load)
@@ -464,6 +465,9 @@ and so on."
 (use-package smart-mode-line
   :ensure t
   :defer  2
+  :commands (;; BC only
+             sml/faces-from-theme
+             sml/theme-p)
 
   :config
   (setq mode-line-position nil)
@@ -611,6 +615,10 @@ Rotation is done in the opposite order as `ff/rotate-windows'."
 ;; *** Hydra to wrap all this
 
 (progn-safe "Window management hydra"
+  (use-package bookmark+
+    :defer t
+    :commands bookmark-jump)
+
   (defvar ff/key² (kbd "²")
     "Key in the leftmost position of the number row.
 Labeled `²' in French keyboards layouts.")
@@ -743,6 +751,7 @@ Switch to buffer:
 ;; *** ido
 
 (use-package ido
+  :defines ido-temp-list
   :config
   (ido-mode 1)
   (ido-everywhere 1)
@@ -1028,10 +1037,13 @@ point reaches the beginning or end of the buffer, stop there."
 
 (use-package multiple-cursors
   :ensure t
+  :defer  t
   :commands (mc/mark-next-like-this
              mc/mark-previous-like-this
              mc/mark-all-like-this
-             set-rectangular-region-anchor)
+             set-rectangular-region-anchor
+             ;; BC only
+             rrm/switch-to-multiple-cursors)
 
   :init
   (setq mc/list-file (ff/variable-file "mc-lists.el"))
@@ -1269,7 +1281,7 @@ the word (default `capitalize-word' behaviour)"
 
 (use-package yasnippet
   :ensure   t
-  :commands yas-recompile-all
+  :commands (yas-recompile-all yas-reload-all yas-minor-mode)
   :diminish (yas-minor-mode . " Y")
 
   :init
@@ -1416,14 +1428,13 @@ name from current directory, `default-directory'.  See
 
 ;; *** Trailing whitespace
 
+(define-minor-mode auto-dtw-mode
+  "Automatically delete trailing whitespace."
+  :lighter    " ˽"
+  :init-value nil
+  (setq show-trailing-whitespace auto-dtw-mode))
+
 (progn-safe "Delete trailing whitespace"
-
-  (define-minor-mode auto-dtw-mode
-    "Automatically delete trailing whitespace."
-    :lighter    " ˽"
-    :init-value nil
-    (setq show-trailing-whitespace auto-dtw-mode))
-
   (add-to-list 'write-file-functions 'ff/auto-dtw)
   (defun ff/auto-dtw ()
     "Delete trailing whitespace, except on the current line if point is at EOL."
@@ -1444,18 +1455,19 @@ name from current directory, `default-directory'.  See
 ;; *** Alignment in columns
 
 (progn-safe "Align text in columns"
-  (defun ff/align-repeat ()
-    (interactive)
-    (align-regexp
-     (region-beginning) (region-end)             ; region
-     (concat "\\(\\s-*\\)"                       ; regexp
-             (read-string "Align at pattern: ")) ;
-     1                                           ; group
-     align-default-spacing                       ; spacing
-     t                                           ; repeat
-     ))
+  (eval-when-compile (require 'align))
 
-  (define-key ff/run-map (kbd "a") #'ff/align-repeat))
+  (define-key ff/run-map (kbd "a")
+    (defun ff/align-repeat ()
+      (interactive)
+      (align-regexp
+       (region-beginning) (region-end)             ; region
+       (concat "\\(\\s-*\\)"                       ; regexp
+               (read-string "Align at pattern: ")) ;
+       1                                           ; group
+       align-default-spacing                       ; spacing
+       t                                           ; repeat
+       ))))
 
 ;; ** Lines handling
 
@@ -1601,6 +1613,8 @@ name from current directory, `default-directory'.  See
 
 (use-package server
   :defer 2
+  :commands server-running-p ;; BC only
+
   :config
   (defvar ff/main-server-name "server")
 
@@ -1692,7 +1706,11 @@ in `process-environment'."
 ;; *** Terminal
 
 (use-package term
-  :commands ff/term-cycle-or-create
+  :commands (ff/term-cycle-or-create
+             ;; BC only
+             term-send-raw-string
+             term-char-mode
+             term-send-right)
 
   :init
   (custom-set-key (kbd "<f2>") #'ff/term-cycle-or-create)
@@ -1996,8 +2014,11 @@ Git gutter:
 ;; ** LaTeX
 
 (use-package latex
-  :ensure auctex
-  :defer  t
+  :ensure   auctex
+  :defer    t
+  :commands (;; BC only
+             LaTeX-math-mode
+             TeX-PDF-mode)
 
   :config
   (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
@@ -2173,6 +2194,15 @@ newly inserted character replaces them."
 
 ;; *** Aggressive sub/super-scripts
 
+(define-minor-mode TeX-aggressive-sub-super-script-mode
+  "Aggressively complete sub and superscripts in (La)TeX math mode."
+  :lighter " ^"
+  :init-value nil
+  :keymap (let ((map (make-sparse-keymap)))
+            (define-key map (kbd "_") #'TeX-aggressive-sub-super-script)
+            (define-key map (kbd "^") #'TeX-aggressive-sub-super-script)
+            map))
+
 (progn-safe "Aggressive sub/superscripts"
   (defun TeX-aggressive-sub-super-script (arg)
     "Insert typed character ARG times and possibly a sub/super-script.
@@ -2194,16 +2224,7 @@ sub/superscript for the token at point."
                      (buffer-substring-no-properties begin (point))))))))
         (when sub-super-script
           (set-mark (point))
-          (insert sub-super-script)))))
-
-  (define-minor-mode TeX-aggressive-sub-super-script-mode
-    "Aggressively complete sub and superscripts in (La)TeX math mode."
-    :lighter " ^"
-    :init-value nil
-    :keymap (let ((map (make-sparse-keymap)))
-              (define-key map (kbd "_") #'TeX-aggressive-sub-super-script)
-              (define-key map (kbd "^") #'TeX-aggressive-sub-super-script)
-              map)))
+          (insert sub-super-script))))))
 
 
 ;; * Programming
@@ -2240,6 +2261,7 @@ sub/superscript for the token at point."
 
 (use-package compile
   :defer t
+  :commands recompile ;; BC only
 
   :config
   (defhydra next-error-hydra
@@ -2325,6 +2347,7 @@ _k_: previous error    _l_: last error
   :ensure   t
   :defer    t
   :diminish flycheck-mode
+  :commands (flycheck-next-error flycheck-count-errors)
 
   :init
   (define-key ff/toggle-map (kbd "c") #'flycheck-mode)
