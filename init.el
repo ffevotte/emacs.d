@@ -1153,41 +1153,81 @@ See `insert-register'."
 (progn-safe "Shuffle text around"
   (custom-set-key
    (kbd "C-S-<up>")
-   (defun ff/move-line-up ()
-     "Move up the current line."
-     (interactive)
-     (transpose-lines 1)
-     (forward-line -2)
-     (indent-according-to-mode)))
+   (defun ff/move-up (n)
+     "Move the current region N lines up.
+If the region is not active, the current line is moved instead.
+If N is negative, move down."
+     (interactive "p")
+     (ff/move-down (- n))))
 
   (custom-set-key
    (kbd "C-S-<down>")
-   (defun ff/move-line-down ()
-     "Move down the current line."
-     (interactive)
-     (forward-line 1)
-     (transpose-lines 1)
-     (forward-line -1)
-     (indent-according-to-mode)))
+   (defun ff/move-down (n)
+     "Move the current region N lines down.
+If the region is not active, the current line is moved instead.
+If N is negative, move up."
+     (interactive "p")
+     (let* ((use-region (use-region-p))
+            (beg (save-excursion
+                   (when use-region
+                     (goto-char (region-beginning)))
+                   (line-beginning-position)))
+            (end (save-excursion
+                   (when use-region
+                     (goto-char (region-end))
+                     (and (bolp) (backward-char)))
+                   (line-end-position)))
+            (text (buffer-substring beg end)))
+       (goto-char beg)
+       (delete-region beg end)
+       (unless (eobp)
+         (kill-line))
+       (forward-line n)
+       (set-mark (point))
+       (insert text)
+       (save-excursion
+         (newline))
+       (indent-region (region-beginning) (region-end))
+       (exchange-point-and-mark)
+       (when use-region
+         (setq deactivate-mark nil)))))
 
   (custom-set-key
    (kbd "ESC C-S-<up>")
-   (defun ff/duplicate-line-up ()
-     "Duplicate the current line upwards."
-     (interactive)
-     (ff/duplicate-line-down)
-     (forward-line -1)))
+   (defun ff/duplicate-up (arg)
+     "Duplicate the current line upwards.
+If ARG is negative, duplicate downwards instead."
+     (interactive "p")
+     (ff/duplicate-down (- arg))))
 
   (custom-set-key
    (kbd "ESC C-S-<down>")
-   (defun ff/duplicate-line-down ()
-     "Duplicate the current line downwards."
-     (interactive)
-     (let ((line (buffer-substring (line-beginning-position) (line-end-position))))
-       (forward-line 0)
-       (insert line)
-       (open-line 1)
-       (forward-line 1)))))
+   (defun ff/duplicate-down (arg)
+     "Duplicate the current line downwards.
+If ARG is negative, duplicate upwards instead."
+     (interactive "p")
+     (let* ((use-region (use-region-p))
+            (beg (save-excursion
+                   (when use-region
+                     (goto-char (region-beginning)))
+                   (line-beginning-position)))
+            (end (save-excursion
+                   (when use-region
+                     (goto-char (region-end))
+                     (and (bolp) (backward-char)))
+                   (line-end-position)))
+            (text (buffer-substring beg end)))
+       (if (< arg 0)
+           (progn
+             (goto-char beg)
+             (open-line 1))
+         (goto-char end)
+         (newline))
+       (set-mark (point))
+       (insert text)
+       (exchange-point-and-mark)
+       (when use-region
+         (setq deactivate-mark nil))))))
 
 ;; *** Handle capitalization
 
