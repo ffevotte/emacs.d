@@ -1460,7 +1460,7 @@ name from current directory, `default-directory'.  See
     (when auto-dtw-mode
       (let ((ws  (save-excursion
                    (if (and (eolp)
-                            (looking-back "[[:space:]]"))
+                            (looking-back "[[:space:]]" nil))
                        (let ((end (point))
                              (bol (- (line-beginning-position) 1)))
                          (search-backward-regexp "[^[:space:]]" nil t)

@@ -2,13 +2,18 @@
          (lambda (filename)
            ""
            "/tmp/byte-compile-test.elc"))
-        (encountered-error nil)
+        (encountered-errors nil)
         (orig-fun
          (symbol-function 'byte-compile-warn))
         ((symbol-function 'byte-compile-warn)
          (lambda (&rest args)
            (apply orig-fun args)
-           (setq encountered-error t))))
+           (push args encountered-errors))))
   (byte-compile-file "init.el")
-  (when encountered-error
-    (kill-emacs 1)))
+  (when encountered-errors
+    (message "\nEncountered byte-compilation warnings:")
+    (mapc (lambda (args) (apply #'message args))
+          encountered-errors)
+    (message "")
+    (when (version< emacs-version "25.0.0")
+      (kill-emacs 1))))
