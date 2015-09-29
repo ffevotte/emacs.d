@@ -414,6 +414,7 @@ and so on."
   (menu-bar-mode   -1)
   (tool-bar-mode   -1)
   (when (display-graphic-p)
+    (declare-function scroll-bar-mode nil)
     (scroll-bar-mode -1))
 
   ;; Startup
@@ -1549,6 +1550,7 @@ name from current directory, `default-directory'.  See
     ;; More documentation on `set-fontset-font':
     ;;   http://www.emacswiki.org/emacs/FontSets#toc1
     ;;
+    (declare-function set-fontset-font nil)
     (mapc (lambda (range)
             (set-fontset-font "fontset-default" range
                               (font-spec :size 13 :name "Symbola")))
@@ -2168,8 +2170,12 @@ newly inserted character replaces them."
                     (save-excursion
                       (goto-char (scan-sexps (point) 1))
 
-                      (when (or (> (point) bound)         ;; Closing paren after the error message
-                                (not (looking-back ")"))) ;; Non-matching closing delimiter
+                      (when (or
+                             ;; Closing paren after the error message
+                             (> (point) bound)
+
+                             ;; Non-matching closing delimiter
+                             (not (looking-back ")" nil)))
                         (setq found t)))
 
                   ;; Unbalanced expression
@@ -2774,9 +2780,7 @@ turned on."
 
 ;; ** Make the byte-compiler happy
 
-(declare-function  scroll-bar-mode                   nil)
 (declare-function  ansi-color-apply-on-region        nil)
-(declare-function  set-fontset-font                  nil)
 (declare-function  autopair--set-emulation-bindings  nil)
 (declare-function  comint-output-filter              nil)
 
