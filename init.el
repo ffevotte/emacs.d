@@ -405,7 +405,9 @@ and so on."
   ;; Bare UI
   (menu-bar-mode   -1)
   (tool-bar-mode   -1)
-  (when (display-graphic-p) (scroll-bar-mode -1))
+  (when (display-graphic-p)
+    (declare-function scroll-bar-mode nil) ;; BC only
+    (scroll-bar-mode -1))
 
   ;; Startup
   (setq initial-scratch-message "")          ;; Empty scratch buffer
@@ -1531,6 +1533,7 @@ name from current directory, `default-directory'.  See
     ;; More documentation on `set-fontset-font':
     ;;   http://www.emacswiki.org/emacs/FontSets#toc1
     ;;
+    (declare-function set-fontset-font nil)
     (mapc (lambda (range)
             (set-fontset-font "fontset-default" range
                               (font-spec :size 13 :name "Symbola")))
