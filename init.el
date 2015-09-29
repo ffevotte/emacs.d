@@ -218,8 +218,16 @@ Variable files are located in the \"var\" subdirectory of `user-emacs-directory'
 
 (use-package htmlize :ensure t :defer t)
 (use-package f       :ensure t :defer t)
-(use-package dash    :ensure t :defer t)
 (use-package s       :ensure t :defer t)
+
+(use-package dash
+  :ensure t
+  :defer  t
+  :commands (-remove
+             -reduce-from
+             -map
+             -sort
+             -find-index))
 
 
 ;; *** Key bindings
@@ -406,7 +414,6 @@ and so on."
   (menu-bar-mode   -1)
   (tool-bar-mode   -1)
   (when (display-graphic-p)
-    (declare-function scroll-bar-mode nil) ;; BC only
     (scroll-bar-mode -1))
 
   ;; Startup
@@ -1352,6 +1359,15 @@ name from current directory, `default-directory'.  See
   :ensure   t
   :defer    t
   :diminish (paredit-mode . " 🄟")
+  :commands (;; BC only
+             paredit-backward
+             paredit-backward-up
+             paredit-forward
+             paredit-forward-barf-sexp
+             paredit-forward-down
+             paredit-forward-slurp-sexp
+             paredit-splice-sexp-killing-backward
+             paredit-splice-sexp-killing-forward)
 
   :init
   (defun ff/disable-paredit-mode ())
@@ -1533,7 +1549,6 @@ name from current directory, `default-directory'.  See
     ;; More documentation on `set-fontset-font':
     ;;   http://www.emacswiki.org/emacs/FontSets#toc1
     ;;
-    (declare-function set-fontset-font nil)
     (mapc (lambda (range)
             (set-fontset-font "fontset-default" range
                               (font-spec :size 13 :name "Symbola")))
@@ -2431,6 +2446,13 @@ nil."
 (use-package org
   :defer t
   :diminish (orgstruct-mode . " 🖹")
+  :commands (;; BC only
+             ff/orgstruct-global-cycle
+             ff/orgstruct-next-heading
+             ff/orgstruct-previous-heading
+             ff/orgstruct-setup
+             outline-next-heading
+             outline-previous-heading)
 
   :init
   (add-hook 'prog-mode-hook #'turn-on-orgstruct)
@@ -2476,15 +2498,19 @@ nil."
               (call-interactively ,command)))))
        (define-key orgstruct-mode-map ,binding (function ,name))))
 
-  (define-orgstruct-wrapper (kbd "S-<iso-lefttab>") ff/orgstruct-global-cycle #'org-global-cycle)
-  (define-orgstruct-wrapper (kbd "M-<next>")        ff/orgstruct-next-heading #'outline-next-heading)
-  (define-orgstruct-wrapper (kbd "M-<prior>")       ff/orgstruct-next-heading #'outline-previous-heading))
+  (define-orgstruct-wrapper (kbd "S-<iso-lefttab>") ff/orgstruct-global-cycle     #'org-global-cycle)
+  (define-orgstruct-wrapper (kbd "M-<next>")        ff/orgstruct-next-heading     #'outline-next-heading)
+  (define-orgstruct-wrapper (kbd "M-<prior>")       ff/orgstruct-previous-heading #'outline-previous-heading))
 
 ;; *** Hide-show mode
 
 (use-package hideshow
   :defer t
   :diminish (hs-minor-mode . " ℏ")
+  :commands (;; BC only
+             hs-hide-level
+             hs-show-all
+             hs-show-block)
 
   :init
   (defun ff/enable-hideshow ()
@@ -2630,6 +2656,9 @@ With a prefix argument, replace the sexp by its evaluation."
 
 (use-package cc-mode
   :defer  t
+  :commands (;; BC only
+             c-beginning-of-statement
+             c-indent-line)
   :config
   (c-add-style "my-c++-style"
                '("gnu"
@@ -2734,6 +2763,7 @@ turned on."
 
 ;; * Postamble
 
+;; ** End of startup
 
 (progn-safe "End of startup"
   (run-hooks 'emacs-startup-hook)
@@ -2741,6 +2771,14 @@ turned on."
   (message "Emacs finished loading (%.3fs) (%d GCs)."
            (float-time (time-subtract (current-time) ff/emacs-start-time))
            gcs-done))
+
+;; ** Make the byte-compiler happy
+
+(declare-function  scroll-bar-mode                   nil)
+(declare-function  ansi-color-apply-on-region        nil)
+(declare-function  set-fontset-font                  nil)
+(declare-function  autopair--set-emulation-bindings  nil)
+(declare-function  comint-output-filter              nil)
 
 (provide 'init)
 ;;; init.el ends here
