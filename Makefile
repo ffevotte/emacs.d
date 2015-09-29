@@ -71,9 +71,10 @@ yasnippet:
 
 check: all
 	$(EMACS) --eval '(toggle-debug-on-error)' $(OPTS)
+	$(EMACS) $(OPTS) --load 'tests/check-bc.el'
 
-full-check:
-	./tests/check
+check-install:
+	./tests/check-install
 
 
 # * Postamble
