@@ -2005,6 +2005,21 @@ Git gutter:
   ;; Use <F1> to correct the word at point
   (define-key flyspell-mode-map (kbd "<f1>") 'flyspell-correct-word-before-point))
 
+(define-key ff/run-map "s"
+  (defhydra spell-check-hydra
+    (:hint nil :exit t)
+    "
+Spell-checking:
+  _RET_ toggle            _e_nglish
+  _SPC_ choose language   _f_rench"
+    ("RET" (call-interactively #'flyspell-mode))
+    ("SPC" (progn (call-interactively #'ispell-change-dictionary)
+                  (flyspell-mode 1)))
+    ("e"   (progn (ispell-change-dictionary "english")
+                  (flyspell-mode 1)))
+    ("f"   (progn (ispell-change-dictionary "french")
+                  (flyspell-mode 1)))))
+
 
 ;; ** Org
 
