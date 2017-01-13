@@ -2817,6 +2817,10 @@ turned on."
 
 (use-package info
   :config
+  ;; use j/k to navigate between nodes
+  (define-key Info-mode-map "j" #'Info-forward-node)
+  (define-key Info-mode-map "k" #'Info-backward-node)
+
   ;; Python documentation as info files
   (use-package pydoc-info :ensure t)
   (add-to-list 'Info-additional-directory-list
