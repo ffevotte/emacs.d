@@ -223,7 +223,8 @@ Variable files are located in the \"var\" subdirectory of `user-emacs-directory'
 (use-package dash
   :ensure t
   :defer  t
-  :commands (-remove
+  :commands (--remove
+             -remove
              -reduce-from
              -map
              -sort
