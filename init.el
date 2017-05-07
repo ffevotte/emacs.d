@@ -2039,8 +2039,25 @@ Spell-checking:
 
 ;; ** Markdown
 
+(use-package impatient-mode
+  :ensure t)
+
 (use-package markdown-mode
-  :mode ("\\.md\\'" . markdown-mode))
+  :mode ("\\.md\\'" . markdown-mode)
+
+  :config
+  (defun ff/md-to-html (buffer)
+    (insert-buffer-substring buffer)
+    (shell-command-on-region (point-min) (point-max)
+                             "pandoc -s -f markdown"
+                             nil t))
+
+  (defun ff/markdown-mode-hook ()
+    (httpd-start)
+    (impatient-mode 1)
+    (imp-set-user-filter #'ff/md-to-html))
+  (add-hook 'markdown-mode-hook #'ff/markdown-mode-hook)
+  )
 
 (use-package gmail-message-mode
   :ensure t
