@@ -2283,6 +2283,54 @@ sub/superscript for the token at point."
           (set-mark (point))
           (insert sub-super-script))))))
 
+;; *** SyncTex and evince
+
+(progn-safe "Synctex with evince"
+
+  (defun synctex--un-urlify (fname-or-url)
+    "A trivial function that replaces a prefix of file:/// with just /."
+    (if (string= (substring fname-or-url 0 8) "file:///")
+        (substring fname-or-url 7)
+      fname-or-url))
+
+  (defun synctex--evince (file linecol &rest ignored)
+    (let* ((fname (synctex--un-urlify file))
+           (buf (find-buffer-visiting fname))
+           (line (car linecol))
+           (col (cadr linecol)))
+      (if (null buf)
+          (progn
+            (setq synctex--last-fname   fname)
+            (setq synctex--last-linecol linecol)
+            (message "[Synctex]: %s is not opened. Use `synctex-open-last' to open it"
+                     fname))
+        (switch-to-buffer buf)
+        (goto-line (car linecol))
+        (unless (= col -1)
+          (move-to-column col)))))
+
+  (defun synctex-open-last ()
+    (interactive)
+    (when (boundp 'synctex--last-fname)
+      (find-file synctex--last-fname)
+      (synctex--evince synctex--last-fname synctex--last-linecol)))
+
+  (defvar *dbus-evince-signal* nil)
+
+  (defun enable-evince-sync ()
+    (require 'dbus)
+    (when (and
+           (eq window-system 'x)
+           (fboundp 'dbus-register-signal))
+      (unless *dbus-evince-signal*
+        (setf *dbus-evince-signal*
+              (dbus-register-signal
+               :session nil "/org/gnome/evince/Window/0"
+               "org.gnome.evince.Window" "SyncSource"
+               'synctex--evince)))))
+
+  (add-hook 'LaTeX-mode-hook 'enable-evince-sync))
+
 
 ;; * Programming
 
