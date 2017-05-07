@@ -1853,7 +1853,13 @@ in `process-environment'."
   :defer  t)
 
 (use-package git-gutter
-  :commands git-gutter-mode
+  :commands (git-gutter-mode
+             git-gutter:next-hunk
+             git-gutter:previous-hunk
+             git-gutter:stage-hunk
+             git-gutter:revert-hunk
+             git-gutter:popup-hunk
+             git-gutter:set-start-revision)
   :diminish (git-gutter-mode . " ±")
 
   :init
@@ -1907,10 +1913,7 @@ Git gutter:
      ("p" git-gutter:popup-hunk         nil)
      ("R" git-gutter:set-start-revision nil)
      ("q" nil nil :color blue)
-     ("Q" (progn (git-gutter-mode -1)
-                 (sit-for 1)
-                 (git-gutter:clear))
-      nil :color blue)))
+     ("Q" (git-gutter-mode -1) nil :color blue)))
 
   :config
   (when (display-graphic-p)
