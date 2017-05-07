@@ -2289,6 +2289,8 @@ sub/superscript for the token at point."
 ;; *** SyncTex and evince
 
 (progn-safe "Synctex with evince"
+  (defvar synctex--last-fname   nil)
+  (defvar synctex--last-linecol nil)
 
   (defun synctex--un-urlify (fname-or-url)
     "A trivial function that replaces a prefix of file:/// with just /."
@@ -2308,7 +2310,10 @@ sub/superscript for the token at point."
             (message "[Synctex]: %s is not opened. Use `synctex-open-last' to open it"
                      fname))
         (switch-to-buffer buf)
-        (goto-line (car linecol))
+        (save-restriction
+          (widen)
+          (goto-char (point-min))
+          (forward-line (1- (car linecol))))
         (unless (= col -1)
           (move-to-column col)))))
 
