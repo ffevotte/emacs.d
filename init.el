@@ -2800,6 +2800,12 @@ turned on."
   ;; don't display the gnuplot window
   (setq gnuplot-display-process nil))
 
+;; ** Julia
+
+(use-package julia-mode
+  :ensure t
+  :interpreter ("julia" . julia-mode))
+
 ;; * Postamble
 
 ;; ** End of startup
