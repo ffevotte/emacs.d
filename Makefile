@@ -32,8 +32,9 @@ all: install-fonts
 install-fonts: $(HOME)/.fonts/Symbola.ttf
 
 $(HOME)/.fonts/Symbola.ttf: share/fonts/Symbola.ttf
+	mkdir -p $(HOME)/.fonts
 	diff $(HOME)/.fonts/Symbola.ttf share/fonts/Symbola.ttf \
-	|| (cp share/fonts/*.ttf $(HOME)/.fonts; fc-cache)
+	|| (set -e; cp share/fonts/*.ttf $(HOME)/.fonts; fc-cache)
 
 
 # * pydoc-info
