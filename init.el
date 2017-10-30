@@ -1966,44 +1966,67 @@ Git gutter:
     (define-key grep-mode-map
       (kbd "C-x C-q") 'wgrep-change-to-wgrep-mode)))
 
-;; *** a2ps
+;; *** print
 
-;; Print (part of) a buffer using a2ps
-(use-package a2ps-multibyte
-  :load-path (lambda () (ff/emacsd "packages/a2ps-multibyte"))
-  :commands  (a2ps-buffer
-              a2ps-region)
+(progn-safe "Print (part of) a buffer"
+  (defun ff/print-buffer (twocol)
+    (interactive "P")
+    (require 'f)
+    (let* ((buf      (current-buffer))
+           (tmpdir   (make-temp-file "emacs.ps-print." :dir))
+           (tmp-text (f-join tmpdir "buffer"))
+           (tmp-ps   (f-join tmpdir "buffer.ps"))
+           (tmp-pdf  (f-join tmpdir "buffer.pdf"))
+           (beg      (point-min))
+           (end      (point-max))
+           (reg      nil))
+      (when (use-region-p)
+        (setq beg (region-beginning)
+              end (region-end)
+              reg t))
+      (with-temp-buffer
+        (insert-buffer-substring buf beg end)
+        (write-file tmp-text))
 
-  :init
-  (custom-set-key (kbd "<print>")    #'a2ps-buffer)
-  (custom-set-key (kbd "C-<print>")  #'a2ps-region)
+      (start-process
+       "ps-print" (get-buffer-create "*ps-print*")
+       "emacs" "-Q"
+       "--title" "Printing file..."
+       "--eval" (pp-to-string
+                 `(unwind-protect
+                      (progn
+                        (iconify-frame)
+                        (find-file ,tmp-text)
+                        (,(with-current-buffer buf major-mode))
+                        (rename-buffer ,(concat (with-current-buffer buf (buffer-name))
+                                                (if reg " (region)" "")))
+                        (setq ps-paper-type   'a4
+                              ps-header-lines  1
+                              ps-left-margin   42
+                              ps-right-margin  42
+                              ps-top-margin    42
+                              ps-bottom-margin 42
+                              ps-inter-column  42
+                              ps-header-offset 14
+                              ps-font-size     8)
+                        ,(if twocol
+                             '(setq ps-landscape-mode    t
+                                    ps-number-of-columns 2
+                                    ps-font-size         6))
+                        (ps-print-buffer-with-faces ,tmp-ps)
+                        (call-process
+                         "ps2pdf" nil t nil
+                         "-sPAPERSIZE=a4"
+                         ,tmp-ps ,tmp-pdf)
+                        (call-process
+                         "evince" nil t nil
+                         ,tmp-pdf))
+                    (delete-directory ,tmpdir :recursive)
+                    (kill-emacs))))))
 
-  :config
-  (setq a2ps-command  "a2ps-view")
-  (setq a2ps-switches '("-l" "100"))
-  (add-hook 'a2ps-filter-functions
-            (defun ff/a2ps-insert-page-breaks ()
-              (ff/insert-page-breaks 76 5)))
+  (custom-set-key (kbd "<print>") #'ff/print-buffer))
 
-  (defun ff/insert-page-breaks (page-size page-offset-max)
-    (let ((try-move (lambda (f)
-                      (let ((orig-pos  (point))
-                            (orig-line (line-number-at-pos)))
-                        (funcall f)
-                        (unless (or (and (looking-at "\^L")
-                                         (> page-size
-                                            (- orig-line (line-number-at-pos))))
-                                    (> page-offset-max
-                                       (- orig-line (line-number-at-pos))))
-                          (goto-char orig-pos))))))
-      (goto-char (point-min))
-      (while (= 0 (forward-line page-size))
-        (funcall try-move 'backward-page)
-        (funcall try-move 'backward-paragraph)
-        (unless (looking-at "\^L")
-          (insert "\^L"))
-        (unless (eolp)
-          (insert "\n"))))))
+
 
 ;; *** SLURM
 
