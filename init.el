@@ -822,7 +822,9 @@ Switch to buffer:
 
   (define-key ff/toggle-map "l" #'linum-mode)
   (define-key ff/toggle-map "v" #'visual-line-mode)
-  (define-key ff/toggle-map "d" #'toggle-debug-on-error))
+  (define-key ff/toggle-map "d" #'toggle-debug-on-error)
+  (define-key ff/toggle-map "t" #'toggle-truncate-lines)
+  (define-key ff/toggle-map "r" #'auto-revert-mode))
 
 (progn-safe "Run keymap"
   ;; Adapted from Artur Malabara (Endless Parentheses)
