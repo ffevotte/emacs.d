@@ -762,10 +762,18 @@ Switch to buffer:
   (setq ido-default-buffer-method              'selected-window)
 
   (add-hook 'ido-make-buffer-list-hook 'ff/ido-stars-end)
+  (defvar ff/ido-stars-end)
   (defun ff/ido-stars-end ()
     "Sort ido candidates to put \"starred\" buffers at the end."
-    (ido-to-end (--filter (s-starts-with-p "*" it)
-                          ido-temp-list))))
+    (when (bound-and-true-p ff/ido-stars-end)
+      (ido-to-end (--filter (s-starts-with-p "*" it)
+                            ido-temp-list))))
+  (defun ff/advice--ido-stars-end (orig-fun &rest args)
+    (let ((ff/ido-stars-end t))
+      (apply orig-fun args)))
+
+  (advice-add 'ido-switch-buffer        :around 'ff/advice--ido-stars-end)
+  (advice-add 'scratch-switch-to-buffer :around 'ff/advice--ido-stars-end))
 
 (use-package ido-ubiquitous
   :ensure t
