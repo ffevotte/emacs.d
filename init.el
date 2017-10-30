@@ -2460,7 +2460,7 @@ _k_: previous error    _l_: last error
                         (progn
                           (insert (s-truncate-left 20 name) "  ")
                           (insert (s-truncate-left 30 dir) "  ")
-                          (insert (car command)))
+                          (insert (s-truncate 40 (car command))))
                       (error t))
                     (newline))))
               (buffer-list))
