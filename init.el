@@ -2678,6 +2678,14 @@ nil."
 (add-hook 'emacs-lisp-mode-hook #'enable-paredit-mode)
 (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
 
+;; *** Quickly open init file
+
+(progn-safe "Quickly open init file"
+  (defun ff/find-init-file ()
+    (interactive)
+    (find-file user-init-file))
+  (define-key ff/run-map "i" #'ff/find-init-file))
+
 ;; *** Imenu for top-level forms
 
 ;; from Jordon Biondo (https://gist.github.com/jordonbiondo/6385874a70420b05de18)
