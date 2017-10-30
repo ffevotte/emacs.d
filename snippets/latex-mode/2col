@@ -2,7 +2,7 @@
 #name : \begin{columns} ... \end{columns}
 # --
 \begin{columns}[${2:T}]
-  \column{${1:0.5}\textwidth}
+  \column{${1:0.50}\textwidth}
   $0
   \column{${1:$(format "%.2f" (- 1 (read yas-text)))}\textwidth}
 \end{columns}
