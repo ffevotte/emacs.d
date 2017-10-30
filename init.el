@@ -1796,16 +1796,20 @@ in `process-environment'."
        (t
         (switch-to-buffer (first term-buffers))))))
 
-  (defmacro ff/term-send-raw (binding string)
+  (defmacro ff/term-send-raw (binding &optional string)
+    (setq string (or string (kbd binding)))
     `(define-key term-raw-map (kbd ,binding)
        (lambda ()
          ,(format "Send \"%s\" as raw characters to the terminal process." string)
          (interactive)
          (term-send-raw-string ,string))))
+  (define-key term-raw-map (kbd "C-x") nil)
+  (define-key term-raw-map (kbd "C-u") nil)
   (ff/term-send-raw "C-<right>"     "\e[1;5C")
   (ff/term-send-raw "C-<left>"      "\e[1;5D")
   (ff/term-send-raw "C-<backspace>" "\e\d")
-  (define-key term-raw-map (kbd "C-u") nil)
+  (ff/term-send-raw "C-x r")
+  (ff/term-send-raw "C-x ~")
 
   ;; Automatically yank the active region and go to the end of buffer
   ;; on line->char mode switch
