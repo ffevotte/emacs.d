@@ -468,7 +468,7 @@ and so on."
 
   ;; Font
   (push '(font-backend . "xft")                default-frame-alist)
-  (push '(font . "Bitstream Vera Sans Mono-9") default-frame-alist))
+  (push '(font . "Bitstream Vera Sans Mono-10") default-frame-alist))
 
 
 ;; *** Mode line
