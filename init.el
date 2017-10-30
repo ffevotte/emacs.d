@@ -509,27 +509,7 @@ and so on."
 (use-package windmove
   :config
   (windmove-default-keybindings)
-  (setq windmove-wrap-around t)
-
-  ;; I tend to always lose track of the point when I switch between too many
-  ;; windows
-  (defun ff/show-pointer ()
-    (interactive)
-    (let ((overlay
-           (make-overlay (point) (point))))
-      (overlay-put overlay 'window (selected-window))
-      (overlay-put overlay 'before-string
-                   (propertize "*"
-                               'face (list :foreground "red"
-                                           :height 7.0)
-                               'display '(raise -0.40)))
-      (sit-for 1)
-      (delete-overlay overlay)))
-
-  (mapc
-   (lambda (fun)
-     (advice-add fun :after 'ff/show-pointer))
-   '(windmove-left windmove-right windmove-up windmove-down)))
+  (setq windmove-wrap-around t))
 
 ;; Reclaim S-<arrows> keys in org-related mode
 (use-package org
@@ -687,6 +667,14 @@ _=_: balance^     ^     ^ ^              _u_ndo
      ("B"         bookmark-jump               nil)
      ;; Quit
      ("q" nil "quit" :color blue))))
+
+;; *** Avoid losing the cursor
+
+(use-package beacon
+  :ensure t
+  :defer  2
+  :config
+  (beacon-mode 1))
 
 ;; ** Buffers management
 
