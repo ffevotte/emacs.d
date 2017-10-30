@@ -2836,6 +2836,19 @@ turned on."
 
 ;; ** Python
 
+
+(use-package compile
+  :config
+  (defun pylint ()
+    (interactive)
+    (compilation-start
+     (format "pylint %s"
+             (shell-quote-argument (buffer-file-name)))
+     nil ;; default compilation-mode
+     (lambda (&optional mode)
+       ""
+       "*pylint*"))))
+
 (use-package info
   :config
   ;; use j/k to navigate between nodes
