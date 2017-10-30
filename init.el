@@ -1343,9 +1343,40 @@ name from current directory, `default-directory'.  See
 
   :config
   (autopair-global-mode 1)
+
+  (defun ff/brace-slurp ()
+    (interactive)
+    (save-excursion
+      (let* ((beg   (nth 1 (syntax-ppss (point))))
+             (end1  (scan-sexps beg 1))
+             (end2  (scan-sexps end1 1))
+             (brace (buffer-substring (- end1 1) end1)))
+        (goto-char end2)
+        (insert brace)
+        (goto-char end1)
+        (delete-char -1))))
+
+  (defun ff/brace-barf ()
+    (interactive)
+    (save-excursion
+      (let* ((beg  (nth 1 (syntax-ppss (point))))
+             (end1 (scan-sexps beg 1))
+             (end2 (condition-case nil
+                       (scan-sexps (scan-sexps (- end1 1) -2) 1)
+                     (error (scan-sexps (- end1 1) -1))))
+             (brace (buffer-substring (- end1 1) end1)))
+        (goto-char end1)
+        (delete-char -1)
+        (goto-char end2)
+        (insert brace))))
+
   (add-hook 'autopair-mode-hook (lambda ()
                                   (when autopair-mode
-                                    (ff/disable-paredit-mode)))))
+                                    (ff/disable-paredit-mode)
+
+                                    (let ((map (cdr (assq t autopair--emulation-alist))))
+                                      (define-key map (kbd "s-<right>") #'ff/brace-slurp)
+                                      (define-key map (kbd "s-<left>")  #'ff/brace-barf))))))
 
 (use-package paredit
   :ensure   t
