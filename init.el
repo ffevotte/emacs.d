@@ -855,7 +855,8 @@ Switch to buffer:
 (progn-safe "Variable files"
   (setq url-configuration-directory (ff/variable-file "url/"))
   (setq auto-save-list-file-prefix  (ff/variable-file "auto-save-list/"))
-  (setq tramp-persistency-file-name (ff/variable-file "tramp")))
+  (setq tramp-persistency-file-name (ff/variable-file "tramp"))
+  (setq async-byte-compile-log-file (ff/variable-file "async-bytecomp.log")))
 
 
 ;; *** Sessions
@@ -907,7 +908,7 @@ Manage sessions:
   :defer t
 
   :config
-  (use-package helm-files
+  (use-package helm-for-files
     :defer t
     :config
     (push `(candidates
@@ -1971,7 +1972,8 @@ Git gutter:
 (progn-safe "Print (part of) a buffer"
   (defun ff/print-buffer (twocol)
     (interactive "P")
-    (require 'f)
+    (eval-when-compile
+      (require 'f))
     (let* ((buf      (current-buffer))
            (tmpdir   (make-temp-file "emacs.ps-print." :dir))
            (tmp-text (f-join tmpdir "buffer"))
@@ -2437,6 +2439,7 @@ sub/superscript for the token at point."
 ;; *** Quickly navigate in the projects file with a tree-like file structure
 
 (use-package treemacs
+  :ensure t
   :defer t
   :init
   (defun ff/treemacs (argp)

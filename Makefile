@@ -23,6 +23,7 @@ package-upgrade:
 # * ELPA cache
 
 elpa-update:
+	@echo -e "\n>>>>>>>>>>"
 	$(EMACS) --eval '(setq ff/updating-elpa-cache t)' $(OPTS)
 
 
@@ -65,13 +66,16 @@ pydoc-distclean:
 
 all: yasnippet
 yasnippet:
+	@echo -e "\n>>>>>>>>>>"
 	$(EMACS) $(OPTS) --eval '(yas-recompile-all)'
 
 
 # * Check
 
 check: all
+	@echo -e "\n>>>>>>>>>>"
 	$(EMACS) --eval '(toggle-debug-on-error)' $(OPTS)
+	@echo -e "\n>>>>>>>>>>"
 	$(EMACS) $(OPTS) --load 'tests/check-bc.el'
 
 check-install:
