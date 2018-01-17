@@ -775,7 +775,7 @@ Switch to buffer:
   (advice-add 'ido-switch-buffer        :around 'ff/advice--ido-stars-end)
   (advice-add 'scratch-switch-to-buffer :around 'ff/advice--ido-stars-end))
 
-(use-package ido-ubiquitous
+(use-package ido-completing-read+
   :ensure t
   :config
   (ido-ubiquitous-mode 1))
