@@ -2434,6 +2434,18 @@ sub/superscript for the token at point."
 
 ;; ** Common features for programming modes
 
+;; *** Quickly navigate in the projects file with a tree-like file structure
+
+(use-package treemacs
+  :defer t
+  :init
+  (defun ff/treemacs (argp)
+    (interactive "P")
+    (if argp
+        (treemacs t)
+      (treemacs-toggle)))
+  (custom-set-key (kbd "<f1>") #'ff/treemacs))
+
 ;; *** Switch between header and implementation files
 
 (use-package find-file
