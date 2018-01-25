@@ -606,10 +606,6 @@ Rotation is done in the opposite order as `ff/rotate-windows'."
 ;; *** Hydra to wrap all this
 
 (progn-safe "Window management hydra"
-  (use-package bookmark+
-    :defer t
-    :commands bookmark-jump)
-
   (defvar ff/key² (kbd "²")
     "Key in the leftmost position of the number row.
 Labeled `²' in French keyboards layouts.")
@@ -623,7 +619,7 @@ Resize windows ^^^^     Switch to  ^^    Window configuration
 ^    _<kp-8>_     ^     _b_uffer         _0_: delete window
 _<kp-4>_ ✜ _<kp-6>_     _f_ile           _1_: delete others
 ^    _<kp-5>_     ^     _r_ecent file    _2_: split above/below
-^    ^      ^     ^     _B_ookmark       _3_: split left-right
+^    ^      ^     ^     ^ ^              _3_: split left-right
 _=_: balance^     ^     ^ ^              _u_ndo
 
 "
@@ -664,7 +660,6 @@ _=_: balance^     ^     ^ ^              _u_ndo
      ("b"         ido-switch-buffer           nil)
      ("f"         ido-find-file               nil)
      ("r"         helm-recentf                nil)
-     ("B"         bookmark-jump               nil)
      ;; Quit
      ("q" nil "quit" :color blue))))
 
@@ -916,36 +911,6 @@ Manage sessions:
                  (--remove (string= it sync-recentf-marker)
                            recentf-list)))
           helm-source-recentf)))
-
-;; *** Bookmarks
-
-(use-package bookmark+
-  :ensure t
-  :defer  t
-
-  :init
-  (setq bookmark-default-file (ff/variable-file "bookmarks.el"))
-  (setq bmkp-last-as-first-bookmark-file nil)
-  (custom-set-key (kbd "C-x <kp-add>")
-                  'bmkp-next-bookmark-this-file/buffer-repeat)
-  (custom-set-key (kbd "C-x <kp-subtract>")
-                  'bmkp-previous-bookmark-this-file/buffer-repeat)
-  (custom-set-key (kbd "C-x p SPC")
-                  (lambda ()
-                    (interactive)
-                    (bmkp-toggle-autonamed-bookmark-set/delete)
-                    (bmkp-make-bookmark-temporary (bmkp-default-bookmark-name))))
-
-  :config
-  (require 'bookmark+-lit))
-
-(use-package bookmark+-lit
-  :defer t
-  :config
-  (setq bmkp-auto-light-when-jump      'all-in-buffer)
-  (setq bmkp-auto-light-when-set       'all-in-buffer)
-  (setq bmkp-light-style-autonamed     'lfringe)
-  (setq bmkp-light-style-non-autonamed 'rfringe))
 
 
 ;; * Text editing
