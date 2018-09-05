@@ -214,6 +214,32 @@ Variable files are located in the \"var\" subdirectory of `user-emacs-directory'
        (ff/package-initialize))))))
 
 
+;; ** fixup for emacs24
+
+;; install specific (older) versions of some packages with el-get
+;; in order to maintain compatibility with emacs24
+(use-package el-get
+  :ensure t)
+
+(el-get-bundle magit
+  :type github
+  :pkgname "magit/magit"
+  :checkout "2.13.0")
+
+(el-get-bundle treemacs
+  :type github
+  :pkgname "Alexander-Miller/treemacs"
+  :checkout "cbc99bacf9")
+(eval-when-compile
+  (declare-function treemacs "treemacs")
+  (declare-function treemacs-toggle "treemacs"))
+
+(el-get-bundle ggtags
+  :type github
+  :pkgname "leoliu/ggtags"
+  :checkout "0.8.13")
+
+
 ;; ** Base tools
 
 (use-package htmlize :ensure t :defer t)
@@ -1845,7 +1871,6 @@ in `process-environment'."
 ;; *** Git
 
 (use-package magit
-  :ensure t
   :commands magit-status
 
   :init
@@ -2409,7 +2434,6 @@ sub/superscript for the token at point."
 ;; *** Quickly navigate in the projects file with a tree-like file structure
 
 (use-package treemacs
-  :ensure t
   :defer t
   :init
   (defun ff/treemacs (argp)
@@ -2868,7 +2892,6 @@ With a prefix argument, replace the sexp by its evaluation."
 ;; *** Index sources with GNU/global
 
 (use-package ggtags
-  :ensure t
   :defer  t
 
   :init
