@@ -15,6 +15,7 @@ cache:
 env:
   - EMACS_VERSION=24.4
   - EMACS_VERSION=24.5
+  - EMACS_VERSION=25.1
 before_install:
   # Configure $PATH: Executables are installed to $HOME/bin
   - export PATH="$HOME/bin:$PATH"
