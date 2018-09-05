@@ -606,10 +606,6 @@ Rotation is done in the opposite order as `ff/rotate-windows'."
 ;; *** Hydra to wrap all this
 
 (progn-safe "Window management hydra"
-  (use-package bookmark+
-    :defer t
-    :commands bookmark-jump)
-
   (defvar ff/key² (kbd "²")
     "Key in the leftmost position of the number row.
 Labeled `²' in French keyboards layouts.")
@@ -623,7 +619,7 @@ Resize windows ^^^^     Switch to  ^^    Window configuration
 ^    _<kp-8>_     ^     _b_uffer         _0_: delete window
 _<kp-4>_ ✜ _<kp-6>_     _f_ile           _1_: delete others
 ^    _<kp-5>_     ^     _r_ecent file    _2_: split above/below
-^    ^      ^     ^     _B_ookmark       _3_: split left-right
+^    ^      ^     ^     ^ ^              _3_: split left-right
 _=_: balance^     ^     ^ ^              _u_ndo
 
 "
@@ -664,7 +660,6 @@ _=_: balance^     ^     ^ ^              _u_ndo
      ("b"         ido-switch-buffer           nil)
      ("f"         ido-find-file               nil)
      ("r"         helm-recentf                nil)
-     ("B"         bookmark-jump               nil)
      ;; Quit
      ("q" nil "quit" :color blue))))
 
@@ -898,24 +893,6 @@ Manage sessions:
                  (--remove (string= it sync-recentf-marker)
                            recentf-list)))
           helm-source-recentf)))
-
-(use-package recentf
-  :defer 2
-
-  :config
-  (setq recentf-max-saved-items 1000)
-  (setq recentf-auto-cleanup    60)
-  (setq recentf-save-file (ff/variable-file "recentf"))
-  (recentf-mode 1)
-
-  ;; Add files already opened from the command-line to the recentf list
-  ;; (this is only be necessary because of the deferred loading)
-  (mapc (lambda (buffer)
-          (when (buffer-file-name buffer)
-            (recentf-push (buffer-file-name buffer))))
-        (buffer-list))
-
-  (require 'sync-recentf))
 
 
 ;; * Text editing
@@ -1612,10 +1589,13 @@ name from current directory, `default-directory'.  See
   (mapc (lambda (cell)
           (let* ((key       (car cell))
                  (char-name (cdr cell))
-                 (char      (cdr (assoc char-name (ucs-names)))))
+                 (char-code (let ((un (ucs-names)))
+                              (if (hash-table-p un)
+                                  (gethash char-name un)
+                                (cdr (assoc char-name un))))))
             (define-key iso-transl-ctl-x-8-map
               (kbd key)
-              (vector char))))
+              (vector char-code))))
         '(("<right>"   . "RIGHTWARDS ARROW")
           ("<left>"    . "LEFTWARDS ARROW")
           ("<up>"      . "UPWARDS ARROW")
