@@ -412,11 +412,11 @@ and so on."
 
 (progn-safe "Interface"
   ;; Bare UI
-  (menu-bar-mode   -1)
-  (tool-bar-mode   -1)
+  (menu-bar-mode -1)
   (when (display-graphic-p)
     (declare-function scroll-bar-mode nil)
-    (scroll-bar-mode -1))
+    (scroll-bar-mode -1)
+    (tool-bar-mode   -1))
 
   ;; Startup
   (setq initial-scratch-message "")          ;; Empty scratch buffer
@@ -885,6 +885,20 @@ Manage sessions:
 
 ;; *** Recent files
 
+(use-package sync-recentf
+  :ensure t
+  :defer t
+
+  :config
+  (use-package helm-for-files
+    :defer t
+    :config
+    (push `(candidates
+            . ,(lambda ()
+                 (--remove (string= it sync-recentf-marker)
+                           recentf-list)))
+          helm-source-recentf)))
+
 (use-package recentf
   :defer 2
 
@@ -902,50 +916,6 @@ Manage sessions:
         (buffer-list))
 
   (require 'sync-recentf))
-
-(use-package sync-recentf
-  :ensure t
-  :defer t
-
-  :config
-  (use-package helm-for-files
-    :defer t
-    :config
-    (push `(candidates
-            . ,(lambda ()
-                 (--remove (string= it sync-recentf-marker)
-                           recentf-list)))
-          helm-source-recentf)))
-
-;; *** Bookmarks
-
-(use-package bookmark+
-  :ensure t
-  :defer  t
-
-  :init
-  (setq bookmark-default-file (ff/variable-file "bookmarks.el"))
-  (setq bmkp-last-as-first-bookmark-file nil)
-  (custom-set-key (kbd "C-x <kp-add>")
-                  'bmkp-next-bookmark-this-file/buffer-repeat)
-  (custom-set-key (kbd "C-x <kp-subtract>")
-                  'bmkp-previous-bookmark-this-file/buffer-repeat)
-  (custom-set-key (kbd "C-x p SPC")
-                  (lambda ()
-                    (interactive)
-                    (bmkp-toggle-autonamed-bookmark-set/delete)
-                    (bmkp-make-bookmark-temporary (bmkp-default-bookmark-name))))
-
-  :config
-  (require 'bookmark+-lit))
-
-(use-package bookmark+-lit
-  :defer t
-  :config
-  (setq bmkp-auto-light-when-jump      'all-in-buffer)
-  (setq bmkp-auto-light-when-set       'all-in-buffer)
-  (setq bmkp-light-style-autonamed     'lfringe)
-  (setq bmkp-light-style-non-autonamed 'rfringe))
 
 
 ;; * Text editing

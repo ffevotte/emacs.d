@@ -62,10 +62,20 @@ pydoc-distclean:
 	$(RM) $(PYDOC_INFO_BASE)
 
 
+# * Bootstrapping
+bootstrap:
+	@echo -e "\nBootstraping (1)..."
+	@echo -e "\n>>>>>>>>>>"
+	-$(EMACS) $(OPTS)
+	@echo -e "\nBootstraping (2)..."
+	@echo -e "\n>>>>>>>>>>"
+	$(EMACS) --eval '(toggle-debug-on-error)' $(OPTS)
+
+
 # * Yasnippet
 
 all: yasnippet
-yasnippet:
+yasnippet: bootstrap
 	@echo -e "\n>>>>>>>>>>"
 	$(EMACS) $(OPTS) --eval '(yas-recompile-all)'
 
@@ -73,8 +83,6 @@ yasnippet:
 # * Check
 
 check: all
-	@echo -e "\n>>>>>>>>>>"
-	$(EMACS) --eval '(toggle-debug-on-error)' $(OPTS)
 	@echo -e "\n>>>>>>>>>>"
 	$(EMACS) $(OPTS) --load 'tests/check-bc.el'
 
