@@ -216,28 +216,28 @@ Variable files are located in the \"var\" subdirectory of `user-emacs-directory'
 
 ;; ** fixup for emacs24
 
-;; install specific (older) versions of some packages with el-get
-;; in order to maintain compatibility with emacs24
-(use-package el-get
-  :ensure t)
+;; specific (older) versions of some packages are pre-installed in git
+;; submodules in order to maintain compatibility with emacs24. We fetch
+;; dependencies for these packages from MELPA, and manually require them.
 
-(el-get-bundle magit
-  :type github
-  :pkgname "magit/magit"
-  :checkout "2.13.0")
+(use-package dash :ensure t)
+(use-package magit-popup :ensure t)
+(use-package ghub :ensure t)
+(use-package with-editor :ensure t)
+(add-to-list 'load-path (concat user-emacs-directory "packages/magit/lisp/"))
+(require 'magit)
 
-(el-get-bundle treemacs
-  :type github
-  :pkgname "Alexander-Miller/treemacs"
-  :checkout "cbc99bacf9")
-(eval-when-compile
-  (declare-function treemacs "treemacs")
-  (declare-function treemacs-toggle "treemacs"))
+(use-package s :ensure t)
+(use-package f :ensure t)
+(use-package ace-window :ensure t)
+(use-package hydra :ensure t)
+(add-to-list 'load-path (concat user-emacs-directory "packages/pfuture"))
+(require 'pfuture)
+(add-to-list 'load-path (concat user-emacs-directory "packages/treemacs/src/elisp"))
+(require 'treemacs)
 
-(el-get-bundle ggtags
-  :type github
-  :pkgname "leoliu/ggtags"
-  :checkout "0.8.13")
+(add-to-list 'load-path (concat user-emacs-directory "packages/ggtags"))
+(require 'ggtags)
 
 
 ;; ** Base tools

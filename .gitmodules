@@ -19,3 +19,15 @@
 [submodule "packages/scratch"]
 	path = packages/scratch
 	url = https://github.com/ffevotte/scratch.el.git
+[submodule "packages/magit"]
+	path = packages/magit
+	url = https://github.com/magit/magit
+[submodule "packages/treemacs"]
+	path = packages/treemacs
+	url = https://github.com/Alexander-Miller/treemacs
+[submodule "packages/ggtags"]
+	path = packages/ggtags
+	url = https://github.com/leoliu/ggtags
+[submodule "packages/pfuture"]
+	path = packages/pfuture
+	url = https://github.com/Alexander-Miller/pfuture/
