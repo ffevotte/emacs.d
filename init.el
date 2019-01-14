@@ -1533,6 +1533,13 @@ name from current directory, `default-directory'.  See
   (add-hook 'visual-line-mode-hook 'ff/activate-adaptive-wrap-prefix-mode)
 
   :config
+  (defun ff/dont-fill-paragraph (argp)
+    (interactive "P")
+    (if argp
+        (fill-paragraph)
+      (message "Refusing to fill the paragraph in visual-line-mode (use a prefix-argument to force")))
+  (define-key visual-line-mode-map (kbd "M-q") #'ff/dont-fill-paragraph)
+
   (defun ff/activate-adaptive-wrap-prefix-mode ()
     "Toggle `visual-line-mode' and `adaptive-wrap-prefix-mode' simultaneously."
     (adaptive-wrap-prefix-mode (if visual-line-mode 1 -1))))
