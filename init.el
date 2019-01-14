@@ -1948,6 +1948,14 @@ Git gutter:
     (define-key grep-mode-map
       (kbd "C-x C-q") 'wgrep-change-to-wgrep-mode)))
 
+;; *** zeal
+
+(use-package zeal-at-point
+  :ensure t
+  :defer t
+  :init
+  (custom-set-key (kbd "C-c z") #'zeal-at-point))
+
 ;; *** print
 
 (progn-safe "Print (part of) a buffer"
