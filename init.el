@@ -467,8 +467,20 @@ and so on."
    '(fringe ((t (:background "#1f2324")))))
 
   ;; Font
-  (push '(font-backend . "xft")                default-frame-alist)
-  (push '(font . "Bitstream Vera Sans Mono-10") default-frame-alist))
+  (push '(font-backend . "xft") default-frame-alist)
+  (push '(font . "Iosevka-12")  default-frame-alist)
+
+  (setq prettify-symbols-unprettify-at-point 'right-edge)
+  (defun refresh-pretty ()
+    (prettify-symbols-mode -1)
+    (prettify-symbols-mode +1))
+
+  ;; Hooks for modes in which to install the Iosevka ligatures
+  (load-file (ff/emacsd "elisp/iosevka-ligatures.el"))
+  (mapc (lambda (hook)
+          (add-hook hook (lambda () (setup-iosevka-ligatures) (refresh-pretty))))
+        '(text-mode-hook prog-mode-hook))
+  (global-prettify-symbols-mode +1))
 
 
 ;; *** Mode line
