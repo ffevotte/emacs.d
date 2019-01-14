@@ -2434,7 +2434,7 @@ sub/superscript for the token at point."
     (if argp
         (treemacs t)
       (treemacs-toggle)))
-  (custom-set-key (kbd "<f1>") #'ff/treemacs))
+  (custom-set-key (kbd "<f12>") #'ff/treemacs))
 
 ;; *** Switch between header and implementation files
 
