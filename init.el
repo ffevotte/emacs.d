@@ -808,6 +808,7 @@ Switch to buffer:
   :commands smex
   :init
   (custom-set-key (kbd "M-x") 'smex)
+  (setq smex-save-file (ff/variable-file "smex-items"))
 
   :config
   (smex-initialize))
