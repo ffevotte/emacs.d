@@ -2813,12 +2813,20 @@ nil."
 ;; *** Inline evaluation
 
 (progn-safe "Inline evaluation"
-  (defun ff/eval-and-replace ()
-    "Evaluate the sexp at point and replace it with its value."
-    (interactive)
-    (let ((value (eval-last-sexp nil)))
-      (kill-sexp -1)
-      (insert (format "%S" value))))
+  (defun ff/eval-python-expr (command)
+    (interactive
+     (let* ((end (point))
+            (beg (save-excursion
+                   (backward-sexp)
+                   (point)))
+            (cmd (buffer-substring-no-properties beg end)))
+       (delete-region beg end)
+       (list cmd)))
+    (shell-command
+     (format "python -c 'import sys; sys.stdout.write(\"%%s\" %% %s)'"
+             command)
+     :insert-here)
+    (exchange-point-and-mark))
 
   (custom-set-key
    (kbd "C-x C-e")
@@ -2827,7 +2835,7 @@ nil."
 With a prefix argument, replace the sexp by its evaluation."
      (interactive "P")
      (if argp
-         (call-interactively 'ff/eval-and-replace)
+         (call-interactively 'ff/eval-python-expr)
        (call-interactively 'eval-last-sexp)))))
 
 ;; *** Auto-compile
