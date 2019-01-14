@@ -31,3 +31,9 @@
 [submodule "packages/pfuture"]
 	path = packages/pfuture
 	url = https://github.com/Alexander-Miller/pfuture/
+[submodule "packages/ghub"]
+	path = packages/ghub
+	url = https://github.com/magit/ghub.git
+[submodule "packages/auto-compile"]
+	path = packages/auto-compile
+	url = https://github.com/emacscollective/auto-compile.git

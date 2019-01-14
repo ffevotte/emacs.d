@@ -222,8 +222,10 @@ Variable files are located in the \"var\" subdirectory of `user-emacs-directory'
 
 (use-package dash :ensure t)
 (use-package magit-popup :ensure t)
-(use-package ghub :ensure t)
 (use-package with-editor :ensure t)
+(use-package let-alist   :ensure t)
+(add-to-list 'load-path (concat user-emacs-directory "packages/ghub/"))
+(require 'ghub)
 (add-to-list 'load-path (concat user-emacs-directory "packages/magit/lisp/"))
 (require 'magit)
 
@@ -238,6 +240,11 @@ Variable files are located in the \"var\" subdirectory of `user-emacs-directory'
 
 (add-to-list 'load-path (concat user-emacs-directory "packages/ggtags"))
 (require 'ggtags)
+
+(use-package packed :ensure t)
+(add-to-list 'load-path (concat user-emacs-directory "packages/auto-compile"))
+(require 'auto-compile)
+(message "auto-compile loaded")
 
 
 ;; ** Base tools
@@ -2835,7 +2842,6 @@ With a prefix argument, replace the sexp by its evaluation."
 ;; *** Auto-compile
 
 (use-package auto-compile
-  :ensure t
   :commands turn-on-auto-compile-mode
   :init
   (add-hook 'emacs-lisp-mode-hook
