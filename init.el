@@ -1831,8 +1831,9 @@ in `process-environment'."
   :ensure t
   :defer  t
   :config
-  (add-hook 'isend-mode-hook 'isend-default-shell-setup)
-  (add-hook 'isend-mode-hook 'isend-default-ipython-setup))
+  (add-hook 'isend-mode-hook #'isend-default-shell-setup)
+  (add-hook 'isend-mode-hook #'isend-default-ipython-setup)
+  (add-hook 'isend-mode-hook #'isend-default-julia-setup))
 
 ;; ** Filesystem
 
