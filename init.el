@@ -969,16 +969,6 @@ Manage sessions:
 
 ;; *** Move point
 
-(progn-safe "VI-like movement with H-{h,j,k,l}"
-  (custom-set-key (kbd "H-j")   #'next-line)
-  (custom-set-key (kbd "H-k")   #'previous-line)
-  (custom-set-key (kbd "H-h")   #'backward-char)
-  (custom-set-key (kbd "H-l")   #'forward-char)
-  (custom-set-key (kbd "H-M-j") #'forward-paragraph)
-  (custom-set-key (kbd "H-M-k") #'backward-paragraph)
-  (custom-set-key (kbd "H-M-h") #'backward-word)
-  (custom-set-key (kbd "H-M-l") #'forward-word))
-
 (progn-safe "Move between pages with M-pgUp / M-pgDn"
   (global-set-key (kbd "M-<next>")   #'forward-page)
   (global-set-key (kbd "M-<prior>")  #'backward-page))
@@ -1037,10 +1027,12 @@ point reaches the beginning or end of the buffer, stop there."
   (setq mc/list-file (ff/variable-file "mc-lists.el"))
 
   (defalias 'mc 'mc/edit-lines)
-  (custom-set-key (kbd "H-<")     'mc/mark-next-like-this)
-  (custom-set-key (kbd "H->")     'mc/mark-previous-like-this)
-  (custom-set-key (kbd "C-c H-<") 'mc/mark-all-like-this)
-  (custom-set-key (kbd "H-SPC")   'set-rectangular-region-anchor))
+  (custom-set-key (kbd "H-<")     #'mc/mark-next-like-this)
+  (custom-set-key (kbd "H->")     #'mc/mark-previous-like-this)
+  (custom-set-key (kbd "C-c H-<") #'mc/mark-all-like-this)
+  (custom-set-key (kbd "H-n")     #'mc/insert-numbers)
+  (custom-set-key (kbd "H-l")     #'mc/insert-letters)
+  (custom-set-key (kbd "H-SPC")   #'set-rectangular-region-anchor))
 
 ;; *** Expand region
 
