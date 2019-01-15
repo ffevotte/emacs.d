@@ -2072,21 +2072,6 @@ Spell-checking:
                   (flyspell-mode 1)))))
 
 
-;; ** Org
-
-(use-package org
-  :defer t
-  :config
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((emacs-lisp . t)
-     (C          . t)
-     (python     . t)
-     (maxima     . t)
-     (gnuplot    . t)
-     (sh         . t))))
-
-
 ;; ** Markdown
 
 (use-package impatient-mode
