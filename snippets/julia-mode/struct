@@ -1,0 +1,5 @@
+#contributor : François Févotte
+#name : struct ... end
+# --
+struct $0
+end

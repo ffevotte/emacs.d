@@ -1,0 +1,5 @@
+#contributor : François Févotte
+#name : while ... end
+# --
+while $0
+end

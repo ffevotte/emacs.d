@@ -1,0 +1,5 @@
+#contributor : François Févotte
+#name : module ... end
+# --
+module $0
+end

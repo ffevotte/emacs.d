@@ -1,0 +1,5 @@
+#contributor : François Févotte
+#name : abstract type ... end
+# --
+abstract type $0
+end

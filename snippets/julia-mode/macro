@@ -1,0 +1,5 @@
+#contributor : François Févotte
+#name : macro ... end
+# --
+macro $0
+end

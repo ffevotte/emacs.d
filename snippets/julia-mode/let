@@ -1,0 +1,5 @@
+#contributor : François Févotte
+#name : let ... end
+# --
+let $0
+end
