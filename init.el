@@ -1024,7 +1024,7 @@ point reaches the beginning or end of the buffer, stop there."
              rrm/switch-to-multiple-cursors)
 
   :init
-  (setq mc/list-file (ff/variable-file "mc-lists.el"))
+  (setq mc/list-file (ff/emacsd "mc-lists.el"))
 
   (defalias 'mc 'mc/edit-lines)
   (custom-set-key (kbd "H-<")     #'mc/mark-next-like-this)
