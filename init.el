@@ -482,6 +482,15 @@ and so on."
         '(text-mode-hook prog-mode-hook))
   (global-prettify-symbols-mode +1))
 
+(defun ff/demo ()
+  (interactive)
+  (mapc #'disable-theme custom-enabled-themes)
+  (push '(font . "Iosevka-14") default-frame-alist)
+  (with-selected-frame (make-frame)
+    (delete-other-frames))
+  (setq sml/theme 'automatic)
+  (sml/setup))
+
 
 ;; *** Mode line
 
