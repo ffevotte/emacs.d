@@ -1809,7 +1809,8 @@ in `process-environment'."
   ;; Easily kill the buffer by pressing RET when the process is killed
   (defun ff/term-handle-exit--close-buffer (&rest args)
     (when (null (get-buffer-process (current-buffer)))
-      (insert "Press <RET> to kill the buffer.")
+      (let ((buffer-read-only nil))
+        (insert "Press <RET> to kill the buffer."))
       (use-local-map (let ((map (make-sparse-keymap)))
                        (define-key map (kbd "RET")
                          (lambda ()
