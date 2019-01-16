@@ -2982,7 +2982,39 @@ turned on."
 
 (use-package julia-mode
   :ensure t
-  :interpreter ("julia" . julia-mode))
+  :interpreter ("julia" . julia-mode)
+
+  :config
+  (add-hook 'julia-mode-hook 'ff/enable-yasnippet)
+  (define-key julia-mode-map (kbd "C-c C-e") #'ff/julia-block)
+
+  (defun ff/julia-block ()
+    (interactive)
+    (let ((beg (point-marker))
+          (end (point-marker))
+          (deactivate-mark nil))
+      (when (region-active-p)
+        (set-marker beg (min (point) (mark)))
+        (set-marker end (max (point) (mark))))
+
+      (set-marker-insertion-type beg nil)
+      (set-marker-insertion-type end t)
+
+      (goto-char end)
+      (or (bolp) (insert "\n"))
+      (insert "end")
+      (or (eolp) (insert "\n"))
+
+      (goto-char beg)
+      (set-mark (point))
+      (insert "begin")
+      (save-excursion
+        (or (eolp) (insert "\n"))
+        (indent-region beg end))
+
+      (set-marker beg nil)
+      (set-marker end nil)
+      (activate-mark))))
 
 ;; * Postamble
 
