@@ -482,14 +482,25 @@ and so on."
         '(text-mode-hook prog-mode-hook))
   (global-prettify-symbols-mode +1))
 
-(defun ff/demo ()
-  (interactive)
+(defun ff/demo (font-size)
+  (interactive (list (read-from-minibuffer "Font size: " "14")))
   (mapc #'disable-theme custom-enabled-themes)
-  (push '(font . "Iosevka-14") default-frame-alist)
+  (push (cons 'font (concat "Iosevka-" font-size)) default-frame-alist)
   (with-selected-frame (make-frame)
+    (sit-for 0)
     (delete-other-frames))
   (setq sml/theme 'automatic)
-  (sml/setup))
+  (sml/setup)
+
+  (require 'term)
+  (set-face-attribute 'term-color-red     nil :foreground "red3")
+  (set-face-attribute 'term-color-green   nil :foreground "green3")
+  (set-face-attribute 'term-color-yellow  nil :foreground "yellow3")
+  (set-face-attribute 'term-color-blue    nil :foreground "blue2")
+  (set-face-attribute 'term-color-magenta nil :foreground "magenta3")
+  (set-face-attribute 'term-color-cyan    nil :foreground "cyan3")
+  (set-face-attribute 'term-color-white   nil :foreground "white")
+  (set-face-attribute 'term-color-black   nil :background "black"))
 
 
 ;; *** Mode line
