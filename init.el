@@ -1750,26 +1750,27 @@ environment.  These changes are then applied to Emacs' environment
 in `process-environment'."
     (interactive "fSource file: ")
 
-    (message "Sourcing environment from `%s'..." filename)
-    (with-temp-buffer
-      (shell-command (format "diff -u <(true; export) <(source %s; export)" filename)
-                     (current-buffer))
-      (goto-char (point-min))
-      (let ((envvar-re "declare -x \\([^=]+\\)=\\(.*\\)$"))
-        ;; Remove environment variables
-        (while (search-forward-regexp (concat "^-" envvar-re) nil t)
-          (let ((var (match-string 1)))
-            (message "%s" (prin1-to-string `(setenv ,var nil)))
-            (setenv var nil)))
-
-        ;; Update environment variables
+    (save-window-excursion
+      (message "Sourcing environment from `%s'..." filename)
+      (with-temp-buffer
+        (shell-command (format "diff -u <(true; export) <(source %s; export)" filename)
+                       (current-buffer))
         (goto-char (point-min))
-        (while (search-forward-regexp (concat "^+" envvar-re) nil t)
-          (let ((var (match-string 1))
-                (value (read (match-string 2))))
-            (message "%s" (prin1-to-string `(setenv ,var ,value)))
-            (setenv var value)))))
-    (message "Sourcing environment from `%s'... done." filename))
+        (let ((envvar-re "declare -x \\([^=]+\\)=\\(.*\\)$"))
+          ;; Remove environment variables
+          (while (search-forward-regexp (concat "^-" envvar-re) nil t)
+            (let ((var (match-string 1)))
+              (message "%s" (prin1-to-string `(setenv ,var nil)))
+              (setenv var nil)))
+
+          ;; Update environment variables
+          (goto-char (point-min))
+          (while (search-forward-regexp (concat "^+" envvar-re) nil t)
+            (let ((var (match-string 1))
+                  (value (read (match-string 2))))
+              (message "%s" (prin1-to-string `(setenv ,var ,value)))
+              (setenv var value)))))
+      (message "Sourcing environment from `%s'... done." filename)))
 
   ;; Helper for the E-grep shell function
   (defun ff/grep (&rest args)
@@ -1785,7 +1786,10 @@ in `process-environment'."
             (save-window-excursion
               (grep grep-command))))
       (winner-undo)
-      (switch-to-buffer grep-buffer))))
+      (switch-to-buffer grep-buffer)))
+
+  (ff/source "~/.bashrc")
+  (setq exec-path (s-split ":" (getenv "PATH"))))
 
 ;; *** Terminal
 
