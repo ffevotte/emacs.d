@@ -1876,6 +1876,11 @@ in `process-environment'."
                        map))))
   (advice-add 'term-handle-exit :after #'ff/term-handle-exit--close-buffer))
 
+(use-package eterm-256color
+  :ensure t
+  :config
+  (add-hook 'term-mode-hook #'eterm-256color-mode))
+
 ;; *** Isend
 
 (use-package isend-mode
