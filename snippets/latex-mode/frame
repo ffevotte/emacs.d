@@ -3,7 +3,7 @@
 # --
 
 \begin{frame}
-  \frametitle{$1}
+  \frametitle{${1:\myframetitle}}
   \framesubtitle{$2}
 
   $0
