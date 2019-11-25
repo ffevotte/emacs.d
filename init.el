@@ -2479,12 +2479,7 @@ sub/superscript for the token at point."
   :ensure t
   :defer t
   :init
-  (defun ff/treemacs (argp)
-    (interactive "P")
-    (if argp
-        (treemacs t)
-      (treemacs-toggle)))
-  (custom-set-key (kbd "<f12>") #'ff/treemacs))
+  (custom-set-key (kbd "<f12>") #'treemacs))
 
 ;; *** Switch between header and implementation files
 
