@@ -3,17 +3,25 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+        LaTeX-babel-insert-hyphen
         LaTeX-insert-left-brace
         TeX-insert-backslash
+        TeX-insert-dollar
+        TeX-insert-sub-or-superscript
         autopair-insert-opening
+        autopair-insert-or-skip-paired-delimiter
         autopair-insert-or-skip-quote
         autopair-skip-close-maybe
         c-electric-slash
         c-electric-star
+        electric-newline-and-maybe-indent
+        ff/insert-tilde
         ff/move-beginning-of-line
         ff/undo
         indent-for-tab-command
+        join-line/repeat
         kill-region
+        markdown-outdent-or-delete
         org-self-insert-command
         orgstruct-hijacker-org-cycle-4
         paredit-forward-delete
@@ -22,6 +30,7 @@
         sexp-hydra/paredit-or-forward-sexp
         sh-assignment
         wdired-finish-edit
+        wdired-next-line
         ))
 
 (setq mc/cmds-to-run-once
