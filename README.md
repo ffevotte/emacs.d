@@ -1,7 +1,7 @@
 # My Emacs settings [![Build-Status](https://travis-ci.org/ffevotte/emacs.d.svg)](https://travis-ci.org/ffevotte/emacs.d) [![License](https://img.shields.io/badge/license-GPL_v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html)
 
 This is an ever-changing set of Emacs settings, mostly targetting the following uses:
-- development (in Python, C++, and obviously a bit of elisp);
+- development (in Julia, Python, C++, and obviously a bit of elisp);
 - document authoring (mostly in LaTeX).
 
 ## Design principles

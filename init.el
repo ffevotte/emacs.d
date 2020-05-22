@@ -476,7 +476,7 @@ and so on."
     (prettify-symbols-mode +1))
 
   ;; Hooks for modes in which to install the Iosevka ligatures
-  (load-file (ff/emacsd "elisp/iosevka-ligatures.el"))
+  (ff/load-configuration "iosevka")
   (mapc (lambda (hook)
           (add-hook hook (lambda () (setup-iosevka-ligatures) (refresh-pretty))))
         '(text-mode-hook prog-mode-hook))
