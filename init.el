@@ -2511,6 +2511,8 @@ sub/superscript for the token at point."
   :init
   (defun ff/turn-on-which-func ()
     (which-function-mode 1))
+  (defun ff/turn-off-which-func ()
+    (which-function-mode -1))
   (add-hook 'prog-mode-hook #'ff/turn-on-which-func)
 
   :config
@@ -2667,6 +2669,20 @@ nil."
 
   (add-to-list 'mode-line-misc-info
                '(flycheck-mode ("" flycheck-mode-line " "))))
+
+;; *** Flymake
+
+(use-package flymake
+  :defer t
+  :config
+  (define-key flymake-mode-map (kbd "C-c ! !")
+    (defun ff/flymake-goto-error-at-point ()
+      (interactive)
+      (move-end-of-line 1)
+      (call-interactively 'flymake-goto-prev-error)))
+  (define-key flymake-mode-map (kbd "C-c ! n") 'flymake-goto-next-error)
+  (define-key flymake-mode-map (kbd "C-c ! p") 'flymake-goto-prev-error)
+  (define-key flymake-mode-map (kbd "C-c ! SPC") 'flymake-show-diagnostics-buffer))
 
 ;; *** Executable scripts
 
@@ -3049,7 +3065,11 @@ turned on."
 
   :config
   (add-hook 'julia-mode-hook 'ff/enable-yasnippet)
+  (add-hook 'julia-mode-hook 'eglot-jl-init)
+  (add-hook 'julia-mode-hook 'eglot-ensure)
+  (add-hook 'julia-mode-hook 'ff/turn-off-which-func)
   (define-key julia-mode-map (kbd "C-c C-e") #'ff/julia-block)
+  (define-key julia-mode-map (kbd "C-c C-i") #'ff/julia-bump-struct-version)
 
   (defun ff/julia-block ()
     (interactive)
@@ -3077,7 +3097,37 @@ turned on."
 
       (set-marker beg nil)
       (set-marker end nil)
-      (activate-mark))))
+      (activate-mark)))
+
+  (defun ff/julia-bump-struct-version (reset)
+    (interactive "P")
+    (save-excursion
+      (or (search-backward "struct " nil t)
+          (error "no struct definition found!"))
+      (forward-word 2)
+      (let* ((old-name (format "%s" (symbol-at-point)))
+             (new-name (with-temp-buffer
+                         (insert old-name)
+                         (goto-char (point-max))
+                         (if reset
+                             (progn
+                               (search-backward "_")
+                               (if (looking-at "_[vV][0-9]+")
+                                   (replace-match "")
+                                 (error "No version number found!")))
+                           (skip-chars-backward "0-9")
+                           (if (looking-at "[0-9]+")
+                               (replace-match (number-to-string (1+ (string-to-number (match-string 0)))))
+                             (insert "_v1")))
+                         (buffer-substring-no-properties (point-min) (point-max)))))
+        (goto-char (point-min))
+        (while (search-forward old-name nil t)
+          (replace-match new-name))))))
+
+(use-package eglot-jl
+  :ensure t
+  :defer  t)
+
 
 ;; * Postamble
 
