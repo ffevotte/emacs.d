@@ -2162,6 +2162,21 @@ Spell-checking:
   :mode   ("[\\\\/]itsalltext[\\\\/]mail\\.google\\..*\\.md\\'"
            . gmail-message-mode))
 
+
+;; ** Org
+
+(use-package org
+  :ensure t
+  :defer  t
+
+  :config
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((python . t)
+     (shell . t)
+     (emacs-lisp . t))))
+
+
 ;; ** LaTeX
 
 (use-package latex
