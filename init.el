@@ -2147,7 +2147,7 @@ Spell-checking:
   (defun ff/md-to-html (buffer)
     (insert-buffer-substring buffer)
     (shell-command-on-region (point-min) (point-max)
-                             "pandoc -s -f markdown"
+                             "pandoc -s -f markdown --mathml --metadata title='preview'"
                              nil t))
 
   (defun ff/markdown-mode-hook ()
