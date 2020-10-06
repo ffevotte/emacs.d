@@ -138,7 +138,7 @@ Variable files are located in the \"var\" subdirectory of `user-emacs-directory'
     "Location of the ELPA cache")
 
   (setq package-archives
-        '(("melpa" . "http://melpa.milkbox.net/packages/")
+        '(("melpa" . "http://melpa.org/packages/")
           ("gnu"   . "http://elpa.gnu.org/packages/"))))
 
 (with-timer-safe "Configuring ELPA"
@@ -3019,9 +3019,10 @@ turned on."
   (define-key Info-mode-map "k" #'Info-backward-node)
 
   ;; Python documentation as info files
-  (use-package pydoc-info :ensure t)
-  (add-to-list 'Info-additional-directory-list
-               (ff/emacsd "share/info")))
+  ;; (use-package pydoc-info :ensure t)
+  ;; (add-to-list 'Info-additional-directory-list
+  ;;              (ff/emacsd "share/info"))
+  )
 
 
 ;; ** Fortran

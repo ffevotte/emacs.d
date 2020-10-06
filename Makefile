@@ -40,7 +40,7 @@ $(HOME)/.fonts/Symbola.ttf: share/fonts/Symbola.ttf
 
 # * pydoc-info
 
-all: pydoc-info
+#all: pydoc-info
 
 PYDOC_INFO = share/info/python.info
 PYDOC_INFO_BASE = $(shell dirname $${PWD}/$(PYDOC_INFO))
