@@ -3127,7 +3127,9 @@ turned on."
 
 (use-package eglot-jl
   :ensure t
-  :defer  t)
+  :defer  t
+
+  :config (setq eglot-jl-enable-sysimage t))
 
 
 ;; * Postamble
