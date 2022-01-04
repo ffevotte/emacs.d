@@ -3129,7 +3129,9 @@ turned on."
   :ensure t
   :defer  t
 
-  :config (setq eglot-jl-enable-sysimage t))
+  :config (setq eglot-jl-enable-sysimage t
+                eglot-sync-connect       1
+                eglot-connect-timeout    120))
 
 
 ;; * Postamble
