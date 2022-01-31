@@ -1335,47 +1335,47 @@ name from current directory, `default-directory'.  See
 
 ;; *** Automatically pair braces and quotes
 
-(use-package autopair
-  :ensure   t
-  :defer    2
-  :diminish (autopair-mode . " 🄐")
+;; (use-package autopair
+;;   :ensure   t
+;;   :defer    2
+;;   :diminish (autopair-mode . " 🄐")
 
-  :config
-  (autopair-global-mode 1)
+;;   :config
+;;   (autopair-global-mode 1)
 
-  (defun ff/brace-slurp ()
-    (interactive)
-    (save-excursion
-      (let* ((beg   (nth 1 (syntax-ppss (point))))
-             (end1  (scan-sexps beg 1))
-             (end2  (scan-sexps end1 1))
-             (brace (buffer-substring (- end1 1) end1)))
-        (goto-char end2)
-        (insert brace)
-        (goto-char end1)
-        (delete-char -1))))
+;;   (defun ff/brace-slurp ()
+;;     (interactive)
+;;     (save-excursion
+;;       (let* ((beg   (nth 1 (syntax-ppss (point))))
+;;              (end1  (scan-sexps beg 1))
+;;              (end2  (scan-sexps end1 1))
+;;              (brace (buffer-substring (- end1 1) end1)))
+;;         (goto-char end2)
+;;         (insert brace)
+;;         (goto-char end1)
+;;         (delete-char -1))))
 
-  (defun ff/brace-barf ()
-    (interactive)
-    (save-excursion
-      (let* ((beg  (nth 1 (syntax-ppss (point))))
-             (end1 (scan-sexps beg 1))
-             (end2 (condition-case nil
-                       (scan-sexps (scan-sexps (- end1 1) -2) 1)
-                     (error (scan-sexps (- end1 1) -1))))
-             (brace (buffer-substring (- end1 1) end1)))
-        (goto-char end1)
-        (delete-char -1)
-        (goto-char end2)
-        (insert brace))))
+;;   (defun ff/brace-barf ()
+;;     (interactive)
+;;     (save-excursion
+;;       (let* ((beg  (nth 1 (syntax-ppss (point))))
+;;              (end1 (scan-sexps beg 1))
+;;              (end2 (condition-case nil
+;;                        (scan-sexps (scan-sexps (- end1 1) -2) 1)
+;;                      (error (scan-sexps (- end1 1) -1))))
+;;              (brace (buffer-substring (- end1 1) end1)))
+;;         (goto-char end1)
+;;         (delete-char -1)
+;;         (goto-char end2)
+;;         (insert brace))))
 
-  (add-hook 'autopair-mode-hook (lambda ()
-                                  (when autopair-mode
-                                    (ff/disable-paredit-mode)
+;;   (add-hook 'autopair-mode-hook (lambda ()
+;;                                   (when autopair-mode
+;;                                     (ff/disable-paredit-mode)
 
-                                    (let ((map (cdr (assq t autopair--emulation-alist))))
-                                      (define-key map (kbd "s-<right>") #'ff/brace-slurp)
-                                      (define-key map (kbd "s-<left>")  #'ff/brace-barf))))))
+;;                                     (let ((map (cdr (assq t autopair--emulation-alist))))
+;;                                       (define-key map (kbd "s-<right>") #'ff/brace-slurp)
+;;                                       (define-key map (kbd "s-<left>")  #'ff/brace-barf))))))
 
 (use-package paredit
   :ensure   t
@@ -2706,64 +2706,64 @@ nil."
 
 ;; *** Outline
 
-(use-package org
-  :defer t
-  :diminish (orgstruct-mode . " 🖹")
-  :commands (;; BC only
-             ff/orgstruct-global-cycle
-             ff/orgstruct-next-heading
-             ff/orgstruct-previous-heading
-             ff/orgstruct-setup
-             outline-next-heading
-             outline-previous-heading)
+;; (use-package org
+;;   :defer t
+;;   :diminish (orgstruct-mode . " 🖹")
+;;   :commands (;; BC only
+;;              ff/orgstruct-global-cycle
+;;              ff/orgstruct-next-heading
+;;              ff/orgstruct-previous-heading
+;;              ff/orgstruct-setup
+;;              outline-next-heading
+;;              outline-previous-heading)
 
-  :init
-  (add-hook 'prog-mode-hook #'turn-on-orgstruct)
+;;   :init
+;;   (add-hook 'prog-mode-hook #'turn-on-orgstruct)
 
-  :config
-  ;; Highlight outline
-  (defun ff/orgstruct-setup ()
-    (setq orgstruct-heading-prefix-regexp
-          (cond ((derived-mode-p 'emacs-lisp-mode)
-                 ";; ")
-                (t
-                 (concat comment-start "[[:space:]]*"))))
-    (dotimes (i 8)
-      (font-lock-add-keywords
-       nil
-       `((,(format "^%s\\(\\*\\{%d\\} .*\\)"
-                   orgstruct-heading-prefix-regexp
-                   (1+ i))
-          1 ',(intern (format "outline-%d" (1+ i))) t)))))
-  (add-hook 'orgstruct-mode-hook #'ff/orgstruct-setup)
+;;   :config
+;;   ;; Highlight outline
+;;   (defun ff/orgstruct-setup ()
+;;     (setq orgstruct-heading-prefix-regexp
+;;           (cond ((derived-mode-p 'emacs-lisp-mode)
+;;                  ";; ")
+;;                 (t
+;;                  (concat comment-start "[[:space:]]*"))))
+;;     (dotimes (i 8)
+;;       (font-lock-add-keywords
+;;        nil
+;;        `((,(format "^%s\\(\\*\\{%d\\} .*\\)"
+;;                    orgstruct-heading-prefix-regexp
+;;                    (1+ i))
+;;           1 ',(intern (format "outline-%d" (1+ i))) t)))))
+;;   (add-hook 'orgstruct-mode-hook #'ff/orgstruct-setup)
 
-  ;; Globally cycle visibility
-  (defmacro define-orgstruct-wrapper (binding name command)
-    `(progn
-       (defun ,name ()
-         (interactive)
-         ;; This part is copied from `orgstruct-make-binding'
-         (org-run-like-in-org-mode
-          (lambda ()
-            (interactive)
-            (let* ((org-heading-regexp
-                    (concat "^"
-                            orgstruct-heading-prefix-regexp
-                            "\\(\\*+\\)\\(?: +\\(.*?\\)\\)?[		]*$"))
-                   (org-outline-regexp
-                    (concat orgstruct-heading-prefix-regexp "\\*+ "))
-                   (org-outline-regexp-bol
-                    (concat "^" org-outline-regexp))
-                   (outline-regexp org-outline-regexp)
-                   (outline-heading-end-regexp "\n")
-                   (outline-level 'org-outline-level)
-                   (outline-heading-alist))
-              (call-interactively ,command)))))
-       (define-key orgstruct-mode-map ,binding (function ,name))))
+;;   ;; Globally cycle visibility
+;;   (defmacro define-orgstruct-wrapper (binding name command)
+;;     `(progn
+;;        (defun ,name ()
+;;          (interactive)
+;;          ;; This part is copied from `orgstruct-make-binding'
+;;          (org-run-like-in-org-mode
+;;           (lambda ()
+;;             (interactive)
+;;             (let* ((org-heading-regexp
+;;                     (concat "^"
+;;                             orgstruct-heading-prefix-regexp
+;;                             "\\(\\*+\\)\\(?: +\\(.*?\\)\\)?[		]*$"))
+;;                    (org-outline-regexp
+;;                     (concat orgstruct-heading-prefix-regexp "\\*+ "))
+;;                    (org-outline-regexp-bol
+;;                     (concat "^" org-outline-regexp))
+;;                    (outline-regexp org-outline-regexp)
+;;                    (outline-heading-end-regexp "\n")
+;;                    (outline-level 'org-outline-level)
+;;                    (outline-heading-alist))
+;;               (call-interactively ,command)))))
+;;        (define-key orgstruct-mode-map ,binding (function ,name))))
 
-  (define-orgstruct-wrapper (kbd "S-<iso-lefttab>") ff/orgstruct-global-cycle     #'org-global-cycle)
-  (define-orgstruct-wrapper (kbd "M-<next>")        ff/orgstruct-next-heading     #'outline-next-heading)
-  (define-orgstruct-wrapper (kbd "M-<prior>")       ff/orgstruct-previous-heading #'outline-previous-heading))
+;;   (define-orgstruct-wrapper (kbd "S-<iso-lefttab>") ff/orgstruct-global-cycle     #'org-global-cycle)
+;;   (define-orgstruct-wrapper (kbd "M-<next>")        ff/orgstruct-next-heading     #'outline-next-heading)
+;;   (define-orgstruct-wrapper (kbd "M-<prior>")       ff/orgstruct-previous-heading #'outline-previous-heading))
 
 ;; *** Hide-show mode
 
