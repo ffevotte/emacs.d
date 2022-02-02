@@ -1398,9 +1398,9 @@ name from current directory, `default-directory'.  See
   (defun ff/disable-paredit-mode ()
     (paredit-mode -1))
 
-  (add-hook 'paredit-mode-hook (lambda ()
-                                 (when paredit-mode
-                                   (autopair-mode -1))))
+  ;; (add-hook 'paredit-mode-hook (lambda ()
+  ;;                                (when paredit-mode
+  ;;                                  (autopair-mode -1))))
 
   ;; Create a new paredit keymap
   (setq ff/paredit-mode-map
